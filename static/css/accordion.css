@@ -1,0 +1,208 @@
+img{
+    vertical-align: middle;
+}
+.bg-img-block{
+    display: inline-block;
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    font-size: 0.8em;
+    margin: 10px;
+    overflow:hidden;
+    
+}
+.bg-img-block .bg-img-block-icon{
+    position: relative;
+    width: 2.5em;
+    padding-right: 5px;
+    margin-right: 5px;
+}
+#bg-img-link{
+border-bottom: none;
+}
+
+.header-icon{
+    width: 3em;
+}
+
+.time-line{
+    background: #0f171e;
+    margin: 0;
+}
+#update-sub{
+    color: #9ca0a3;
+    background: #0f171e;
+    font-size: 0.7em;
+    text-align: center;
+}
+
+.time-line-month{
+    color: #9ca0a3;
+    background: #0f171e;
+    margin: 30px 0px 10px 0px;
+}
+
+.container .event-title-box{
+    position: relative;
+    background: #1b2530;
+    text-transform: none;
+    cursor: pointer;
+    margin: 5px;
+    overflow: hidden;
+}
+
+.container .event-title-box .event-title{
+    position: relative;
+    float: left;
+    color: #79b8f3;
+    float: left;
+    padding-right: 10px
+}
+
+.container .event-title-box .event-location{
+    position: relative;
+    color: #9ca0a3;
+    padding-right: 30px;
+}
+
+.container .event-title-box .event-date{
+    position: relative;
+    color: #9ca0a3;
+    padding-right: 30px;
+    float: right;
+}
+
+.container .event-footer-link{
+    position: relative;
+    float: left;
+    color: #ffa724;
+}
+
+.container .event-footer-address{
+    position: relative;
+    float: right;
+    color: #9ca0a3;
+    /* padding-right: 10px; */
+}
+
+.container .event-title-box::before{
+    content: '\002B';
+    float: right;
+    cursor: pointer;
+    font-size: 2em;
+}
+
+.container .content{
+    position: relative;
+    height: 0;
+    background: #1b2530;
+    overflow: hidden;
+    /* transition: all 0.3s; */
+    overflow-y: auto;
+    margin: 0px;
+    padding-right: 20px;
+}
+.container.active .content {
+    height: 100%;
+    background: #1b2530;
+    margin: 10px;
+  }
+  
+  .container.active .event-title-box::before{
+    content: "\2212";
+    font-size: 2em;
+  }
+
+.event-icon-bg {
+    position: relative;
+    float: left;
+    /* background: #008296; */
+    background: #304155;
+    border-radius: 100%;
+    font-size: 2.25em;
+    height: 0.9em;
+    /* line-height: 0.9em; */
+    text-align: center;
+    width: 0.9em;
+    margin-right: 10px;
+    display: block;
+  }
+
+.event-icon-bg .event-icon{
+    width: 0.5em;   
+    margin: auto;
+}
+
+/*tooltip currently not displayed, hidden by event-title-box property overflow: hidden*/
+.event-icon-bg .event-page-tooltip{
+    position: absolute;
+    visibility: hidden;
+    width: 120px;
+    font-size: 0.4em;
+    /* background-color: black; */
+    color: #9ca0a3;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 1px;
+    z-index: 1;
+    /* top: 12px; */
+    bottom: 110%;
+    margin-left: -60px;
+}
+
+.event-icon-bg:hover .event-page-tooltip{
+    visibility: visible;
+
+}
+
+.container .content .event-pin{
+    width: 1.6em;
+    float: left;
+    padding-right: 5px;
+}
+
+.container .website-link-box{
+    /* box-shadow: inset 0 0 0 1px #888888; */
+    position: relative;
+    display: inline-block;
+    text-align: left;
+    width:fit-content;
+    background-color: #1b2530;
+    border-radius: 2px;
+    margin: 5px;
+    padding: 10px;
+}
+
+.container .website-link{
+    position: relative;
+    text-align: left;
+    color: #9ca0a3;
+}
+
+
+.container .website-link-box:before, .container .website-link-box:after {
+    background: rgba(235, 48, 73, 0.75);
+    content: "";
+    display: block;
+    height: 1px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
+
+.progress-bar {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: rgb(255, 167, 36);
+    text-align: center;
+    background-color: #ffa724;
+    transition: width 0.6s ease;
+  }
