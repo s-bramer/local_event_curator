@@ -78,7 +78,7 @@
 			-->
 			<div class="container">
 				<h3 class="time-line">Event Timeline</h3>
-				<p id="update-sub">Last updated on {{ time }}</p>
+				<p id="update-sub">Last updated on 07 Nov 2022 07:45</p>
 			</div>	
 			<div class="accordion">
 				{% for item in events %}
@@ -255,14 +255,14 @@
 					</section>
 				</div>
 -->
-<!-- 
+
 				<footer class="major container medium">
 					<h3>Get shady with science</h3>
 					<p>Vitae natoque dictum etiam semper magnis enim feugiat amet curabitur tempor orci penatibus. Tellus erat mauris ipsum fermentum etiam vivamus.</p>
 					<ul class="actions special">
 						<li><a href="#" class="button">Join our crew</a></li>
 					</ul>
-				</footer> -->
+				</footer>
 
 			</div>
 
@@ -279,17 +279,20 @@
 						<span class="website-link">{{ item['name'] }}</span></a>
 					</div>
 					{% endfor %}
-
 					<!-- RELOAD BUTTON -->
-					<!-- <form id="reload_button" method="post" action="{{ url_for('home') }}" novalidat>
+					<form id="reload_button" method="post" action="{{ url_for('home') }}" novalidat>
 						<input id="reload" type="submit" class="button" name="reload" value="Reload Results"/>
 					</form>
+					<!-- RELOAD BUTTON -->
+					<form id="reload_test">
+						<input id="test" class="button" name="reload" value="Testing"/>
+					</form>
 					<span id="success_message"></span>
-					<div id="process" style="display:none">
+					<div id="process"><!--style="display:none"-->
 						<div class="progress">
 							<div id="innerStatus" class="progress-bar" role="progressbar" style="width: 5%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Loading..</div>
 						  </div>
-					</div> -->
+					</div>
 				</div>
 
 				<div class="container medium">

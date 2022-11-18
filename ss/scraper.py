@@ -12,7 +12,6 @@ import sys
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'}
 # load event_pages CSV with links and search parameters
 WEEKDAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
-last_month = "" #for month column, outlining month blocks
 
 def format_date(date_string):
     """convert date into proper date format"""
@@ -166,51 +165,69 @@ def get_content(soup, method:str, tag:str, attr:str, attr_name:str, split:int):
         sys.exit()
     return content
 
-def run_scraper(link, row, df_in): 
-    """main function, runs scraper and returns events CSV - NEW"""
-    #GATHER INFO ON ALL EVENTS AND SAVE THEM IN DATABASE (CSV)
-    db_out_row = 0 #row in output df
+def run_scraper(event_page_link:str):
+    """main function, runs scraper and returns events CSV"""
+    df = pd.read_csv(event_page_link, header=0, index_col=None)
     df_out = pd.DataFrame(columns=['link', 'title', 'start_date', 'end_date', 'sort_date', 'month', 'location', 'location_search', 'info', 'name', 'favicon', 'root'])
-    events = get_all_events(link, container=df_in.iloc[row]['container'], search=str(df_in.iloc[row]['search']), type=str(df_in.iloc[row]['url_type']), method=str(df_in.iloc[row]['mode']))
-    if events != "page not found":
-        for count, event in enumerate(events):
-            print(f"Processing event {count+1} of {len(events)}")
-            #get the individual event pages
-            try:
-                response = requests.get(event, headers=headers, timeout =10)
-                soup = BeautifulSoup(response.content, "html5lib")
-            except:
-                title == "event not found"
-            else:    
-                title = get_content(soup, method=str(df_in.iloc[row]['title_method']), tag=str(df_in.iloc[row]['title_tag']), attr=str(df_in.iloc[row]['title_attr']), attr_name=str(df_in.iloc[row]['title_attr_name']), split=int(df_in.iloc[row]['title_split']))
-                start_date = get_date(soup, tag=str(df_in.iloc[row]['start_date_tag']), attr=str(df_in.iloc[row]['start_date_attr']), attr_name=str(df_in.iloc[row]['start_date_attr_name']), date_split=int(df_in.iloc[row]['start_date_split']), start_end_date_split=str(df_in.iloc[row]['start_end_date_split']), start_end=0)
-            
-            if title != "event not found" and start_date != "event date not found":
-                end_date = get_date(soup, tag=str(df_in.iloc[row]['end_date_tag']), attr=str(df_in.iloc[row]['end_date_attr']), attr_name=str(df_in.iloc[row]['end_date_attr_name']), date_split=int(df_in.iloc[row]['end_date_split']), start_end_date_split=str(df_in.iloc[row]['start_end_date_split']), start_end=1)
-                sort_date = datetime.strptime(start_date,'%a %d %b %Y').strftime('%Y-%m-%d')
-                month = datetime.strptime(start_date,'%a %d %b %Y').strftime('%B' )
-                start_date = datetime.strptime(start_date,'%a %d %b %Y').strftime('%a %d %b')
-                if end_date != "":
-                    end_date = datetime.strptime(end_date,'%a %d %b %Y').strftime('%a %d %b')
-                #start_time = get_time(soup, method=str(df_in.iloc[row]['time_method']), tag=str(df_in.iloc[row]['time_tag']), attr=str(df_in.iloc[row]['time_attr']), attr_name=str(df_in.iloc[row]['time_attr_name']), time_split=int(df_in.iloc[row]['time_split']), start_end_time_split=str(df_in.iloc[row]['start_end_time_split']), start_end=0)
-                #end_time = get_time(soup, method=str(df_in.iloc[row]['time_method ])  tag=str(df_in.iloc[row]['time_tag']), attr=str(df_in.iloc[row]['time_attr']), attr_name=str(df_in.iloc[row]['time_attr_name']), time_split=int(df_in.iloc[row]['time_split']), start_end_time_split=str(df_in.iloc[row]['start_end_time_split']), start_end=1)
-                address = get_content(soup, method=str(df_in.iloc[row]['address_method']), tag=str(df_in.iloc[row]['address_tag']), attr=str(df_in.iloc[row]['address_attr']), attr_name=str(df_in.iloc[row]['address_attr_name']), split=int(df_in.iloc[row]['address_split']))
-                location_search = ' '.join(address.split(','))
-                event_info = get_content(soup, method=str(df_in.iloc[row]['info_method']), tag=str(df_in.iloc[row]['info_tag']), attr=str(df_in.iloc[row]['info_attr']), attr_name=str(df_in.iloc[row]['info_attr_name']), split=int(df_in.iloc[row]['info_split']))
-                name = str(df_in.iloc[row]['name'])
-                favicon = str(df_in.iloc[row]['favicon'])
-                root = str(df_in.iloc[row]['root'])
-                #WRITE ALL EVENTS TO DATAFRAME
-                df_out.loc[db_out_row] = [event, titlecase(title), start_date, end_date, sort_date, month, address, location_search, event_info, name, favicon, root]
-                db_out_row += 1
-                # print(df_out)
-                #!!!!!!REPORT OMITTED EVENTS!!!!!!!!
-            else:
-                df_out.loc[db_out_row] = [event, title, start_date, "", "", "", "", "", "", "", "", ""]
-                db_out_row += 1
-                continue
-    else:
-        df_out.loc[db_out_row] = [link, "page not found", "", "", "", "", "", "", "", "", "", ""]
-        db_out_row += 1
+    df_out_path = r"events_database.csv"
+    db_row = 0 #row in output df
+    last_month = "" #for month column, outlining month blocks
+    #GATHER INFO ON ALL EVENTS AND SAVE THEM IN DATABASE (CSV)
+    for row in range(0, len(df)):
+        link = str(df.iloc[row]['link'])
+        events = get_all_events(link, container=df.iloc[row]['container'], search=str(df.iloc[row]['search']), type=str(df.iloc[row]['url_type']), method=str(df.iloc[row]['mode']))
+        if events != "page not found":
+            for count, event in enumerate(events):
+                print(f"Processing event {count+1} of {len(events)}")
+                #get the individual event pages
+                try:
+                    response = requests.get(event, headers=headers, timeout =10)
+                    soup = BeautifulSoup(response.content, "html5lib")
+                except:
+                    title == "event not found"
+                else:    
+                    title = get_content(soup, method=str(df.iloc[row]['title_method']), tag=str(df.iloc[row]['title_tag']), attr=str(df.iloc[row]['title_attr']), attr_name=str(df.iloc[row]['title_attr_name']), split=int(df.iloc[row]['title_split']))
+                    start_date = get_date(soup, tag=str(df.iloc[row]['start_date_tag']), attr=str(df.iloc[row]['start_date_attr']), attr_name=str(df.iloc[row]['start_date_attr_name']), date_split=int(df.iloc[row]['start_date_split']), start_end_date_split=str(df.iloc[row]['start_end_date_split']), start_end=0)
+                
+                if title != "event not found" and start_date != "event date not found":
+                    end_date = get_date(soup, tag=str(df.iloc[row]['end_date_tag']), attr=str(df.iloc[row]['end_date_attr']), attr_name=str(df.iloc[row]['end_date_attr_name']), date_split=int(df.iloc[row]['end_date_split']), start_end_date_split=str(df.iloc[row]['start_end_date_split']), start_end=1)
+                    sort_date = datetime.strptime(start_date,'%a %d %b %Y').strftime('%Y-%m-%d')
+                    month = datetime.strptime(start_date,'%a %d %b %Y').strftime('%B' )
+                    start_date = datetime.strptime(start_date,'%a %d %b %Y').strftime('%a %d %b')
+                    if end_date != "":
+                        end_date = datetime.strptime(end_date,'%a %d %b %Y').strftime('%a %d %b')
+                    #start_time = get_time(soup, method=str(df.iloc[row]['time_method']), tag=str(df.iloc[row]['time_tag']), attr=str(df.iloc[row]['time_attr']), attr_name=str(df.iloc[row]['time_attr_name']), time_split=int(df.iloc[row]['time_split']), start_end_time_split=str(df.iloc[row]['start_end_time_split']), start_end=0)
+                    #end_time = get_time(soup, method=str(df.iloc[row]['time_method ])  tag=str(df.iloc[row]['time_tag']), attr=str(df.iloc[row]['time_attr']), attr_name=str(df.iloc[row]['time_attr_name']), time_split=int(df.iloc[row]['time_split']), start_end_time_split=str(df.iloc[row]['start_end_time_split']), start_end=1)
+                    address = get_content(soup, method=str(df.iloc[row]['address_method']), tag=str(df.iloc[row]['address_tag']), attr=str(df.iloc[row]['address_attr']), attr_name=str(df.iloc[row]['address_attr_name']), split=int(df.iloc[row]['address_split']))
+                    location_search = ' '.join(address.split(','))
+                    event_info = get_content(soup, method=str(df.iloc[row]['info_method']), tag=str(df.iloc[row]['info_tag']), attr=str(df.iloc[row]['info_attr']), attr_name=str(df.iloc[row]['info_attr_name']), split=int(df.iloc[row]['info_split']))
+                    name = str(df.iloc[row]['name'])
+                    favicon = str(df.iloc[row]['favicon'])
+                    root = str(df.iloc[row]['root'])
+                    #WRITE ALL EVENTS TO DATAFRAME
+                    df_out.loc[db_row] = [event, titlecase(title), start_date, end_date, sort_date, month, address, location_search, event_info, name, favicon, root]
+                    db_row +=1
+                    #!!!!!!REPORT OMITTED EVENTS!!!!!!!!
+                else:
+                    df_out.loc[db_row] = [event, title, start_date, "", "", "", "", "", "", "", "", ""]
+                    db_row +=1
+                    continue
+        else:
+            df_out.loc[db_row] = [link, "page not found", "", "", "", "", "", "", "", "", "", ""]
+            db_row +=1
 
-    return df_out
+    #SAVE DATAFRAME AS CSV
+    #first sort by sort_date
+    df_out = df_out.sort_values(by='sort_date',ascending=True,ignore_index=True)
+    #then remove month duplicates (for month subsection labels)
+    current_month = ""
+    for row in range(0, len(df_out)):
+        if df_out.loc[row, ('month')] != current_month:
+            current_month = df_out.loc[row, ('month')]
+        else:
+            #print(f"{df_out.loc[row, ('title')]} month {df_out.loc[row, ('month')]} deleted from row {row}")
+            df_out.loc[row, ('month')] = ""
+    df_out.to_csv(df_out_path,index=False)
+
+if __name__ == '__main__':
+    run_scraper("event_pages.csv")

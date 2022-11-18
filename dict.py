@@ -1,15 +1,23 @@
 #THIS FILE IS JUST FOR TESTING CODE#
 #DELETE ME!!#
-
-import csv
-from csv import DictReader
 import re
 import pandas as pd
+import time
+import calendar
+from datetime import date, datetime
+import numpy as np
 
-with open('./events_database_update.csv', newline='', encoding="utf8") as csv_file:
-    csv_data = DictReader(csv_file)
-    list_of_events = list(csv_data)
+def findElements(lst1, lst2):
+    return list(np.array(lst1)[lst2])
 
-unique_list = list({ item['name'] : item for item in list_of_events}.values())
-for item in unique_list:
-    print(item['name'])
+indices = [0,1]
+
+list_of_things = ['apple','bana','plums','berry']
+
+
+print(findElements(list_of_things,indices))
+
+conns = '–;&'
+#print(conns.split(';'))
+print('& 'in conns)
+
