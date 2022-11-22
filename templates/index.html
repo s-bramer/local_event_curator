@@ -20,8 +20,10 @@
 		<!-- Header -->
 			<div id="header">
 				<div class="bg-img-block">
-					<img class="bg-img-block-icon" src="static/images/wow_i2.png" alt="" />
-					<a href="https://www.facebook.com/MajorPhotographyWales/" id="bg-img-link" target="_blank" rel="noopener noreferrer"><span class="event-footer-address">Look! Its beautiful Llantwit Major.<br>Check out <u>Major Photography</u> for more.</span></a>
+					<a href="https://www.facebook.com/MajorPhotographyWales/" id="bg-img-link" target="_blank" rel="noopener noreferrer">
+						<img class="bg-img-block-icon" src="static/images/wow_i2.png" alt="" title="Major Photography"/>
+						<span class="bg-img-text">Look! Its beautiful Llantwit Major.<br>Check out <u>Major Photography</u> for more.</span>
+					</a>
 				</div>
 				<h1>
 				<img class="header-icon" src="static/images/mushroom.png" alt="" />
@@ -29,7 +31,7 @@
 				<!-- <span class="logo icon fa-paper-plane"></span> -->
 				<h1>Shortcut to Mushrooms</h1>
 				<h2>South Wales event finder</h2>
-				<p>Searching through 100 event websites <br> (so you don't have to)</p>
+				<p>Searching through various event websites <br> (so you don't have to)</p>
 			</div>
 
 		<!-- Main -->
@@ -80,35 +82,52 @@
 				<h3 class="time-line">Event Timeline</h3>
 				<p id="update-sub">Last updated on {{ time }}</p>
 			</div>	
+			<div class="box container navbar">
+				<!-- <span>Total events: {{ event_count }}</span> -->
+				<div class="filter-icon-bg">
+					<span class="filter">FILTER</span>
+					<input type="image" id="ftr-btn-event" title="Events" class="filter-icons" src="static/images/event.png" alt="" />
+					<input type="image" id="ftr-btn-digi-event" title="Digital Events" class="filter-icons" src="static/images/digital_event.png" alt="" />
+					<input type="image" id="ftr-btn-course" title="Courses/Workshops" class="filter-icons" src="static/images/course.png" alt="" />
+					<input type="image" id="ftr-btn-exhibition" title="Exhibitions" class="filter-icons" src="static/images/exhibition.png" alt="" />
+					<span class="filter">FILTER</span>
+				</div>
+			</div>
+
 			<div class="accordion">
+				<h4 id="today" class="time-line-month">What's on Today</h4>
 				{% for item in events %}
 					{% if item['month'] != "" %}
 						<h4 class="time-line-month">{{ item['month'] }}</h4>		
 					{% endif %}
-				<div class="box container">
+
+				<div class="box container {{ item ['category']}}">
 					<div class="event-title-box">
 						<div class="event-icon-bg">
-							<img class="event-icon" src="{{ item['favicon'] }}" alt="" />
+							<img class="event-icon" src="{{ item['event_icon'] }}" alt="" />
+							<!-- <img class="event-icon" src="{{ item['favicon'] }}" alt="" /> -->
 							<!--tooltip NOT DISPLAYED, see comment in CSS-->
-							<span class="event-page-tooltip">{{ item['root'] }}</span>
+							<!-- <span class="event-page-tooltip">{{ item['root'] }}</span> -->
 						</div>
 						<!-- <img class="event-icon" src="static/images/sand-castle.png" alt="" /> -->
 						<span class="event-title">{{ item['title'] }}</span>
-						<span class="event-location">{{ item['location_short'] }}</span>
-						<span class="event-date">
-							{% if item['end_date'] == "" or item['start_date'] == item['end_date'] %}
-								{{ item['start_date'] }}
-							{% else %}
-							{{ item['start_date'] +' - '+ item['end_date']}}
-							{% endif %}
-						</span>
+						<span class="event-location"> - {{ item['short_location'] }}</span>
+						<span class="event-date">{{ item['print_date'] }} </span>
 					</div>
 					<div class="content">
 						<p>
-						{{ item['info'] }}
+						{% if item['info'][-3:] == "..." %}
+							{{ item['info'] }}<i>  more info on event page</i>
+						{% else %}
+							{{ item['info'] }}
+						{% endif %}
 						</p>
 						<a href="{{ item['link'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-link"> {{ item['name'] }} | event page</span></a>
-						<a href="{{ 'http://maps.google.com/?q=' + item['location_search'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-address"><img class="event-pin" src="static/images/maps-and-location-gs.png" alt="" />{{ item['location'] }}</span></a>	        
+						{% if "digital" in item["location"].lower() %}
+							<span class="event-footer-address"><img class="event-pin" src="static/images/maps-and-location-gs.png" alt="" />{{ item['location'] }}</span>
+						{% else %}
+							<a href="{{ 'http://maps.google.com/?q=' + item['location_search'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-address"><img class="event-pin" src="static/images/maps-and-location-gs.png" alt="" />{{ item['location'] }}</span></a>	        
+						{% endif %}
 					</div>
 				</div>
 				{% endfor %}
@@ -284,7 +303,7 @@
 					<!-- <form id="reload_button" method="post" action="{{ url_for('home') }}" novalidat>
 						<input id="reload" type="submit" class="button" name="reload" value="Reload Results"/>
 					</form>
-					<span id="success_message"></span>
+					<span id="success-message"></span>
 					<div id="process" style="display:none">
 						<div class="progress">
 							<div id="innerStatus" class="progress-bar" role="progressbar" style="width: 5%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Loading..</div>
@@ -346,7 +365,7 @@
 				  for (i=0; i<accordion.length;i++){
 					accordion[i].addEventListener('click', function(e){
 						// alert(e.target.classList);
-					  {if(e.target.classList == "event-title-box" || e.target.classList == "event-date" || e.target.classList == "event-icon" || e.target.classList == "event-title") 
+					  {if(e.target.classList == "event-title-box" || e.target.classList == "event-date" || e.target.classList == "event-icon" || e.target.classList == "event-title"  || e.target.classList == "event-location") 
 					  this.classList.toggle('active')
 					  }
 					})

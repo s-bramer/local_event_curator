@@ -69,6 +69,7 @@ def home():
         #remove items that are marked with "page not found"
         list_of_events = [i for i in csv_data if not (i['title'] == "page not found")]
         update_time = list_of_events[0]['update_date']
+        total_events = len(list_of_events)
     with open('./event_pages.csv', newline='', encoding="utf8") as csv_file:
         csv_data = list(DictReader(csv_file))
         #remove duplicates based on column name
@@ -92,9 +93,9 @@ def home():
             #  flash("Message sent succesfully. Thank you.")
             return redirect(url_for('home'))
         else:
-            return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time)
+            return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count = total_events)
 
-    return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time)
+    return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count = total_events)
 
 # #progress bar when scraper is rerun and results updated
 # @app.route("/ajaxprogressbar",methods=["POST","GET"])

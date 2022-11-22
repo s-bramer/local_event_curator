@@ -6,8 +6,11 @@ import time
 import calendar
 from datetime import date, datetime
 
+ORDINALS = ['th', 'st', 'nd', 'rd','TH', 'ST', 'ND', 'RD']
+THIS_YEAR = date.today().year
+
 def is_timestamp(text:str):
-    """check if text is time stamp"""
+    """check if string is time stamp"""
     text = text.strip()
     if 'am' in text or 'pm' in text or 'GMT' in text:
         return True
@@ -23,16 +26,24 @@ def is_timestamp(text:str):
                 return True
         else:
             return True
-           
+
+def is_day_name(text:str):
+    """check if string is a day name (e.g. Monday, Mon,.."""
+    return text in list(calendar.day_name[1:]) or text in list(calendar.day_abbr[1:])
+    
 def is_day(text:str):
-    """check if text is day"""
+    """check if string is day"""
     text = text.strip()
     try:
         day_number = int(text)
-    except:
-        return False
+    except ValueError:
+            return False
     else:
         return 1 <= day_number <= 31
+
+def is_month(text:str):
+    """check if string is month"""
+    return text in list(calendar.month_name[1:]) or text in list(calendar.month_abbr[1:])
 
 def is_year(text:str):
     """check if string is year"""
@@ -46,7 +57,7 @@ def is_year(text:str):
 
 def munch_munch(date_string, delims:str, conns:str):
     if date_string == "":
-        return date_string, "No date found, please see event details.",'n/a','n/a'
+        return date_string, "No date found, please see event details.",'date not found','date not found','date not found'
     else:
         delimiters = '|'.join(delims.split(';'))
         connectors = conns.split(';')
@@ -57,9 +68,8 @@ def munch_munch(date_string, delims:str, conns:str):
         dummy = ""
         #walk through the items identifying each one
         for index, item in enumerate(date_list):
-            #print(item)
-            #check if weekday (full or abbr) - remove it
-            if item in list(calendar.day_name[1:]) or item in list(calendar.day_abbr[1:]):
+            #check if weekday name (full or abbr) - remove it
+            if is_day_name(item):
                 date_list.pop(index)
             elif is_timestamp(item):
                 #print(f"time found: {item}")
@@ -67,11 +77,16 @@ def munch_munch(date_string, delims:str, conns:str):
             else:
                 for char in item.split():
                     char = char.strip()
+                    #remove ordinals
+                    if any(ordinal in char[-2:] for ordinal in ORDINALS) and not is_month(char) and not is_day_name(char):
+                        for ordinal in ORDINALS:
+                            char = char.replace(ordinal,"")
                     if is_day(char):
                         #print(f"day found: {char}")
                         days.append(int(char))
                         dummy += char
-                    elif char in list(calendar.month_name[1:]) or char in list(calendar.month_abbr[1:]):
+                    elif is_month(char):
+                        #print(f"month found: {char}")
                         if len(char) == 3:
                             month = list(calendar.month_abbr).index(char)
                         else:
@@ -81,6 +96,8 @@ def munch_munch(date_string, delims:str, conns:str):
                     elif is_year(char):
                         #print(f"year found: {char}")
                         years.append(int(char))
+                        if int(THIS_YEAR) != int(char):
+                            dummy += ' '+ char
                     elif char in connectors:
                         #print(f"conn found: {char}")
                         conns.append(char)
@@ -89,15 +106,25 @@ def munch_munch(date_string, delims:str, conns:str):
                         #print(f"deli found: {char}")
                         dummy += char+ ' '
                     else:
-                        pass
+                        try:
+                            #last attempt, perhaps its already in date time format 
+                            date_time = datetime.strptime(char, '%d/%m/%y')
+                        except:
+                            pass
+                        else:
+                            days.append(date_time.day)
+                            months.append(date_time.month)
+                            years.append(date_time.year)
         #catch meaning less datestrings (e.g. First Thursday of each month)
         if len(days) == 0 or len(months)==0:
-            return date_string, "No date found, please see event details.",'n/a','n/a'
+            return date_string, "No date found, please see event details.",'date not found','date not found','date not found'
         #remove trailing delimiter
         dummy = dummy.rstrip()
-        if dummy[-1] in delimiters:
-            dummy = dummy[:-1]
-
+        try:            
+            if dummy[-1] in delimiters:
+                dummy = dummy[:-1]
+        except IndexError:
+            pass
         #build the start date, end date, sort date and month
         #4 cases:
         #1. empty date_string - handle on top
@@ -105,25 +132,34 @@ def munch_munch(date_string, delims:str, conns:str):
         #3. two days = start and end date (keep delimeter - or &)
         #4. more than two days, print it as is (you got the sort date and the month)
         if len(years) == 0:
-            years.append(date.today().year)
+            years.append(THIS_YEAR)
         dump_date = date(year=years[0],month=months[0],day=days[0])
         sorting_date = dump_date.strftime('%Y-%m-%d')
-        month_date = dump_date.strftime('%B')
-        print_date = dump_date.strftime('%a %d %b')
-        if len(days) == 2:
+        if THIS_YEAR != dump_date.year:
+            month_date = dump_date.strftime('%B %Y')
+            print_date = dump_date.strftime('%a %d %b %Y')
+        else:
+            month_date = dump_date.strftime('%B')
+            print_date = dump_date.strftime('%a %d %b')
+        if len(days) == 2 and days[0] != days[1]:
             if len(months)==1:
                 months.append(months[0])
             if len(years) == 1:
                 years.append(years[0])
             if len(conns)==0:
                 conns.append('-')
-            dump_date = date(year=years[1],month=months[1],day=days[1])     
-            print_date = f"{print_date} {conns[0]} {dump_date.strftime('%a %d %b')}"
+            dump_date = date(year=years[1],month=months[1],day=days[1])
+            if THIS_YEAR != dump_date.year:
+                second_date = dump_date.strftime('%a %d %b %Y')
+            else:
+                second_date = dump_date.strftime('%a %d %b')
+            print_date = f"{print_date} {conns[0]} {second_date}"
         if len(days) > 2:
-            print_date = dummy  
-        return date_string, print_date, sorting_date, month_date
+            print_date = dummy
+        end_date = date(year=years[-1],month=months[-1],day=days[-1]).strftime('%Y-%m-%d')
+        return date_string, print_date, sorting_date, month_date, end_date
 
 
 if __name__ == '__main__':
-    ds = "3 & 4 December 2022, 10am - 5pm"
-    print(munch_munch(ds,'–;&;,','–;& '))
+    ds = "When: Thursday 8th Dec 2022 (2pm-5pm)"
+    print(munch_munch(ds,'-;&;,;\s','–;&'))
