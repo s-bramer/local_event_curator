@@ -12,6 +12,9 @@ from flask_table import Table, Col, LinkCol
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
+from datetime import date, datetime
+
+THIS_YEAR = date.today().year
 
 
 app = Flask(__name__)
@@ -93,9 +96,9 @@ def home():
             #  flash("Message sent succesfully. Thank you.")
             return redirect(url_for('home'))
         else:
-            return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count = total_events)
+            return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count = total_events, year = THIS_YEAR)
 
-    return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count = total_events)
+    return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count = total_events, year = THIS_YEAR)
 
 # #progress bar when scraper is rerun and results updated
 # @app.route("/ajaxprogressbar",methods=["POST","GET"])
