@@ -142,7 +142,7 @@ a {
     border-bottom-color 0.2s ease-in-out;
   -ms-transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
   transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
-  border-bottom: dotted 1px;
+  /* border-bottom: dotted 1px; */
   color: #d6601b;;
   text-decoration: none;
 }
@@ -182,13 +182,13 @@ h6 {
   font-weight: 700;
   letter-spacing: 0.125em;
   line-height: 1.75em;
-  margin-bottom: 0.5em;
-  margin-top: 2em;
+  margin-bottom: 0.7em;
+  margin-top: 1em;
   text-transform: uppercase;
   text-align: center;
 }
 
-/* added to line up with containers*/
+/*added to line up with containers*/
 h4{
   margin: 0 auto;
 }
@@ -248,8 +248,17 @@ h4{
   width: 55em;
 }
 
+.filter-navbar.opened{
+  width:25%;
+  transform: translateX(0);
+} 
+
 .container.medium {
   width: 38.25em;
+}
+
+.container.small {
+  width: 18.25em;
 }
 
 @media screen and (max-width: 1280px) {
@@ -261,22 +270,40 @@ h4{
     width: 48em;
   }
 
+  .filter-navbar.opened{
+    width:30%;
+    transform: translateX(0);
+  } 
+
   .container.medium {
     width: 36em;
   }
+  .container.small {
+    width: 16em;
+  }
+
 }
 
 @media screen and (max-width: 980px) {
   .container {
     width: 95%;
   }
+
 /*added to line up with containers*/
   h4{
     width: 95%;
   }
 
+  .filter-navbar.opened{
+    width:40%;
+    transform: translateX(0);
+  } 
+
   .container.medium {
     width: 71.25%;
+  }
+  .container.small {
+    width: 20.25%;
   }
 }
 
@@ -288,12 +315,18 @@ h4{
   h4{
     width: 95% !important;
   }
+  .filter-navbar.opened{
+    width:50%;
+    transform: translateX(0);
+  } 
+
 }
 
 @media screen and (max-width: 736px) {
   .container {
     width: 90% !important;
   }
+
   /*added to line up with containers*/
   h4{
     width: 90% !important;
@@ -301,6 +334,10 @@ h4{
   .bg-img-text{
     display: none;
   }
+  .filter-navbar.opened{
+    width:80%;
+    transform: translateX(0);
+  } 
 }
 
 @media screen and (max-width: 480px) {
@@ -311,6 +348,10 @@ h4{
   h4{
     width: 100% !important;
   }
+  .filter-navbar.opened{
+    width:100%;
+    transform: translateX(0);
+  } 
   .bg-img-text{
     display: none;
   }
@@ -2874,21 +2915,17 @@ input[type="button"].small,
 /* Footer */
 
 #footer {
-  background-attachment: scroll;
+  /* background-attachment: scroll; */
   background-color: #0f171e;
-  background-image: url("images/bottom-3200.svg");
-  background-position: top center;
-  background-repeat: repeat-x;
-  background-size: 3200px 460px;
+  /* background-image: url("images/bottom-3200.svg"); */
+  /* background-position: top center; */
+  /* background-repeat: repeat-x; */
+  /* background-size: 3200px 460px; */
   color: rgba(255, 255, 255, 0.8);
-  /*
-				Since the SVG background occupies a lot of vertical space, we'll
-				add additional top padding (to move our content out of its way)
-				and a negative margin (to move everything up a bit).
-			*/
 
-  margin-top: -260px;
-  padding: calc(460px + 6em) 0 10em 0;
+  /* margin-top: -260px;
+  padding: calc(460px + 6em) 0 10em 0; */
+  padding: 3em 0 3em 0;
   position: relative;
   text-align: center;
 }
@@ -2901,7 +2938,7 @@ input[type="button"].small,
   position: absolute;
   top: 0;
   width: 3px;
-  z-index: 0;
+  z-index: -1;
 }
 
 #footer a {
@@ -3137,10 +3174,11 @@ input[type="button"].small,
   /* Footer */
 
   #footer {
-    background-image: url("images/bottom-1600.svg");
-    background-size: 1600px 230px;
-    margin-top: -100px;
-    padding: calc(230px + 4em) 0 6em 0;
+    /* background-image: url("images/bottom-1600.svg"); */
+    /* background-size: 1600px 230px; */
+    /* margin-top: -100px; */
+    /* padding: calc(230px + 4em) 0 6em 0; */
+    padding: 3em 0 3em 0;
   }
 
   #footer:before {
@@ -3292,10 +3330,11 @@ input[type="button"].small,
   /* Footer */
 
   #footer {
-    background-image: url("images/bottom-1280.svg");
-    background-size: 1280px 184px;
-    margin-top: -75px;
-    padding: calc(184px + 2em) 0 2em 0;
+    /* background-image: url("images/bottom-1280.svg"); */
+    /* background-size: 1280px 184px; */
+    /* margin-top: -75px; */
+    /* padding: calc(184px + 2em) 0 2em 0; */
+    padding: 2em 0 2em 0;
   }
 
   #footer:before {

@@ -1,4 +1,5 @@
 import date_muncher
+import address_sniffer
 from bs4 import BeautifulSoup
 from bs4.element import Comment
 from calendar import month_name
@@ -14,10 +15,7 @@ import sys
 # standard header for http request
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'}
 # load event_pages CSV with links and search parameters
-WEEKDAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
-MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
-
-last_month = "" #for month column, outlining month blocks
+CATEGORIES = ['event', 'digital_event', 'course', 'exhibition', 'performance']
 
 def tag_visible(element):
     """checks whether text is visible"""
@@ -30,10 +28,6 @@ def tag_visible(element):
 def titlecase(s):
     """proper casing for the event description"""
     return re.sub(r"[A-Za-z]+('[A-Za-z]+)?", lambda word: word.group(0).capitalize(),s)
-
-# def format_time(time_string):
-#     return_time = datetime.strptime(time_string.strip(),"%H:%M")
-#     return return_time.strftime('%H:%M')
 
 def get_all_events(link: str,  container: str, container_attr: str, search: str, root: str, type="absolute", method="search"):
     """Returns all events urls from a webpage"""
@@ -51,8 +45,11 @@ def get_all_events(link: str,  container: str, container_attr: str, search: str,
             soup = soup.find("div", attrs={container_attr: container})
         # searching for a specific string in the href
         if method == "search":
-            for tag in soup.find_all(href=re.compile(search)):
-                all_events.append(tag.get('href'))
+            try:
+                for tag in soup.find_all(href=re.compile(search)):
+                    all_events.append(tag.get('href'))
+            except:
+                return "ERROR: page not found (get_all_events)"
         # or directly targeting a specific tag
         elif method == "direct":
             for tag in soup.find_all('a', attrs={"class": search}):
@@ -70,18 +67,15 @@ def get_all_events(link: str,  container: str, container_attr: str, search: str,
 
         return all_events
 
-############
-# GET DATE #
-############
 def get_dates(soup, method:str, tag:str, attr:str, attr_name:str, date_indices:str, date_delimiter:int, date_connector:str):
     """extract the event date from event page"""
     indices = date_indices.split(',')
-    if method == 'tag':
+    if method == 'tag_attr':
         try: 
             full_date = soup.find(tag, attrs={attr: attr_name}).text.replace('\n', ' ').strip()
         except:
             return "ERROR: date not found (tag)","date not found","date not found","date not found",'date not found'
-    elif method == 'tags':
+    elif method == 'tags_attr':
         try: 
             full_date = ""
             for indicy in indices:
@@ -180,16 +174,20 @@ def get_category(soup, method:str, tag:str, attr:str, attr_name:str, split:int):
             return "ERROR: category not found (search)"
         else:
             exhi_list = ['exhibition', 'exhibited']
-            class_list = ['workshop', 'course']
-            if any(item in content.lower() for item in exhi_list):
+            class_list = ['workshop', 'course', 'craft']
+            if any(item in content[0:100].lower() for item in exhi_list):
                 category = 'exhibition'
-            elif any(item in content.lower() for item in class_list):
+            elif any(item in content[0:100].lower() for item in class_list):
                 category = 'course'
             else:
                 category = 'event'
+    elif method == "single":
+        category = tag
     else:
         print(f"{get_category.__name__}, no valid method selected.")
         sys.exit()
+    if category not in CATEGORIES:
+        category = 'event'
 
     return category
 
@@ -214,17 +212,17 @@ def event_post_processing(df:pd.DataFrame):
     current_month = ""
     #df.loc[0, ('month')] = "Today"
     for row in range(0, len(df)):
-        #if duplicate row use max_date as end_date (if its different to start date)
+        #if duplicate row, use max_date as end_date (if its different to start date)
         if df.loc[row, ('dupl_count')] > 1 and df.loc[row, ('sort_date')] != df.loc[row, ('max_date')]:
             df.loc[row, ('print_date')] = df.loc[row, ('print_date')] + ' - ' + datetime.strptime(df.loc[row, ('max_date')],'%Y-%m-%d').strftime('%a %d %b')
-        #add identify todays, future and past events (to be omitted)
+        #identify todays, future and past events (to be omitted)
         if df.loc[row, ('sort_date')] != 'date not found':
             sort_time = datetime.strptime(df.loc[row, ('sort_date')], '%Y-%m-%d')
             df.loc[row, ('ppf')] = (date(sort_time.year, sort_time.month, sort_time.day) - date(datetime.now().year, datetime.now().month, datetime.now().day)).days
         else:
             df.loc[row, ('ppf')] = '999'
-        #remove month duplicates (for month subsection labels)
-        if df.loc[row, ('month')] != current_month and int(df.loc[row, ('ppf')]) > 0:
+        #remove month duplicates (for month subsection labels) omit current month
+        if df.loc[row, ('month')] != current_month and int(df.loc[row, ('ppf')]) > 0 and df.loc[row, ('month')] != date.today().strftime('%B'):
             current_month = df.loc[row, ('month')]
         else:
             #print(f"{df_out_out.loc[row, ('title')]} month {df_out_out.loc[row, ('month')]} deleted from row {row}")
@@ -239,7 +237,7 @@ def run_scraper(link, row, df_in):
     #GATHER INFO ON ALL EVENTS AND SAVE THEM IN DATABASE (CSV)
     db_out_row = 0 #row in output df
     title = ""
-    df_out = pd.DataFrame(columns=['link', 'title', 'full_date', 'print_date', 'sort_date', 'end_date', 'month', 'location', 'short_location', 'location_search', 'category', 'info', 'name', 'favicon', 'root', 'event_icon'])
+    df_out = pd.DataFrame(columns=['link', 'title', 'full_date', 'print_date', 'date_info', 'sort_date', 'end_date', 'month', 'location', 'short_location', 'postcode', 'council', 'council_abbr', 'location_search', 'category', 'info', 'name', 'logo', 'root', 'event_icon'])
     events = get_all_events(link, container=df_in.iloc[row]['events_container'], container_attr=df_in.iloc[row]['events_container_attr'], search=str(df_in.iloc[row]['events_search']), root=str(df_in.iloc[row]['root']), type=str(df_in.iloc[row]['events_url_type']), method=str(df_in.iloc[row]['events_mode']))
     if not "ERROR:" in events:
         for count, event in enumerate(events):
@@ -257,31 +255,40 @@ def run_scraper(link, row, df_in):
                 title = title.replace('Bbc','BBC')
                 title = title.replace('Swam', 'SWAM')
                 title = title.replace('Uwc', 'UWC')
+                title = title.replace('Lgbtq','LGBTQ')
                 dates = get_dates(soup, method=str(df_in.iloc[row]['date_method']), tag=str(df_in.iloc[row]['date_tag']), attr=str(df_in.iloc[row]['date_attr']), attr_name=str(df_in.iloc[row]['date_attr_name']), date_indices=str(df_in.iloc[row]['date_indices']), date_delimiter=str(df_in.iloc[row]['date_delimiters']), date_connector=str(df_in.iloc[row]['date_connectors']))
+                date_info = df_in.iloc[row]['date_info']
                 full_date = dates[0]
                 print_date = dates[1]
+                if not pd.isna(date_info):
+                    print_date = print_date + " *"
                 sort_date = dates[2]
                 month = dates[3]
                 end_date = dates [4]
                 #LOCATION/ADDRESS
                 if str(df_in.iloc[row]['address']) == 'no':
-                    address = get_content(soup, method=str(df_in.iloc[row]['address_method']), tag=str(df_in.iloc[row]['address_tag']), attr=str(df_in.iloc[row]['address_attr']), attr_name=str(df_in.iloc[row]['address_attr_name']), split=int(df_in.iloc[row]['address_split']))
+                    location = get_content(soup, method=str(df_in.iloc[row]['address_method']), tag=str(df_in.iloc[row]['address_tag']), attr=str(df_in.iloc[row]['address_attr']), attr_name=str(df_in.iloc[row]['address_attr_name']), split=int(df_in.iloc[row]['address_split']))
                 else:
-                    address = df_in.iloc[row]['address']
-                if address == "":
-                    address = get_content(soup, method=str(df_in.iloc[row]['alt_address_method']), tag=str(df_in.iloc[row]['alt_address_tag']), attr=str(df_in.iloc[row]['alt_address_attr']), attr_name=str(df_in.iloc[row]['alt_address_attr_name']), split=int(df_in.iloc[row]['alt_address_split']))
-                if address[-1] == ':':
-                    address = address[:-1]
-                location_search = ' '.join(address.split(','))
-                short_address = address.split(',')[0]
+                    location = df_in.iloc[row]['address']
+                if location == "":
+                    location = get_content(soup, method=str(df_in.iloc[row]['alt_address_method']), tag=str(df_in.iloc[row]['alt_address_tag']), attr=str(df_in.iloc[row]['alt_address_attr']), attr_name=str(df_in.iloc[row]['alt_address_attr_name']), split=int(df_in.iloc[row]['alt_address_split']))
+                if location[-1] == ':':
+                    location = location[:-1]
+                location_search = ' '.join(location.split(','))
+                postcode = address_sniffer.get_postcode(location)
+                councils = address_sniffer.get_council(postcode)
+                short_location = address_sniffer.get_town(postcode)
+                if short_location.lower() == "castle":
+                    short_location = councils[0]
+                council = councils[0]
+                council_abbr = councils[1] 
                 #EVENT CATEGORY
                 category = get_category(soup, method=str(df_in.iloc[row]['cat_method']), tag=str(df_in.iloc[row]['cat_tag']), attr=str(df_in.iloc[row]['cat_attr']), attr_name=str(df_in.iloc[row]['cat_attr_name']), split=int(df_in.iloc[row]['cat_split']))
-                event_icon = f"./static/images/{category}.png"
                 #EVENT INFO
                 event_info = get_content(soup, method=str(df_in.iloc[row]['info_method']), tag=str(df_in.iloc[row]['info_tag']), attr=str(df_in.iloc[row]['info_attr']), attr_name=str(df_in.iloc[row]['info_attr_name']), split=int(df_in.iloc[row]['info_split']))
                 if len(event_info) > 500:
                     event_info = event_info[:500] + '...'
-                remove_list = ['[',']',' email/sprotected']
+                remove_list = ['[',']',' email protected']
                 for item in remove_list:
                     if item in event_info:
                         print (f"item {item} removed..")
@@ -289,17 +296,19 @@ def run_scraper(link, row, df_in):
 
                 #ADDITIONAL INFO
                 name = str(df_in.iloc[row]['name'])
-                favicon = str(df_in.iloc[row]['favicon'])
+                logo = str(df_in.iloc[row]['logo'])
+                #event_icon = f"./static/images/{category}.png"
+                event_icon = logo
                 root = str(df_in.iloc[row]['root'])
                 #WRITE ALL EVENTS TO DATAFRAME
-                df_out.loc[db_out_row] = [event, title, full_date, print_date, sort_date, end_date , month, address, short_address, location_search, category, event_info, name, favicon, root, event_icon]
+                df_out.loc[db_out_row] = [event, title, full_date, print_date, date_info, sort_date, end_date , month, location, short_location, postcode, council, council_abbr, location_search, category, event_info, name, logo, root, event_icon]
                 db_out_row += 1
                 # print(df_out)
                 #!!!!!!REPORT OMITTED EVENTS!!!!!!!!
     else:
         print(f"page not found: {link}")
         # page not found items currently excluded - will be picked up by duplicate removal and cause error
-        #df_out.loc[db_out_row] = [link, "page not found", "", "", "", "", "", "", "", "", "", "", "", ""]
+        #df_out.loc[db_out_row] = [link, "page not found", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         #db_out_row += 1
 
     return df_out

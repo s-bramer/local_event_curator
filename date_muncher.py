@@ -1,5 +1,3 @@
-#THIS FILE IS JUST FOR TESTING CODE#
-#DELETE ME!!#
 import re
 import pandas as pd
 import time

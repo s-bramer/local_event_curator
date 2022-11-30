@@ -45,10 +45,10 @@
 					may or may not seriously
 					<br />
 					break the universe</h2>
-					
+
 					<p>Tellus erat mauris ipsum fermentum<br />
 					etiam vivamus nunc nibh morbi.</p>
-					
+
 				</header>
 				-->
 				<!--
@@ -79,11 +79,11 @@
 			<div class="container">
 				<h3 class="time-line">Event Timeline</h3>
 				<p id="update-sub">Last updated on 07 Nov 2022 07:45</p>
-			</div>	
+			</div>
 			<div class="accordion">
 				{% for item in events %}
 					{% if item['month'] != "" %}
-						<h4 class="time-line-month">{{ item['month'] }}</h4>		
+						<h4 class="time-line-month">{{ item['month'] }}</h4>
 					{% endif %}
 				<div class="box container">
 					<div class="event-title-box">
@@ -108,7 +108,7 @@
 						{{ item['info'] }}
 						</p>
 						<a href="{{ item['link'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-link"> {{ item['name'] }} | event page</span></a>
-						<a href="{{ 'http://maps.google.com/?q=' + item['location_search'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-address"><img class="event-pin" src="static/images/maps-and-location-gs.png" alt="" />{{ item['location'] }}</span></a>	        
+						<a href="{{ 'http://maps.google.com/?q=' + item['location_search'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-address"><img class="event-pin" src="static/images/maps-and-location-gs.png" alt="" />{{ item['location'] }}</span></a>
 					</div>
 				</div>
 				{% endfor %}
@@ -275,7 +275,7 @@
 						<a href="{{ item['root'] }}" target="_blank" rel="noopener noreferrer">
 						<div class="event-icon-bg">
 							<img class="event-icon" src="{{ item['favicon'] }}" alt="" />
-						</div>	
+						</div>
 						<span class="website-link">{{ item['name'] }}</span></a>
 					</div>
 					{% endfor %}
@@ -300,9 +300,9 @@
 						<h2>DROP ME A LINE!</h2>
 					</header>
 
-					<p>Do you know other websites that should be included in the search, 
+					<p>Do you know other websites that should be included in the search,
 						want to promote your own event or
-						have suggestions for the page. 	
+						have suggestions for the page.
 					<form method="post" action="{{ url_for('home') }}" novalidat>
 						<div class="row">
 							<div class="col-6 col-12-mobilep">
@@ -349,11 +349,11 @@
 				  for (i=0; i<accordion.length;i++){
 					accordion[i].addEventListener('click', function(e){
 						// alert(e.target.classList);
-					  {if(e.target.classList == "event-title-box" || e.target.classList == "event-date" || e.target.classList == "event-icon" || e.target.classList == "event-title") 
+					  {if(e.target.classList == "event-title-box" || e.target.classList == "event-date" || e.target.classList == "event-icon" || e.target.classList == "event-title")
 					  this.classList.toggle('active')
 					  }
 					})
-				  } 
+				  }
 			</script>
 
 	</body>

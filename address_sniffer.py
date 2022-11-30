@@ -1,0 +1,184 @@
+import pandas as pd
+import re
+from bs4 import BeautifulSoup
+import requests
+headers={
+'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
+}
+
+COUNCIL_ABBR = {
+    'Cardiff' : 'cff',
+    'Gwynedd' : 'out',
+    'Swansea' : 'swa',
+    'Vale of Glamorgan' : 'vog', 
+    'Carmarthenshire' : 'out',
+    'Rhondda Cynon Taf': 'rct', 
+    'Neath Port Talbot' : 'oth',
+    'Monmouthshire' : 'oth',
+    'Newport' : 'oth',
+    'Torfaen' : 'oth',
+    'Powys' : 'out',
+    'Caerphilly' : 'oth',
+    'Bridgend' : 'brd',
+    'digital' : 'oth',
+}
+
+def get_postcode(address:str):
+    #1. see if it is contained in the address string
+    postcodes = re.findall("[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", address)
+    if len(postcodes) > 0:
+        # return f"{postcodes[0]} from address string (1)"
+        return postcodes[0]
+    #2. try to find postcode in the addresses DB 
+    df_adressess_db = pd.read_csv("addresses_db.csv", header=0, index_col=None)
+    try: 
+        postcode = (df_adressess_db.loc[df_adressess_db['name'] == address, 'postcode'].iloc[0])
+    except:
+    #3. try to find postcode online
+        try: 
+            r=requests.get(f'https://www.google.com/search?q={address}+Wales+UK+Postcode',headers=headers, timeout =10)
+            soup = BeautifulSoup(r.content,"html5lib")
+            address = soup.find('span',class_="LrzXr").text
+        except:
+            try:
+                r=requests.get(f'https://www.streetcheck.co.uk/search?s={address}+Wales+UK+Postcode',headers=headers, timeout =10)
+                soup = soup.find("ul", attrs={"id": "searchresults"})
+                address = soup.find_all("a")[0].string
+            except:
+                return "postcode not found"
+            else:
+                postcodes = re.findall("[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", address)
+                if len(postcodes)>0:
+                    # return f"{postcodes[0]} from streetcheck (4)"
+                    return postcodes[0]
+                else:
+                    return "postcode not found"
+        else:
+            postcodes = re.findall("[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", address)
+            if len(postcodes)>0:
+                # return f"{postcodes[0]} from google (3)"
+                return postcodes[0]
+            else:
+                return "postcode not found"
+    else:
+        # return f"{postcode} from db (2)"
+        return postcode
+    #4. make note to debug text and take event out (needs manual update)
+
+def get_council(postcode:str):
+    #1. try to find coucil in the addresses DB 
+    df_adressess_db = pd.read_csv("addresses_db.csv", header=0, index_col=None)
+    council = ""
+    try: 
+        council = (df_adressess_db.loc[df_adressess_db['postcode'] == postcode, 'council'].iloc[0])
+    except:
+    #2. try to find postcode online
+        try:
+            r=requests.get(f"https://checkmypostcode.uk/{postcode.replace(' ','')}",headers=headers, timeout =10)
+            soup = BeautifulSoup(r.content,"html5lib")
+            results = soup.find_all("div", attrs={"class":"medium-5 columns"})
+            for x,item in enumerate(results):
+                if item.text.strip() == "Local Authority":
+                    council = results[x+1].text
+                    break
+        except:
+            return "council not found", "n/a"
+        else:
+            council = council.strip()
+    try:
+        council_abbr = COUNCIL_ABBR[council]
+    except:
+        council_abbr = 'out'  
+    return council, council_abbr
+    
+def get_town(postcode:str):
+    #1. try to find town in the addresses DB 
+    df_adressess_db = pd.read_csv("addresses_db.csv", header=0, index_col=None)
+    town = ""
+    try: 
+        town = (df_adressess_db.loc[df_adressess_db['postcode'] == postcode, 'town'].iloc[0])
+    except:
+    #2. try to find postcode online
+        town = ""
+        try:
+            r=requests.get(f"https://checkmypostcode.uk/{postcode.replace(' ','')}",headers=headers, timeout =10)
+            soup = BeautifulSoup(r.content,"html5lib")
+            results = soup.find_all("div", attrs={"class":"medium-5 columns"})
+            for x,item in enumerate(results):
+                if item.text.strip() == "Built-up Area":
+                    town = results[x+1].text
+                    break
+        except:
+            return "town not found"
+        else:
+            return town.strip()
+    else:
+        return town
+
+def get_address(address_string:str):
+    address_string.replace(',','').replace(' ','+')
+    try:
+        r=requests.get(f'https://www.google.com/search?q={address_string}+Wales+UK+Postcode',headers=headers, timeout =10)
+        #r=requests.get(f'https://www.streetcheck.co.uk/search?s={address_string}+Wales+UK+Postcode',headers=headers, timeout =10)
+
+        soup = BeautifulSoup(r.content,"html5lib")
+        address = soup.find('span',class_="LrzXr").text
+        
+        #soup = soup.find("ul", attrs={"id": "searchresults"})
+        #address = soup.find_all("a")[0].string
+
+    except:
+        print("address not found")
+
+    else:
+        #check if address contains postcode i.e. is an address
+        if len(re.findall("[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", address))>0:
+            return address
+
+# UPDATE ADDRESS_DB WITH POSTCODE AND COUNCIL        
+# df_in = pd.read_csv("addresses_db.csv", header=0, index_col=None)
+# df_out_path = "addresses_db.csv"
+# for i, row in enumerate(range(0, len(df_in))):
+#     #get postcode from address string
+#     # if pd.isna(df_in.loc[row, ('postcode')]):
+#     #     if not pd.isna(df_in.loc[row, ('address')]):
+#     #         postcode = get_postcode(df_in.loc[row, ('address')])
+#     #         if postcode is not None:
+#     #             df_in.loc[row, ('postcode')] = postcode
+#     # use postcode to get council area
+#     # if not pd.isna(df_in.loc[row, ('postcode')]):
+#     #     council = get_council(df_in.loc[row, ('postcode')])
+#     #     if council is not None:
+#     #         df_in.loc[row, ('council')] = council
+#     if not pd.isna(df_in.loc[row, ('postcode')]):
+#         town = get_town(df_in.loc[row, ('postcode')])
+#         if town is not None:
+#             df_in.loc[row, ('town')] = town
+#     #use address string (often incomplete) to get full address 
+#     # if pd.isna(df_in.loc[row, ('address')]):
+#     #     address = get_address(df_in.loc[row, ('name')])
+#     #     if address is not None:
+#     #         df_in.loc[row, ('address')] = address    
+# df_in.to_csv(df_out_path,index=False)
+
+#IMPORT COUNCIL INFO INTO EVENT DATABASE
+# df_in = pd.read_csv("events_database.csv", header=0, index_col=None)
+# df_address_db = pd.read_csv("addresses_db.csv", header=0, index_col=None)
+# df_in["council"] = ""
+# df_in["council_abbr"] = ""
+# df_out_path = "events_database_updated.csv"
+# for i, row in enumerate(range(0, len(df_in))):
+#     if 'digital' in df_in.loc[row, ('location')].lower():
+#         council_name = 'digital'
+#     else:
+#         council_name = (df_address_db.loc[df_address_db['name'] == df_in.loc[row, ('location')], 'council'].iloc[0])
+#     try:
+#         council_name_abbr = COUNCIL_ABBR[council_name]
+#     except:
+#         council_name_abbr = 'out'
+#     df_in.loc[row, ('council')] = council_name
+#     df_in.loc[row, ('council_abbr')] = council_name_abbr
+# df_in.to_csv(df_out_path,index=False)
+        
+# print(get_address("Fonmon Castle, Barry, Vale of Glamorgan"))
+
