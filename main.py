@@ -1,5 +1,4 @@
 import os
-import scraper
 import smtplib
 import requests
 import json
@@ -8,10 +7,6 @@ from threading import Thread
 from csv import DictReader
 from flask import Flask, render_template, Markup, request, url_for, redirect, flash, jsonify
 from flask_bootstrap import Bootstrap
-from flask_table import Table, Col, LinkCol
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
 from datetime import date, datetime
 
 THIS_YEAR = date.today().year

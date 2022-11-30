@@ -2,11 +2,8 @@ import date_muncher
 import address_sniffer
 from bs4 import BeautifulSoup
 from bs4.element import Comment
-from calendar import month_name
-from tabulate import tabulate
 from datetime import date, datetime
 import numpy as np
-import calendar
 import requests
 import pandas as pd
 import re
