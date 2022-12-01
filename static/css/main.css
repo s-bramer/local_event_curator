@@ -256,10 +256,23 @@ h4{
 .container.medium {
   width: 38.25em;
 }
-
-.container.small {
-  width: 20%;
+.event-icon{
+  width:2em;
 }
+.event-date{
+  font-size: 1em;
+  padding-right: 30px;
+}
+.website-link{
+  font-size: 1em;
+}
+.website-link-box{
+  padding:10px;
+}
+
+/* .container.small {
+  width: 20%;
+} */
 
 @media screen and (max-width: 1280px) {
   .container {
@@ -280,6 +293,19 @@ h4{
   }
   .container.small {
     width: 20%;
+  }
+  .event-icon{
+    width:2em;
+  }
+  .event-date{
+    font-size: 1em;
+    padding-right: 20px;
+  }
+  .website-link{
+    font-size: 1em;
+  }
+  .website-link-box{
+    padding:10px;
   }
 
 }
@@ -305,6 +331,19 @@ h4{
   .container.small {
     width: 20%;
   }
+  .event-icon{
+    width:2em;
+  }
+  .event-date{
+    font-size: 1em;
+    padding-right: 20px;
+  }
+  .website-link{
+    font-size: 1em;
+  }
+  .website-link-box{
+    padding:10px;
+  }
 }
 
 @media screen and (max-width: 840px) {
@@ -319,8 +358,21 @@ h4{
     width:50%;
     transform: translateX(0);
   } 
-  .container.small {
+  .container.small{
     width: 20%;
+  }
+  .event-icon{
+    width:2em;
+  }
+  .event-date{
+    font-size: 1em;
+    padding-right: 20px;
+  }
+  .website-link{
+    font-size: 1em;
+  }
+  .website-link-box{
+    padding:10px;
   }
 
 }
@@ -341,8 +393,22 @@ h4{
     width:80%;
     transform: translateX(0);
   } 
-  .container.small {
+  .container.small{
     width: 20%;
+  }
+  .event-icon{
+    width:1.5em;
+  }
+  .event-date{
+    font-size: 0.8em;
+    padding-right: 10px;
+  }
+  .website-link{
+    font-size: 0.8em;
+  }
+
+  .website-link-box{
+    padding:0;
   }
 }
 
@@ -363,6 +429,20 @@ h4{
   }
   .container.small {
     width: 20%;
+  }
+  .event-icon{
+    width:1.5em;
+  }
+  .event-date{
+    font-size: 0.8em;
+    padding-right: 10px;
+  }
+  .website-link{
+    font-size: 0.8em;
+  }
+
+  .website-link-box{
+    padding:0;
   }
 }
 
@@ -501,7 +581,7 @@ h4{
 
 .row > .col-12 {
   width: 100%;
-  padding: 20px 0px 0px 20px;
+  /* padding: 30px 0px 0px 30px; */
 }
 
 .row > .off-12 {
@@ -1779,12 +1859,12 @@ h4{
   }
 
   .row {
-    margin-top: -230px;
+    margin-top: -20px;
     margin-left: -20px;
   }
 
   .row > * {
-    padding: 230px 0 0 20px;
+    padding: 20px 0 0 20px;
   }
 
   .row.gtr-uniform {
@@ -3395,7 +3475,7 @@ input[type="button"].small,
   /* Box */
 
   .box {
-    padding: 1em 1em;
+    padding: 0.5em 0.5em;
   }
 
   /* Feature */

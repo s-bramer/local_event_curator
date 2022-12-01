@@ -89,7 +89,7 @@ img{
 .container .event-title-box .event-date{
     position: relative;
     color: #9ca0a3;
-    padding-right: 30px;
+    /* padding-right: 30px; */
     float: right;
 }
 
@@ -152,7 +152,7 @@ img{
 }
 
 #event-count{
-    margin-left: 10px;
+    margin-left: 15px;
     padding: 2em 0.5em;
 }
 
@@ -160,7 +160,7 @@ img{
     position: absolute;
     right: 0%;
     top: 50%;
-    transform: translate(-20%, -50%);
+    transform: translate(0%, -50%);
     background-color: #0f171e;
     border: 2px solid #ffa724;
     color: #9ca0a3;
@@ -218,7 +218,7 @@ img{
 } 
 
 .filter-section{
-    margin-left: 10px;
+    margin-left: 15px;
     color:#79b8f3;
     }
 
@@ -227,13 +227,9 @@ img{
     cursor: pointer;
 }
 
-ul li{ 
-    margin-left: 20px;
+.filter-menu-items{
+    margin-left: 30px;
     color: #9ca0a3;
-}
-
-ul{
-    margin-left: 5px;
 }
 
 #filter-item-event:hover{
@@ -378,7 +374,7 @@ ul{
     background-color: #1b2530;
     border-radius: 2px;
     margin: 5px;
-    padding: 10px;
+    /* padding: 10px; */
 }
 
 .container .website-link{
@@ -393,7 +389,7 @@ ul{
 .event-icon{
     position: relative;
     float: left;
-    width: 2em;   
+    /* width: 2em;    */
     margin: auto;
     line-height: 1em;
     margin-right: 10px;

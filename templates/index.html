@@ -46,7 +46,7 @@
 				<form class="filter-panel">
 				<ul>
 					<li id="filter-event-type" class="filter-section">Event Types (All Selected)</li>
-					<ul>
+					<ul class="filter-menu-items">
 						<li id="filter-item-event">&#8226;&nbsp; Events</li>
 						<li id="filter-item-digi-event">&#8226;&nbsp; Digital Events</li>
 						<li id="filter-item-course">&#8226;&nbsp; Courses/Workshops</li>
@@ -54,7 +54,7 @@
 						<li id="filter-item-performance">&#8226;&nbsp; Performances</li>
 					</ul>
 					<li id="filter-location" class="filter-section">Event Locations (All Selected)</li>
-					<ul>
+					<ul class="filter-menu-items">
 					<li id="filter-location-vog">&#8226;&nbsp; Vale of Glamorgan</li>
 					<li id="filter-location-bridgend">&#8226;&nbsp; Bridgend</li>
 					<li id="filter-location-cardiff">&#8226;&nbsp; Cardiff</li>
@@ -75,16 +75,9 @@
 
 				<div class="box container whatson {{ item ['category'] }} {{ item ['council_abbr']}}">
 					<div class="event-title-box">
-						<!-- <div class="event-icon-bg"> -->
-							<img class="event-icon" src="{{ item['event_icon'] }}" alt="" title="{{ item['name'] }}"/>
-							<!-- <img class="event-icon" src="{{ item['favicon'] }}" alt="" /> -->
-							<!--tooltip NOT DISPLAYED, see comment in CSS-->
-							<!-- <span class="event-page-tooltip">{{ item['root'] }}</span> -->
-						<!-- </div> -->
-						<!-- <img class="event-icon" src="static/images/sand-castle.png" alt="" /> -->
-						<span class="event-title">{{ item['title'] }}</span>
-						<span class="event-location">- {{ item['short_location'] }}</span>
+						<img class="event-icon" src="{{ item['event_icon'] }}" alt="" title="{{ item['name'] }}"/>
 						<span class="event-date">{{ item['print_date'] }} </span>
+						<span class="event-title">{{ item['title'] }}<span class="event-location"> - {{ item['short_location'] }}</span></span>
 					</div>
 					<div class="content">
 						<p>
