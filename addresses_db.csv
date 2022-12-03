@@ -1,8 +1,8 @@
 name,full_address,postcode,council,town
-THE MET ,"The Met, Abertillery, Mitre Street, Abertillery, Blaenau Gwent NP13 1AL",NP13 1AL,Blaenau Gwent,Abertillery
+THE MET,"The Met, Abertillery, Mitre Street, Abertillery, Blaenau Gwent NP13 1AL",NP13 1AL,Blaenau Gwent,Abertillery
 National Waterfront Museum,"National Waterfront Museum, Oystermouth Rd, Maritime Quarter, Swansea SA1 3RD ",SA1 3RD ,Swansea,Swansea
-St Fagans National Museum of History,"St Fagans, National Museum of History, Cardiff CF5 6XB",CF5 6XB,Cardiff,St. Fagans
-UWC Atlantic College St Donat's Castle,"Saint Donat's Castle, UWC Atlantic College, CF61 1WF",CF61 1WF,Vale of Glamorgan,St. Donats
+St Fagans National Museum of History,"St. Fagans, National Museum of History, Cardiff CF5 6XB",CF5 6XB,Cardiff,St. Fagans
+UWC Atlantic College St Donat's Castle,"St. Donat's Castle, UWC Atlantic College, CF61 1WF",CF61 1WF,Vale of Glamorgan,St. Donats
 Porth Plaza Car park ,"Porth Plaza Car park , 52 Pontypridd Rd, Porth CF39 9PN",CF39 9PN,Rhondda Cynon Taf,Porth
 De Winton Street Car Park,"De Winton Street Car Park, De Winton Street, Tonypandy, CF40 2QU",CF40 2QU,Rhondda Cynon Taf,Tonypandy
 Lime Street Car Park,"Lime Street Car Park, Lake St, Ferndale CF43 4HL",CF43 4HL,Rhondda Cynon Taf,Ferndale
@@ -28,15 +28,15 @@ Chepstow Castle,"Chepstow Castle, Bridge St, Chepstow NP16 5EY ",NP16 5EY,Monmou
 "Central Park, Barry, CF63 4RW","Kings Square, Barry CF63 4RW",CF63 4RW,Vale of Glamorgan,Barry
 "Kings Square, Barry, CF63 4RW","Kings Square, Barry CF63 4RW",CF63 4RW,Vale of Glamorgan,Barry
 Barry Town Centre,"Kings Square, Barry CF63 4RW",CF63 4RW,Vale of Glamorgan,Barry
-"Heol yr Orsaf, Pontyclun","Heol Yr Orsaf, Pontyclun, Wales, CF72 9TY ",CF72 9TY,Rhondda Cynon Taf,Pont-y-clun
+"Heol yr Orsaf, Pontyclun","Pontyclun, Heol Yr Orsaf,  Wales, CF72 9TY ",CF72 9TY,Rhondda Cynon Taf,Pont-y-clun
 National Roman Legion Museum,"National Roman Legion Museum, High St, Caerleon, Newport NP18 1AE",NP18 1AE,Newport,Caerleon
 "Barry Library, 160 Kings Square, Barry, CF63 4RW","Barry Library, 160 Kings Square, Barry, CF63 4RW",CF63 4RW,Vale of Glamorgan,Barry
 Llantwit Major Town Centre,"Llantwit Major, Wales, CF61 1SA",CF61 1SA,Vale of Glamorgan,Llantwit Major
 Big Pit National Coal Museum,"Big Pit, National Coal Museum, Pontypool NP4 9XP",NP4 9XP,Torfaen,Blaenavon
 Blaenavon Ironworks,"Blaenavon Ironworks, North St, Blaenavon NP4 9RN ",NP4 9RN,Torfaen,Blaenavon
-"Saint Donat's Castle, UWC Atlantic College, CF61 1WF","Saint Donat's Castle, UWC Atlantic College, CF61 1WF",CF61 1WF,Vale of Glamorgan,St. Donats
-"Saint Donat's, Llantwit Major, CF611WF","Saint Donat's Castle, UWC Atlantic College, CF61 1WF",CF61 1WF,Vale of Glamorgan,St. Donats
-"St Donat's, Llantwit Major, Vale of Glamorgan, CF61 1WF","Saint Donat's Castle, UWC Atlantic College, CF61 1WF",CF61 1WF,Vale of Glamorgan,St. Donats
+"Saint Donat's Castle, UWC Atlantic College, CF61 1WF","St. Donat's Castle, UWC Atlantic College, CF61 1WF",CF61 1WF,Vale of Glamorgan,St. Donats
+"Saint Donat's, Llantwit Major, CF611WF","St. Donat's Castle, UWC Atlantic College, CF61 1WF",CF61 1WF,Vale of Glamorgan,St. Donats
+"St Donat's, Llantwit Major, Vale of Glamorgan, CF61 1WF","St. Donat's Castle, UWC Atlantic College, CF61 1WF",CF61 1WF,Vale of Glamorgan,St. Donats
 "Penarth Pier Pavilion, The Esplanade, Penarth, CF64 3AU","Penarth Pier Pavilion, The Esplanade, Penarth CF64 3AU",CF64 3AU,Vale of Glamorgan,Penarth
 Tretower Court and Castle,"Tretower Court and Castle, Powys, Tretower, Crickhowell NP8 1RF",NP8 1RF,Powys,Llanfihangel Cwmdu with Bwlch and Cathedine
 "UWC Atlantic College St Donat's Castle, Saint Donats, CF61 1WF","Saint Donat's Castle, UWC Atlantic College, CF61 1WF",CF61 1WF,Vale of Glamorgan,St. Donats
@@ -51,3 +51,9 @@ Mountain Ash,"Mountain Ash, CF45 4YG",CF45 4YG,Rhondda Cynon Taf,Abercynon
 Castell Coch,"Castell Coch, Cardiff CF15 7JS ",CF15 7JS,Cardiff,Cardiff
 "Dyffryn House, St Nicholas, CF5 6SU","Dyffryn House, St Nicholas, CF5 6SU",CF5 6SU,Vale of Glamorgan,St Nicholas
 "Tredegar House, Pencarn Way, Newport, NP10 8YW ","Tredegar House, Pencarn Way, Newport, NP10 8YW ",NP10 8YW,Newport,Newport
+St Fagans National Museum of History                         Fully Booked,"St Fagans National Museum of History                         Fully Booked, CF5 6XB",CF5 6XB,Cardiff,St. Fagans
+"Barry Town Centre, Holton Road, Park Crescent, High Street & Goodsheds","Barry Town Centre, Holton Road, Park Crescent, High Street & Goodsheds, CF62 5TR",CF62 5TR,Vale of Glamorgan,Barry
+"Barry, Goodsheds, Hood Road, Barry, CF62 5QU","Barry, Goodsheds, Hood Road, Barry, CF62 5QU",CF62 5QU,Vale of Glamorgan,Barry
+"Llantwit Major Beach, Llantwit Major, CF61 1RF","Llantwit Major Beach, Llantwit Major, CF61 1RF",CF61 1RF,Vale of Glamorgan,Llantwit Major
+"The Castle Green, Cardiff Castle, Castle Street, Cardiff, CF10 3RB","The Castle Green, Cardiff Castle, Castle Street, Cardiff, CF10 3RB",CF10 3RB,Cardiff,Cardiff
+"Wales Millennium Centre, Bute Place, Cardiff, CF10 5AL","Wales Millennium Centre, Bute Place, Cardiff, CF10 5AL",CF10 5AL,Cardiff,Cardiff

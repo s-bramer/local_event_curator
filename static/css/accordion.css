@@ -38,7 +38,7 @@ img{
     color: #9ca0a3;
     background: #0f171e;
     font-weight: 900;
-    letter-spacing: 0.2em;
+    /* letter-spacing: 0.2em; */
 }
 #update-sub{
     color: #9ca0a3;
@@ -76,7 +76,7 @@ img{
     float: left;
     color: #79b8f3;
     float: left;
-    padding-right: 10px
+    padding-right: 10px;
 }
 
 .container .event-title-box .event-location{
@@ -164,7 +164,7 @@ img{
     background-color: #0f171e;
     border: 2px solid #ffa724;
     color: #9ca0a3;
-    padding: 0.3em 1em;
+    /* padding: 0.3em 1em; */
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -336,7 +336,7 @@ img{
     /* transition: all 0.3s; */
     overflow-y: auto;
     margin: 0px;
-    padding-right: 20px;
+    padding-right: 10px;
 }
 .container.active .content {
     height: 100%;
@@ -459,13 +459,13 @@ img{
 #success-message{
     color: #ffa724;
 }
-#main{
+/* #main{
     background-attachment: scroll;
     background-image: url("./images/snow.png");
     background-position: top center;
     background-repeat: repeat;
     background-size:auto;
-}
+} */
 
 #up-button{
   display: none;

@@ -14,6 +14,13 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 # load event_pages CSV with links and search parameters
 CATEGORIES = ['event', 'digital_event', 'course', 'exhibition', 'performance']
 
+REPLACE_ME = {
+    'Bbc' : 'BBC',
+    'Swam' : 'SWAM',
+    'Uwc' : 'UWC',
+    'Lgbtq' :'LGBTQ',
+}
+
 def tag_visible(element):
     """checks whether text is visible"""
     if element.parent.name in ['div','style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -22,9 +29,12 @@ def tag_visible(element):
         return False
     return True
 
-def titlecase(s):
-    """proper casing for the event description"""
-    return re.sub(r"[A-Za-z]+('[A-Za-z]+)?", lambda word: word.group(0).capitalize(),s)
+def format_title(s:str):
+    """proper casing for the event description with a few exceptions: dict REPLACE_ME"""
+    s = re.sub(r"[A-Za-z]+('[A-Za-z]+)?", lambda word: word.group(0).capitalize(),s)
+    for key,value in REPLACE_ME.items():
+        s = s.replace(key,value)
+    return s
 
 def get_all_events(link: str,  container: str, container_attr: str, search: str, root: str, type="absolute", method="search"):
     """Returns all events urls from a webpage"""
@@ -225,7 +235,7 @@ def event_post_processing(df:pd.DataFrame):
             #print(f"{df_out_out.loc[row, ('title')]} month {df_out_out.loc[row, ('month')]} deleted from row {row}")
             df.loc[row, ('month')] = ""
     
-    #df = df.drop(['max_date', 'dupl_count'], axis=1)
+    df = df.drop(['max_date', 'dupl_count'], axis=1)
     df['update_date'] = datetime.now().strftime('%d %b %Y %H:%M')
     return df
 
@@ -234,7 +244,7 @@ def run_scraper(link, row, df_in):
     #GATHER INFO ON ALL EVENTS AND SAVE THEM IN DATABASE (CSV)
     db_out_row = 0 #row in output df
     title = ""
-    df_out = pd.DataFrame(columns=['link', 'title', 'full_date', 'print_date', 'date_info', 'sort_date', 'end_date', 'month', 'location', 'short_location', 'postcode', 'council', 'council_abbr', 'location_search', 'category', 'info', 'name', 'logo', 'root', 'event_icon'])
+    df_out = pd.DataFrame(columns=['link', 'title', 'full_date', 'print_date', 'date_info', 'sort_date', 'end_date', 'month', 'location', 'town', 'short_location', 'postcode', 'council', 'council_abbr', 'location_search', 'category', 'info', 'name', 'logo', 'root', 'event_icon'])
     events = get_all_events(link, container=df_in.iloc[row]['events_container'], container_attr=df_in.iloc[row]['events_container_attr'], search=str(df_in.iloc[row]['events_search']), root=str(df_in.iloc[row]['root']), type=str(df_in.iloc[row]['events_url_type']), method=str(df_in.iloc[row]['events_mode']))
     if not "ERROR:" in events:
         for count, event in enumerate(events):
@@ -247,12 +257,7 @@ def run_scraper(link, row, df_in):
                 title == "ERROR: event not found"
             else:
                 title = get_content(soup, method=str(df_in.iloc[row]['title_method']), tag=str(df_in.iloc[row]['title_tag']), attr=str(df_in.iloc[row]['title_attr']), attr_name=str(df_in.iloc[row]['title_attr_name']), split=int(df_in.iloc[row]['title_split']))
-                title = titlecase(title)
-                #['Uwc','Bbc','Swam'] ['UWC','BBC','SWAM']
-                title = title.replace('Bbc','BBC')
-                title = title.replace('Swam', 'SWAM')
-                title = title.replace('Uwc', 'UWC')
-                title = title.replace('Lgbtq','LGBTQ')
+                title = format_title(title)
                 dates = get_dates(soup, method=str(df_in.iloc[row]['date_method']), tag=str(df_in.iloc[row]['date_tag']), attr=str(df_in.iloc[row]['date_attr']), attr_name=str(df_in.iloc[row]['date_attr_name']), date_indices=str(df_in.iloc[row]['date_indices']), date_delimiter=str(df_in.iloc[row]['date_delimiters']), date_connector=str(df_in.iloc[row]['date_connectors']))
                 date_info = df_in.iloc[row]['date_info']
                 full_date = dates[0]
@@ -271,14 +276,13 @@ def run_scraper(link, row, df_in):
                     location = get_content(soup, method=str(df_in.iloc[row]['alt_address_method']), tag=str(df_in.iloc[row]['alt_address_tag']), attr=str(df_in.iloc[row]['alt_address_attr']), attr_name=str(df_in.iloc[row]['alt_address_attr_name']), split=int(df_in.iloc[row]['alt_address_split']))
                 if location[-1] == ':':
                     location = location[:-1]
-                location_search = ' '.join(location.split(','))
-                postcode = address_sniffer.get_postcode(location)
-                councils = address_sniffer.get_council(postcode)
-                short_location = address_sniffer.get_town(postcode)
-                if short_location.lower() == "castle":
-                    short_location = councils[0]
-                council = councils[0]
-                council_abbr = councils[1] 
+                location_info = address_sniffer.sniff_sniff(location)
+                postcode = location_info[0]
+                town = location_info[1]
+                council = location_info[2]
+                council_abbr = location_info[3]
+                location_search = ' '.join(location_info[4].split(','))
+                short_location = location_info[5]
                 #EVENT CATEGORY
                 category = get_category(soup, method=str(df_in.iloc[row]['cat_method']), tag=str(df_in.iloc[row]['cat_tag']), attr=str(df_in.iloc[row]['cat_attr']), attr_name=str(df_in.iloc[row]['cat_attr_name']), split=int(df_in.iloc[row]['cat_split']))
                 #EVENT INFO
@@ -298,7 +302,7 @@ def run_scraper(link, row, df_in):
                 event_icon = logo
                 root = str(df_in.iloc[row]['root'])
                 #WRITE ALL EVENTS TO DATAFRAME
-                df_out.loc[db_out_row] = [event, title, full_date, print_date, date_info, sort_date, end_date , month, location, short_location, postcode, council, council_abbr, location_search, category, event_info, name, logo, root, event_icon]
+                df_out.loc[db_out_row] = [event, title, full_date, print_date, date_info, sort_date, end_date , month, location, town, short_location, postcode, council, council_abbr, location_search, category, event_info, name, logo, root, event_icon]
                 db_out_row += 1
                 # print(df_out)
                 #!!!!!!REPORT OMITTED EVENTS!!!!!!!!

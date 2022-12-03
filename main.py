@@ -66,6 +66,7 @@ def home():
         csv_data = list(DictReader(csv_file))
         #remove items that are marked with "page not found"
         list_of_events = [i for i in csv_data if not (i['title'] == "page not found")]
+        list_of_events = [i for i in csv_data if not (i['council_abbr'] == "out")]
         update_time = list_of_events[0]['update_date']
         total_events = len(list_of_events)
     with open('./event_pages.csv', newline='', encoding="utf8") as csv_file:
