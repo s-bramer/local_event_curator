@@ -116,6 +116,7 @@ img{
     right: 0;
     bottom:0;
     transform: translateX(100%);
+    overflow-y:auto;
     color:white;
     font-size: 1em;
     display: flex;
@@ -148,12 +149,12 @@ img{
 }
 
 .filter-panel{
-    margin: 2em 0.5em;
+    margin: 1em 0.5em;
 }
 
 #event-count{
-    margin-left: 15px;
-    padding: 2em 0.5em;
+    margin-left: 25px;
+    padding: 1.5em 0 0.5em 0;
 }
 
 #filter-button{
@@ -419,7 +420,6 @@ img{
 
 .event-icon-bg:hover .event-page-tooltip{
     visibility: visible;
-
 }
 
 .container .content .event-pin{

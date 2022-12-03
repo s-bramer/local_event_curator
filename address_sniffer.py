@@ -20,7 +20,7 @@ COUNCIL_ABBR = {
     'Powys' : 'out',
     'Caerphilly' : 'oth',
     'Bridgend' : 'brd',
-    'digital' : 'oth',
+    'Digital Event' : 'oth',
 }
 
 def get_postcode(address:str):

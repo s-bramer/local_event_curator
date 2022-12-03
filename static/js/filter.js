@@ -1,3 +1,16 @@
+//highlight counter for 2 seconds
+function highlightFor(id,color,seconds){
+    var element = document.getElementById(id)
+    var origcolor = element.style.backgroundColor
+    element.style.color = color;
+    // element.style.fontWeight = 'bold';
+    var t = setTimeout(function(){
+       element.style.color = origcolor;
+	//    element.style.fontWeight = 'normal'
+    },(seconds*1000));
+}
+
+
 //buttons to make filter panel appear/disappear
 let filterButton = document.getElementById("filter-button");
 filterButton.addEventListener("click", () => {
@@ -26,6 +39,7 @@ function updateEventCount() {
 	const hidden_events_locations_and_types = document.getElementsByClassName('hide-loc hide-typ')
 	event_count = total_events.length - (hidden_event_types.length + hidden_event_locations.length) + hidden_events_locations_and_types.length
 	document.getElementById("event-count").innerHTML = "Events selected: " + event_count;
+	highlightFor('event-count',"#ffa724",0.5);
 }
 
 //get filter menu items to filter event results
