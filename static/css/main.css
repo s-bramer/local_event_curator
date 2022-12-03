@@ -275,16 +275,9 @@ h4{
 #filter-button{
   padding: 0.3em 1em;
 }
-.table-small{
-  display:none;
+.table-block{
+  margin: 0 2em 0 2em;
 }
-.table-big{
-  display:table;
-  text-align: center;
-}
-/* .container.small {
-  width: 20%;
-} */
 
 @media screen and (max-width: 1280px) {
   .container {
@@ -325,12 +318,8 @@ h4{
   #filter-button{
     padding: 0.3em 1em;
   }
-  .table-small{
-    display:none;
-  }
-  .table-big{
-    display:table;
-    text-align: center;
+  .table-block{
+    margin: 0 2em 0 2em;
   }
 }
 
@@ -374,12 +363,8 @@ h4{
   #filter-button{
     padding: 0.3em 1em;
   }
-  .table-small{
-    display:none;
-  }
-  .table-big{
-    display:table;
-    text-align: center;
+  .table-block{
+    margin: 0 1.5em 0 1.5em;
   }
 }
 
@@ -417,12 +402,8 @@ h4{
   #filter-button{
     padding: 0.3em 0.8em;
   }
-  .table-small{
-    display:table;
-    text-align: center;
-  }
-  .table-big{
-    display:none;
+  .table-block{
+    margin: 0 1.5em 0 1.5em;
   }
 }
 
@@ -464,12 +445,8 @@ h4{
   #filter-button{
     padding: 0.3em 0.5em;
   }
-  .table-small{
-    display:table;
-    text-align: center;
-  }
-  .table-big{
-    display:none;
+  .table-block{
+    margin: 0 1em 0 1em;
   }
 }
 
@@ -488,9 +465,6 @@ h4{
   .bg-img-text{
     display: none;
   }
-  /* .container.small {
-    width: 20%;
-  } */
   .event-icon{
     width:1.5em;
   }
@@ -501,23 +475,17 @@ h4{
   .website-link{
     font-size: 0.8em;
   }
-
   .website-link-box{
     padding:0;
   }
-
   .time-line{
     letter-spacing: 0.1;
   }
   #filter-button{
     padding: 0.3em 0.5em;
   }
-  .table-small{
-    display:table;
-    text-align: center;
-  }
-  .table-big{
-    display:none;
+  .table-block{
+    margin: 0 0.5em 0 0.5em;
   }
 }
 

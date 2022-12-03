@@ -481,3 +481,8 @@ img{
 #up-button:hover {
     background-color: #304155;
 }
+.table-block{
+    display:inline-block;
+    position: relative;
+    vertical-align: top;
+}
