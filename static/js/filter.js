@@ -88,7 +88,6 @@ filterEventItem.addEventListener("click", () => {
 			event_type[i].classList.toggle('hide-typ');
 		} 
 	}
-	alert("button clicked")
 	filterEventItem.classList.toggle('clicked');
 	const cat_events = document.getElementsByClassName('event');
 	for (i=0; i<cat_events.length;i++){
