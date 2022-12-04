@@ -1,15 +1,11 @@
-img{
-    /* vertical-align: middle; */
-}
+/* background image note and icon */
 .bg-img-block{
     position: absolute;
     left: 5%;
     top: 5%;
     font-size: 0.8em;
     margin: 10px;
-    text-align: right;
-    /* overflow: hidden; */
-    
+    text-align: right;    
 }
 .bg-img-block-icon{
     position: relative;
@@ -23,10 +19,12 @@ img{
     border-bottom: none;
 }
 
+/* mushroom icon */
 .header-icon{
     width: 3em;
 }
 
+/* main headers */
 .time-line{
     position: -webkit-sticky;
     position: sticky;
@@ -51,7 +49,6 @@ img{
 .time-line-month{
     position: -webkit-sticky;
     position: sticky;
-    /* top: 0px; */
     z-index: 400;
     color: #9ca0a3;
     background: #0f171e;
@@ -62,6 +59,7 @@ img{
     letter-spacing: 0.05em;
 }
 
+/* event container */
 .container .event-title-box{
     position: relative;
     background: #1b2530;
@@ -89,7 +87,6 @@ img{
 .container .event-title-box .event-date{
     position: relative;
     color: #9ca0a3;
-    /* padding-right: 30px; */
     float: right;
 }
 
@@ -111,7 +108,7 @@ img{
     color: #9ca0a3;
 }
 
-/* ####### NAVBAR FILTER START ####### */
+/* NAVBAR AND FILTER*/
 .filter-navbar{
     right: 0;
     bottom:0;
@@ -131,11 +128,6 @@ img{
     background: rgba(15, 23, 30);
     background: rgba(15, 23, 30, 0.8);
 }
-/* 
-.filter-navbar.opened{
-    width:23%;
-    transform: translateX(0);
-}  */
 
 #filter-panel-button-close{
     width: 30px;
@@ -180,6 +172,7 @@ img{
 #filter-button.clicked{
     opacity: 0;
 }
+
 #filter-button:hover {
     background-color: #ffa724;
     color: #000000;
@@ -190,37 +183,11 @@ img{
     float:right;
     padding-right:3em;
 }
+
 #clear-filter:hover{
     color: #ffa724;
     cursor: pointer;
 }
-
-/* 
-.filter-icon-bg{
-    background: #304155;
-    display: flexbox;
-    margin: auto;
-    border-radius: 3px;
-}
-
-.filter-icons{
-    width: 2em;  
-    padding: 0.1em; 
-    margin: 0 10px;
-    vertical-align: middle;
-    border-radius: 3px;
-}
-
-.filter{
-    writing-mode: tb-rl;
-    transform: rotate(-180deg);
-    vertical-align: middle;
-    font-weight: bold;
-    font-size: 1em;
-    line-height: 0.8em;
-    color:#0f171e;
-} */
-
 .hide-typ{
     display: none;
 } 
@@ -361,22 +328,6 @@ img{
     font-size: 2em;
   }
 
-.event-icon-bg {
-    position: relative;
-    float: left;
-    /* background: #008296; */
-    /* background: #304155; */
-    background: #304155;
-    border-radius: 100%;
-    font-size: 2.25em;
-    height: 0.9em;
-    /* line-height: 0.9em; */
-    text-align: center;
-    width: 0.9em;
-    margin-right: 10px;
-    display: block;
-  }
-
 .container .website-link-box{
     /* box-shadow: inset 0 0 0 1px #888888; */
     position: relative;
@@ -409,28 +360,6 @@ img{
 
 .other-places-table{
     padding-top: 30px;
-   
-}
-
-/*tooltip currently not displayed, hidden by event-title-box property overflow: hidden*/
-.event-icon-bg .event-page-tooltip{
-    position: absolute;
-    visibility: hidden;
-    width: 120px;
-    font-size: 0.4em;
-    /* background-color: black; */
-    color: #9ca0a3;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 1px;
-    z-index: 1;
-    /* top: 12px; */
-    bottom: 110%;
-    margin-left: -60px;
-}
-
-.event-icon-bg:hover .event-page-tooltip{
-    visibility: visible;
 }
 
 .container .content .event-pin{
@@ -439,17 +368,7 @@ img{
     padding-right: 5px;
 }
 
-/* red line at top and bottom of links */
-/* .container .website-link-box:before, .container .website-link-box:after {
-    background: rgba(235, 48, 73, 0.75);
-    content: "";
-    display: block;
-    height: 1px;
-    left: 0;
-    position: absolute;
-    width: 100%;
-} */
-
+/* progress bar for event scraper | CURRENTLY NOT ACTIVE */
 .progress-bar {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -470,6 +389,7 @@ img{
 #success-message{
     color: #ffa724;
 }
+/* BACKGROUND IMAGE | DEACTIVATED */
 /* #main{
     background-attachment: scroll;
     background-image: url("./images/snow.png");

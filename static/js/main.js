@@ -1,9 +1,3 @@
-/*
-	Directive by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
-
 (function($) {
 
 	var	$window = $(window),
@@ -43,11 +37,6 @@ function scrollFunction() {
 }
 
 // When the user clicks on the button, scroll to the top of the document
-// function topFunction() {
-//   document.body.scrollTop = 400; // For Safari
-//   document.documentElement.scrollTop = 400; // For Chrome, Firefox, IE and Opera
-// }
-
 function topFunction() {
 	document.getElementById("main").scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
   }

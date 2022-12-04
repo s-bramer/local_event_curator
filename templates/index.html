@@ -1,216 +1,420 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <!--
 	Directive by HTML5 UP
 	html5up.net | @ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
-	<head>
-		<title>STM - South Wales Event Finder</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="static/css/main.css" />
-		<link rel="stylesheet" href="static/css/accordion.css" />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link rel="icon" href="static/images/mushroom.ico" />
-	</head>
-	<body class="is-preload">
+  <head>
+    <title>STM - South Wales Event Finder</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <link rel="stylesheet" href="static/css/main.css" />
+    <link rel="stylesheet" href="static/css/stm.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" href="static/images/mushroom.ico" />
+  </head>
+  <body class="is-preload">
+    <!-- Header -->
+    <div id="header">
+      <div class="bg-img-block">
+        <a
+          href="https://www.facebook.com/MajorPhotographyWales/"
+          id="bg-img-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="bg-img-block-icon"
+            src="static/images/wow_i2.png"
+            alt=""
+            title="Major Photography"
+          />
+          <span class="bg-img-text"
+            >Look! Its beautiful LLANTWIT MAJOR.<br />Check out
+            <u>Major Photography</u> for more.</span
+          >
+        </a>
+      </div>
+      <h1>
+        <img class="header-icon" src="static/images/mushroom.png" alt="" />
+      </h1>
+      <h1>Shortcut to Mushrooms</h1>
+      <h2>Vale of Glamorgan and beyond event finder</h2>
+      <p>
+        Searching through
+        <a href="#footer" class="footer-link"><u>various</u></a> event websites
+        <br />
+        (so you don't have to)
+      </p>
+    </div>
 
-		<!-- Header -->
-			<div id="header">
-				<div class="bg-img-block">
-					<a href="https://www.facebook.com/MajorPhotographyWales/" id="bg-img-link" target="_blank" rel="noopener noreferrer">
-						<img class="bg-img-block-icon" src="static/images/wow_i2.png" alt="" title="Major Photography"/>
-						<span class="bg-img-text">Look! Its beautiful LLANTWIT MAJOR.<br>Check out <u>Major Photography</u> for more.</span>
-					</a>
-				</div>
-				<h1>
-				<img class="header-icon" src="static/images/mushroom.png" alt="" />
-				</h1>
-				<!-- <span class="logo icon fa-paper-plane"></span> -->
-				<h1>Shortcut to Mushrooms</h1>
-				<h2>Vale of Glamorgan and beyond event finder</h2>
-				<!-- <h2>South Wales event finder</h2> -->
-				<p>Searching through <a href="#footer" class="footer-link"><u>various</u></a> event websites <br> (so you don't have to)</p>
-			</div>
+    <!-- Main -->
+    <div id="main">
+      <h4 class="time-line">
+        Event Timeline<button
+          id="filter-button"
+          title="Filter events"
+          value="Filter"
+        >
+          FILTER
+        </button>
+      </h4>
+      <p id="update-sub">Last updated on {{ time }}</p>
+      <div class="filter-navbar">
+        <input
+          type="image"
+          id="filter-panel-button-close"
+          src="static/images/close.png"
+          alt=""
+        />
+        <span id="event-count">Events selected: {{ event_count }}</span>
+        <form class="filter-panel">
+          <ul>
+            <li id="filter-event-type" class="filter-section">
+              Event Types (All Selected)
+            </li>
+            <ul class="filter-menu-items">
+              <li id="filter-item-event">&#8226;&nbsp; Events</li>
+              <li id="filter-item-digi-event">&#8226;&nbsp; Digital Events</li>
+              <li id="filter-item-course">&#8226;&nbsp; Courses/Workshops</li>
+              <li id="filter-item-exhibition">&#8226;&nbsp; Exhibitions</li>
+              <li id="filter-item-performance">&#8226;&nbsp; Performances</li>
+            </ul>
+            <li id="filter-location" class="filter-section">
+              Event Locations (All Selected)
+            </li>
+            <ul class="filter-menu-items">
+              <li id="filter-location-vog">&#8226;&nbsp; Vale of Glamorgan</li>
+              <li id="filter-location-bridgend">&#8226;&nbsp; Bridgend</li>
+              <li id="filter-location-cardiff">&#8226;&nbsp; Cardiff</li>
+              <li id="filter-location-rct">&#8226;&nbsp; RCT</li>
+              <li id="filter-location-other">&#8226;&nbsp; Other</li>
+            </ul>
+          </ul>
+          <span id="clear-filter">Clear Filter</span>
+        </form>
+      </div>
 
-		<!-- Main -->
-			<div id="main">
-			<!-- <div class="container"> -->
-				<h4 class="time-line">Event Timeline<button id="filter-button" title="Filter events" value="Filter">FILTER</button></h4>
-				<p id="update-sub">Last updated on {{ time }}</p>
-				<!-- </div>	 -->
-				<div class="filter-navbar">
-					<input type="image" id="filter-panel-button-close" src="static/images/close.png" alt="" />
-					<span id="event-count">Events selected: {{ event_count }}</span>
-				<form class="filter-panel">
-				<ul>
-					<li id="filter-event-type" class="filter-section">Event Types (All Selected)</li>
-					<ul class="filter-menu-items">
-						<li id="filter-item-event">&#8226;&nbsp; Events</li>
-						<li id="filter-item-digi-event">&#8226;&nbsp; Digital Events</li>
-						<li id="filter-item-course">&#8226;&nbsp; Courses/Workshops</li>
-						<li id="filter-item-exhibition">&#8226;&nbsp; Exhibitions</li>
-						<li id="filter-item-performance">&#8226;&nbsp; Performances</li>
-					</ul>
-					<li id="filter-location" class="filter-section">Event Locations (All Selected)</li>
-					<ul class="filter-menu-items">
-					<li id="filter-location-vog">&#8226;&nbsp; Vale of Glamorgan</li>
-					<li id="filter-location-bridgend">&#8226;&nbsp; Bridgend</li>
-					<li id="filter-location-cardiff">&#8226;&nbsp; Cardiff</li>
-					<li id="filter-location-rct">&#8226;&nbsp; RCT</li>
-					<li id="filter-location-other">&#8226;&nbsp; Other</li>
-					</ul>
-				</ul>
-				<span id="clear-filter">Clear Filter</span>
-			</form>
-		</div>
+      <div class="accordion">
+        <h4 id="today" class="time-line-month">What's On This Month</h4>
+        {% for item in events %} {% if item['month'] != "" %}
+        <h4 class="time-line-month">{{ item['month'] }}</h4>
+        {% endif %}
 
-			<div class="accordion">
-				<h4 id="today" class="time-line-month">What's On This Month</h4>
-				{% for item in events %}
-					{% if item['month'] != "" %}
-						<h4 class="time-line-month">{{ item['month'] }}</h4>		
-					{% endif %}
-
-				<div class="box container whatson {{ item ['category'] }} {{ item ['council_abbr']}}">
-					<div class="event-title-box">
-						<img class="event-icon" src="{{ item['event_icon'] }}" alt="" title="{{ item['name'] }}"/>
-						<span class="event-date">{{ item['print_date'] }} </span>
-						<span class="event-title">{{ item['title'] }}<span class="event-location">  |&nbsp{{ item['town'] }}</span></span>
-						
-					</div>
-					<div class="content">
-						<p>
-						{% if item['info'][-3:] == "..." or item['info']|length < 10 %}
-							{{ item['info'] }}<i>   More info on event page.</i>
-						{% else %}
-							{{ item['info'] }}
-						{% endif %}
-						</p>
-						<a href="{{ item['link'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-link"> {{ item['name'] }} | event page</span></a>
-						{% if item["date_info"] != "" %}
-						<span class="date-info"> * {{ item["date_info"] }}</span>
-						{% endif %}
-											
-						{% if "digital" in item["location"].lower() %}
-							<span class="event-footer-address"><img class="event-pin" src="static/images/maps-and-location-gs.png" alt="" />{{ item['location'] }}</span>
-						{% else %}
-							<a href="{{ 'http://maps.google.com/?q=' + item['location_search'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-address"><img class="event-pin" src="static/images/maps-and-location-gs.png" alt="" />{{ item['short_location'] }}</span></a>	        
-						{% endif %}
-					</div>
-				</div>
-				{% endfor %}
-			</div>
-			<img id="up-button" src="static/images/up-chevron.png" alt="UP" onClick="topFunction(this.src)" role="button" tabIndex="0" title="Go to top"/>
-		</div>
-		<!-- <div class="container small">
-			<header class="major last"></header>
-		</div> -->
-		<!-- Footer -->
-			<div id="footer">
-				<div class="box container">
-					<h3>Searched Websites</h3>
-					{% for item in pages %}
-					<div class="website-link-box">
-						<a href="{{ item['root'] }}" target="_blank" rel="noopener noreferrer">
-						<!-- <div class="event-icon-bg"> -->
-							<img class="event-icon" src="{{ item['logo'] }}" alt="" />
-						<!-- </div> -->
-						<span class="website-link">{{ item['name'] }}</span></a>
-					</div>
-					{% endfor %}
-					<h3 class="other-places-table">Other Places to check</h3>
-					<div class="table-small">
-						<div class="table-block">
-							<table>
-								<tr>
-									<th><b>Parks/Castles</b></th>
-								</tr>
-								<tr>
-									<td><a href="https://fonmoncastle.com/" target="_blank" rel="noopener noreferrer"><span class="website-link">Fonmon Castle</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://www.valeofglamorgan.gov.uk/en/enjoying/Coast-and-Countryside/cosmeston-lakes-country-park/Cosmeston-Lakes-Country-Park.aspx/" target="_blank" rel="noopener noreferrer"><span class="website-link">Cosmeston Lakes</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://www.valeofglamorgan.gov.uk/en/enjoying/Coast-and-Countryside/Porthkerry-Country-Park/Porthkerry-Country-Park.aspx" target="_blank" rel="noopener noreferrer"><span class="website-link">Porthkerry Country Park</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://naturalresources.wales/days-out/places-to-visit/south-east-wales/?lang=en" target="_blank" rel="noopener noreferrer"><span class="website-link">NRW SE Wales</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://naturalresources.wales/days-out/places-to-visit/south-west-wales/?lang=en" target="_blank" rel="noopener noreferrer"><span class="website-link">NRW SW Wales</span></a></td>
-								</tr>
-							</table>
-						</div>
-						<div class="table-block">
-							<table>
-								<tr>
-									<th><b>Performance Venues</b></th>
-								</tr>
-								<tr>
-									<td><a href="https://newtheatrecardiff.co.uk//" target="_blank" rel="noopener noreferrer"><span class="website-link">New Theatre</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://www.stdavidshallcardiff.co.uk/" target="_blank" rel="noopener noreferrer"><span class="website-link">St David's Hall</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://www.shermantheatre.co.uk/" target="_blank" rel="noopener noreferrer"><span class="website-link">Sherman Theatre</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://www.chapter.org/" target="_blank" rel="noopener noreferrer"><span class="website-link">Chapter Arts</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://memoartscentre.co.uk/" target="_blank" rel="noopener noreferrer"><span class="website-link">Memo Arts Centre</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://www.principalitystadium.wales/" target="_blank" rel="noopener noreferrer"><span class="website-link">Principality Stadium</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://www.glee.co.uk/cardiff/" target="_blank" rel="noopener noreferrer"><span class="website-link">Glee Club</span></a></td>
-								</tr>
-							</table>
-						</div>
-						<div class="table-block">
-							<table>
-								<tr>
-									<th><b>Farms</b></th>
-								</tr>
-								<tr>
-									<td><a href="https://ameliatrust.org.uk/" target="_blank" rel="noopener noreferrer"><span class="website-link">Amelia Trust Farm</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://foragefarmshop.co.uk/" target="_blank" rel="noopener noreferrer"><span class="website-link">Forage Farmshop</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://cowbridgefarmshop.com/" target="_blank" rel="noopener noreferrer"><span class="website-link">Cowbridge Farmshop</span></a></td>
-								</tr>
-							</table>
-						</div>
-						<div class="table-block">
-							<table>
-								<tr>
-									<th><b>Other</b></th>
-								</tr>
-								<tr>
-									<td><a href="https://en-gb.facebook.com/groups/llantwitmajorhub/" target="_blank" rel="noopener noreferrer"><span class="website-link">Llantwit Major Hub</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://www.mermaidquay.co.uk/" target="_blank" rel="noopener noreferrer"><span class="website-link">Mermaid Quay</span></a></td>					
-								</tr>
-								<tr>
-									<td><a href="https://www.visitcardiff.com/events/" target="_blank" rel="noopener noreferrer"><span class="website-link">Cardiff Events</span></a></td>
-								</tr>
-								<tr>
-									<td><a href="https://www.visitswanseabay.com/events/" target="_blank" rel="noopener noreferrer"><span class="website-link">Swansea Bay Events</span></a></td>
-								</tr>
-							</table>
-						</div>
-					</div>	
-					<!-- RELOAD BUTTON -->
-					<!-- <form id="reload_button" method="post" action="{{ url_for('home') }}" novalidat>
+        <div
+          class="box container whatson {{ item ['category'] }} {{ item ['council_abbr']}}"
+        >
+          <div class="event-title-box">
+            <img
+              class="event-icon"
+              src="{{ item['event_icon'] }}"
+              alt=""
+              title="{{ item['name'] }}"
+            />
+            <span class="event-date">{{ item['print_date'] }} </span>
+            <span class="event-title"
+              >{{ item['title'] }}<span class="event-location">
+                |&nbsp{{ item['town'] }}</span
+              ></span
+            >
+          </div>
+          <div class="content">
+            <p>
+              {% if item['info'][-3:] == "..." or item['info']|length < 10 %} {{
+              item['info'] }}<i> More info on event page.</i>
+              {% else %} {{ item['info'] }} {% endif %}
+            </p>
+            <a
+              href="{{ item['link'] }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><span class="event-footer-link">
+                {{ item['name'] }} | event page</span
+              ></a
+            >
+            {% if item["date_info"] != "" %}
+            <span class="date-info"> * {{ item["date_info"] }}</span>
+            {% endif %} {% if "digital" in item["location"].lower() %}
+            <span class="event-footer-address"
+              ><img
+                class="event-pin"
+                src="static/images/maps-and-location-gs.png"
+                alt=""
+              />{{ item['location'] }}</span
+            >
+            {% else %}
+            <a
+              href="{{ 'http://maps.google.com/?q=' + item['location_search'] }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><span class="event-footer-address"
+                ><img
+                  class="event-pin"
+                  src="static/images/maps-and-location-gs.png"
+                  alt=""
+                />{{ item['short_location'] }}</span
+              ></a
+            >
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <img
+        id="up-button"
+        src="static/images/up-chevron.png"
+        alt="UP"
+        onClick="topFunction(this.src)"
+        role="button"
+        tabindex="0"
+        title="Go to top"
+      />
+    </div>
+    <div id="footer">
+      <div class="box container">
+        <h3>Searched Websites</h3>
+        {% for item in pages %}
+        <div class="website-link-box">
+          <a
+            href="{{ item['root'] }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img class="event-icon" src="{{ item['event_icon'] }}" alt="" />
+            <span class="website-link">{{ item['name'] }}</span></a
+          >
+        </div>
+        {% endfor %}
+        <h3 class="other-places-table">Other Places to check</h3>
+        <div class="table-small">
+          <div class="table-block">
+            <table>
+              <tr>
+                <th><b>Parks/Castles</b></th>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://fonmoncastle.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Fonmon Castle</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.valeofglamorgan.gov.uk/en/enjoying/Coast-and-Countryside/cosmeston-lakes-country-park/Cosmeston-Lakes-Country-Park.aspx/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Cosmeston Lakes</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.valeofglamorgan.gov.uk/en/enjoying/Coast-and-Countryside/Porthkerry-Country-Park/Porthkerry-Country-Park.aspx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link"
+                      >Porthkerry Country Park</span
+                    ></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://naturalresources.wales/days-out/places-to-visit/south-east-wales/?lang=en"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">NRW SE Wales</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://naturalresources.wales/days-out/places-to-visit/south-west-wales/?lang=en"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">NRW SW Wales</span></a
+                  >
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="table-block">
+            <table>
+              <tr>
+                <th><b>Performance Venues</b></th>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://newtheatrecardiff.co.uk//"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">New Theatre</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.stdavidshallcardiff.co.uk/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">St David's Hall</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.shermantheatre.co.uk/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Sherman Theatre</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.chapter.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Chapter Arts</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://memoartscentre.co.uk/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Memo Arts Centre</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.principalitystadium.wales/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Principality Stadium</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.glee.co.uk/cardiff/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Glee Club</span></a
+                  >
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="table-block">
+            <table>
+              <tr>
+                <th><b>Farms</b></th>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://ameliatrust.org.uk/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Amelia Trust Farm</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://foragefarmshop.co.uk/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Forage Farmshop</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://cowbridgefarmshop.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Cowbridge Farmshop</span></a
+                  >
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="table-block">
+            <table>
+              <tr>
+                <th><b>Other</b></th>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://en-gb.facebook.com/groups/llantwitmajorhub/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Llantwit Major Hub</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.mermaidquay.co.uk/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Mermaid Quay</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.visitcardiff.com/events/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Cardiff Events</span></a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    href="https://www.visitswanseabay.com/events/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span class="website-link">Swansea Bay Events</span></a
+                  >
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <!-- RELOAD BUTTON -->
+        <!-- <form id="reload_button" method="post" action="{{ url_for('home') }}" novalidat>
 						<input id="reload" type="submit" class="button" name="reload" value="Reload Results"/>
 					</form>
 					<span id="success-message"></span>
@@ -219,68 +423,125 @@
 							<div id="innerStatus" class="progress-bar" role="progressbar" style="width: 5%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Loading..</div>
 						  </div>
 					</div> -->
-				</div>
+      </div>
 
-				<div class="container medium">
-					<header class="major last">
-						<h2>Something missing? </h2>
-					</header>
+      <div class="container medium">
+        <header class="major last">
+          <h2>Something missing?</h2>
+        </header>
 
-					<p>Send me a message here for any other events, websites or locations you'd like included.</p>
-						 	
-					<form method="post" action="{{ url_for('home') }}" novalidat>
-						<div class="row">
-							<div class="col-6 col-12-mobilep">
-								<input type="text" name="name" class="form-control" placeholder="Name" required data-validation-required-message="Please enter your name."/>
-							</div>
-							<div class="col-6 col-12-mobilep">
-								<input type="email" name="email" class="form-control" placeholder="Email" required data-validation-required-message="Please enter your email address."/>
-							</div>
-							<div class="col-12">
-								<textarea type="text" name="message" class="form-control" placeholder="Message" rows="6" required data-validation-required-message="Please enter a message."></textarea>
-							</div>
-							<div class="col-12">
-								<ul class="actions special">
-									<li><input type="submit" name="email" value="Send Message"/></li>
-								</ul>
-							</div>
-						</div>
-					</form>
+        <p>
+          Send me a message here for any other events, websites or locations
+          you'd like included.
+        </p>
 
-					<ul class="icons">
-						<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-						<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-						<!-- <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li> -->
-						<li><a href="https://github.com/s-bramer" class="icon brands fa-github"><span class="label">Github</span></a></li>
-						<!-- <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li> -->
-					</ul>
+        <form method="post" action="{{ url_for('home') }}" novalidat>
+          <div class="row">
+            <div class="col-6 col-12-mobilep">
+              <input
+                type="text"
+                name="name"
+                class="form-control"
+                placeholder="Name"
+                required
+                data-validation-required-message="Please enter your name."
+              />
+            </div>
+            <div class="col-6 col-12-mobilep">
+              <input
+                type="email"
+                name="email"
+                class="form-control"
+                placeholder="Email"
+                required
+                data-validation-required-message="Please enter your email address."
+              />
+            </div>
+            <div class="col-12">
+              <textarea
+                type="text"
+                name="message"
+                class="form-control"
+                placeholder="Message"
+                rows="6"
+                required
+                data-validation-required-message="Please enter a message."
+              ></textarea>
+            </div>
+            <div class="col-12">
+              <ul class="actions special">
+                <li>
+                  <input type="submit" name="email" value="Send Message" />
+                </li>
+              </ul>
+            </div>
+          </div>
+        </form>
 
-					<ul class="copyright">
-						<li>&copy; Shortcut To Mushrooms {{ year }}. All rights reserved.</li><li>Design: Stefan Bramer | Image: <a href="https://www.facebook.com/MajorPhotographyWales/">Major Photography</a> | Website template: <a href="http://html5up.net">HTML5 UP</a> | Icon: <a href="https://www.flaticon.com/free-icons/mushroom" title="mushroom icons">Flaticon</a></li>
-					</ul>
+        <ul class="icons">
+          <li>
+            <a href="#" class="icon brands fa-twitter"
+              ><span class="label">Twitter</span></a
+            >
+          </li>
+          <li>
+            <a href="#" class="icon brands fa-facebook-f"
+              ><span class="label">Facebook</span></a
+            >
+          </li>
+          <!-- <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li> -->
+          <li>
+            <a href="https://github.com/s-bramer/local_event_curator" class="icon brands fa-github"
+              ><span class="label">Github</span></a
+            >
+          </li>
+          <!-- <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li> -->
+        </ul>
 
-				</div>
-			</div>
+        <ul class="copyright">
+          <li>&copy; Shortcut To Mushrooms {{ year }}. All rights reserved.</li>
+          <li>
+            Design: Stefan Bramer | Image:
+            <a href="https://www.facebook.com/MajorPhotographyWales/"
+              >Major Photography</a
+            >
+            | Website template: <a href="http://html5up.net">HTML5 UP</a> |
+            Icon:
+            <a
+              href="https://www.flaticon.com/free-icons/mushroom"
+              title="mushroom icons"
+              >Flaticon</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
 
-		<!-- Scripts -->
-			<script src="static/js/jquery.min.js"></script>
-			<script src="static/js/browser.min.js"></script>
-			<script src="static/js/breakpoints.min.js"></script>
-			<script src="static/js/util.js"></script>
-			<script src="static/js/main.js"></script>
-			<script src="static/js/progress_bar.js"></script>
-			<script src="static/js/filter.js"></script>
-			<script>
-				const accordion = document.getElementsByClassName('container');
-				  for (i=0; i<accordion.length;i++){
-					accordion[i].addEventListener('click', function(e){
-						// alert(e.target.classList);
-					  {if(e.target.classList == "event-title-box" || e.target.classList == "event-date" || e.target.classList == "event-icon" || e.target.classList == "event-title"  || e.target.classList == "event-location") 
-					  this.classList.toggle('active')
-					  }
-					})
-				  } 
-			</script>
-
-	</body>
+    <!-- Scripts -->
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/browser.min.js"></script>
+    <script src="static/js/breakpoints.min.js"></script>
+    <script src="static/js/util.js"></script>
+    <script src="static/js/main.js"></script>
+    <script src="static/js/progress_bar.js"></script>
+    <script src="static/js/filter.js"></script>
+    <script>
+      const accordion = document.getElementsByClassName("container");
+      for (i = 0; i < accordion.length; i++) {
+        accordion[i].addEventListener("click", function (e) {
+          // alert(e.target.classList);
+          {
+            if (
+              e.target.classList == "event-title-box" ||
+              e.target.classList == "event-date" ||
+              e.target.classList == "event-icon" ||
+              e.target.classList == "event-title" ||
+              e.target.classList == "event-location"
+            )
+              this.classList.toggle("active");
+          }
+        });
+      }
+    </script>
+  </body>
 </html>
