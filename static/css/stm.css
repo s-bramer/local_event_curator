@@ -82,6 +82,7 @@
     color: #9ca0a3;
     padding-right: 30px;
     font-size: 0.9em;
+    white-space: pre;
 }
 
 .container .event-title-box .event-date{

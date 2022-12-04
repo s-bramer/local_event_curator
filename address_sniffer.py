@@ -81,7 +81,7 @@ def get_town(postcode: str):
     except:
         return "ERROR: town not found"
     else:
-        return town.strip().replace(' ', '')
+        return town.strip()
 
 
 def sniff_sniff(address_string: str):
@@ -92,7 +92,7 @@ def sniff_sniff(address_string: str):
         postcode = (
             df_adressess_db.loc[df_adressess_db['name'] == address_string, 'postcode'].iloc[0])
         town = (df_adressess_db.loc[df_adressess_db['name']
-                == address_string, 'town'].iloc[0]).replace(' ', '')
+                == address_string, 'town'].iloc[0])
         council = (
             df_adressess_db.loc[df_adressess_db['name'] == address_string, 'council'].iloc[0])
         full_address = (

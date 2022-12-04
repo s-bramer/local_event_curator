@@ -24,7 +24,7 @@
       <div class="bg-img-block">
         <a href="https://www.facebook.com/MajorPhotographyWales/" id="bg-img-link" target="_blank" rel="noopener noreferrer">
           <img class="bg-img-block-icon" src="static/images/wow_i2.png" alt=""title="Major Photography"/>
-          <span class="bg-img-text">Look! Its beautiful LLANTWIT MAJOR.<br />Check out<u>Major Photography</u> for more.</span>
+          <span class="bg-img-text">Look! Its beautiful LLANTWIT MAJOR.<br />Check out <u>Major Photography</u> for more.</span>
         </a>
       </div>
       <h1>
@@ -32,28 +32,15 @@
       </h1>
       <h1>Shortcut to Mushrooms</h1>
       <h2>Vale of Glamorgan and beyond event finder</h2>
-      <p>Searching through<a href="#footer" class="footer-link"><u>various</u></a> event websites <br/>(so you don't have to)</p>
+      <p>Searching through <a href="#footer" class="footer-link"><u>various</u></a> event websites <br/>(so you don't have to)</p>
     </div>
 
     <!-- Main -->
     <div id="main">
-      <h4 class="time-line">
-        Event Timeline<button
-          id="filter-button"
-          title="Filter events"
-          value="Filter"
-        >
-          FILTER
-        </button>
-      </h4>
+      <h4 class="time-line">Event Timeline<button id="filter-button" title="Filter events" value="Filter">FILTER</button></h4>
       <p id="update-sub">Last updated on {{ time }}</p>
       <div class="filter-navbar">
-        <input
-          type="image"
-          id="filter-panel-button-close"
-          src="static/images/close.png"
-          alt=""
-        />
+        <input type="image" id="filter-panel-button-close" src="static/images/close.png" alt=""/>
         <span id="event-count">Events selected: {{ event_count }}</span>
         <form class="filter-panel">
           <ul>
@@ -84,13 +71,11 @@
         <h4 class="time-line-month">{{ item['month'] }}</h4>
         {% endif %}
 
-        <div
-          class="box container whatson {{ item ['category'] }} {{ item ['council_abbr']}}"
-        >
+        <div class="box container whatson {{ item ['category'] }} {{ item ['council_abbr']}}">
           <div class="event-title-box">
             <img class="event-icon" src="{{ item['event_icon'] }}" alt="" title="{{ item['name'] }}"/>
             <span class="event-date">{{ item['print_date'] }} </span>
-            <span class="event-title">{{ item['title'] }}<span class="event-location"> |&nbsp{{ item['town'] }}</span></span>
+            <span class="event-title">{{ item['title'] }}<span class="event-location"> | {{ item['town'] }}</span></span>
           </div>
           <div class="content">
             <p>
@@ -110,15 +95,7 @@
         </div>
         {% endfor %}
       </div>
-      <img
-        id="up-button"
-        src="static/images/up-chevron.png"
-        alt="UP"
-        onClick="topFunction(this.src)"
-        role="button"
-        tabindex="0"
-        title="Go to top"
-      />
+      <img id="up-button" src="static/images/up-chevron.png" alt="UP" onClick="topFunction(this.src)" role="button" tabindex="0" title="Go to top"/>
     </div>
     <div id="footer">
       <div class="box container">
@@ -376,35 +353,13 @@
         <form method="post" action="{{ url_for('home') }}" novalidat>
           <div class="row">
             <div class="col-6 col-12-mobilep">
-              <input
-                type="text"
-                name="name"
-                class="form-control"
-                placeholder="Name"
-                required
-                data-validation-required-message="Please enter your name."
-              />
+              <input type="text" name="name" class="form-control" placeholder="Name" required data-validation-required-message="Please enter your name."/>
             </div>
             <div class="col-6 col-12-mobilep">
-              <input
-                type="email"
-                name="email"
-                class="form-control"
-                placeholder="Email"
-                required
-                data-validation-required-message="Please enter your email address."
-              />
+              <input type="email" name="email" class="form-control" placeholder="Email" required data-validation-required-message="Please enter your email address."/>
             </div>
             <div class="col-12">
-              <textarea
-                type="text"
-                name="message"
-                class="form-control"
-                placeholder="Message"
-                rows="6"
-                required
-                data-validation-required-message="Please enter a message."
-              ></textarea>
+              <textarea type="text" name="message" class="form-control" placeholder="Message" rows="6" required data-validation-required-message="Please enter a message."></textarea>
             </div>
             <div class="col-12">
               <ul class="actions special">
@@ -418,20 +373,14 @@
 
         <ul class="icons">
           <li>
-            <a href="#" class="icon brands fa-twitter"
-              ><span class="label">Twitter</span></a
-            >
+            <a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a>
           </li>
           <li>
-            <a href="#" class="icon brands fa-facebook-f"
-              ><span class="label">Facebook</span></a
-            >
+            <a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a>
           </li>
           <!-- <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li> -->
           <li>
-            <a href="https://github.com/s-bramer/local_event_curator" class="icon brands fa-github"
-              ><span class="label">Github</span></a
-            >
+            <a href="https://github.com/s-bramer/local_event_curator" class="icon brands fa-github"><span class="label">Github</span></a>
           </li>
           <!-- <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li> -->
         </ul>
@@ -440,16 +389,10 @@
           <li>&copy; Shortcut To Mushrooms {{ year }}. All rights reserved.</li>
           <li>
             Design: Stefan Bramer | Image:
-            <a href="https://www.facebook.com/MajorPhotographyWales/"
-              >Major Photography</a
-            >
+            <a href="https://www.facebook.com/MajorPhotographyWales/">Major Photography</a>
             | Website template: <a href="http://html5up.net">HTML5 UP</a> |
             Icon:
-            <a
-              href="https://www.flaticon.com/free-icons/mushroom"
-              title="mushroom icons"
-              >Flaticon</a
-            >
+            <a href="https://www.flaticon.com/free-icons/mushroom">Flaticon</a>
           </li>
         </ul>
       </div>
