@@ -22,22 +22,9 @@
     <!-- Header -->
     <div id="header">
       <div class="bg-img-block">
-        <a
-          href="https://www.facebook.com/MajorPhotographyWales/"
-          id="bg-img-link"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            class="bg-img-block-icon"
-            src="static/images/wow_i2.png"
-            alt=""
-            title="Major Photography"
-          />
-          <span class="bg-img-text"
-            >Look! Its beautiful LLANTWIT MAJOR.<br />Check out
-            <u>Major Photography</u> for more.</span
-          >
+        <a href="https://www.facebook.com/MajorPhotographyWales/" id="bg-img-link" target="_blank" rel="noopener noreferrer">
+          <img class="bg-img-block-icon" src="static/images/wow_i2.png" alt=""title="Major Photography"/>
+          <span class="bg-img-text">Look! Its beautiful LLANTWIT MAJOR.<br />Check out<u>Major Photography</u> for more.</span>
         </a>
       </div>
       <h1>
@@ -45,12 +32,7 @@
       </h1>
       <h1>Shortcut to Mushrooms</h1>
       <h2>Vale of Glamorgan and beyond event finder</h2>
-      <p>
-        Searching through
-        <a href="#footer" class="footer-link"><u>various</u></a> event websites
-        <br />
-        (so you don't have to)
-      </p>
+      <p>Searching through<a href="#footer" class="footer-link"><u>various</u></a> event websites <br/>(so you don't have to)</p>
     </div>
 
     <!-- Main -->
@@ -75,9 +57,7 @@
         <span id="event-count">Events selected: {{ event_count }}</span>
         <form class="filter-panel">
           <ul>
-            <li id="filter-event-type" class="filter-section">
-              Event Types (All Selected)
-            </li>
+            <li id="filter-event-type" class="filter-section">Event Types (All Selected)</li>
             <ul class="filter-menu-items">
               <li id="filter-item-event">&#8226;&nbsp; Events</li>
               <li id="filter-item-digi-event">&#8226;&nbsp; Digital Events</li>
@@ -85,9 +65,7 @@
               <li id="filter-item-exhibition">&#8226;&nbsp; Exhibitions</li>
               <li id="filter-item-performance">&#8226;&nbsp; Performances</li>
             </ul>
-            <li id="filter-location" class="filter-section">
-              Event Locations (All Selected)
-            </li>
+            <li id="filter-location" class="filter-section">Event Locations (All Selected)</li>
             <ul class="filter-menu-items">
               <li id="filter-location-vog">&#8226;&nbsp; Vale of Glamorgan</li>
               <li id="filter-location-bridgend">&#8226;&nbsp; Bridgend</li>
@@ -110,18 +88,9 @@
           class="box container whatson {{ item ['category'] }} {{ item ['council_abbr']}}"
         >
           <div class="event-title-box">
-            <img
-              class="event-icon"
-              src="{{ item['event_icon'] }}"
-              alt=""
-              title="{{ item['name'] }}"
-            />
+            <img class="event-icon" src="{{ item['event_icon'] }}" alt="" title="{{ item['name'] }}"/>
             <span class="event-date">{{ item['print_date'] }} </span>
-            <span class="event-title"
-              >{{ item['title'] }}<span class="event-location">
-                |&nbsp{{ item['town'] }}</span
-              ></span
-            >
+            <span class="event-title">{{ item['title'] }}<span class="event-location"> |&nbsp{{ item['town'] }}</span></span>
           </div>
           <div class="content">
             <p>
@@ -129,37 +98,13 @@
               item['info'] }}<i> More info on event page.</i>
               {% else %} {{ item['info'] }} {% endif %}
             </p>
-            <a
-              href="{{ item['link'] }}"
-              target="_blank"
-              rel="noopener noreferrer"
-              ><span class="event-footer-link">
-                {{ item['name'] }} | event page</span
-              ></a
-            >
+            <a href="{{ item['link'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-link">{{ item['name'] }} | event page</span></a>
             {% if item["date_info"] != "" %}
             <span class="date-info"> * {{ item["date_info"] }}</span>
             {% endif %} {% if "digital" in item["location"].lower() %}
-            <span class="event-footer-address"
-              ><img
-                class="event-pin"
-                src="static/images/maps-and-location-gs.png"
-                alt=""
-              />{{ item['location'] }}</span
-            >
+            <span class="event-footer-address"><img class="event-pin" src="static/images/maps-and-location-gs.png" alt=""/>{{ item['location'] }}</span>
             {% else %}
-            <a
-              href="{{ 'http://maps.google.com/?q=' + item['location_search'] }}"
-              target="_blank"
-              rel="noopener noreferrer"
-              ><span class="event-footer-address"
-                ><img
-                  class="event-pin"
-                  src="static/images/maps-and-location-gs.png"
-                  alt=""
-                />{{ item['short_location'] }}</span
-              ></a
-            >
+            <a href="{{ 'http://maps.google.com/?q=' + item['location_search'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-address"><img class="event-pin" src="static/images/maps-and-location-gs.png" alt=""/>{{ item['short_location'] }}</span></a>
             {% endif %}
           </div>
         </div>
@@ -180,14 +125,7 @@
         <h3>Searched Websites</h3>
         {% for item in pages %}
         <div class="website-link-box">
-          <a
-            href="{{ item['root'] }}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img class="event-icon" src="{{ item['logo'] }}" alt="" />
-            <span class="website-link">{{ item['name'] }}</span></a
-          >
+          <a href="{{ item['root'] }}" target="_blank" rel="noopener noreferrer"><img class="event-icon" src="{{ item['logo'] }}" alt="" /><span class="website-link">{{ item['name'] }}</span></a>
         </div>
         {% endfor %}
         <h3 class="other-places-table">Other Places to check</h3>
