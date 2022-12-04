@@ -11,30 +11,30 @@ from datetime import date, datetime
 
 THIS_YEAR = date.today().year
 
-
-app = Flask(__name__)
-app.secret_key = "any-string-you-want-just-keep-it-secret"
+app = Flask(__name__) 
 Bootstrap(app)
 
 status = None
 event_pages_data = "event_pages_new.csv"
 
-#email details
-# EMAIL_PW = os.getenv("GM_EMAIL_PW")
-EMAIL_PW = "hrdeiaoysnreduss"
+# email details
+EMAIL_PW = os.getenv("GM_EMAIL_PW")
 SENDER_EMAIL = "pickled.sprout.bay@gmail.com"
 RECEIVER_EMAIL = "s.schultchen@gmx.com"
+
+
 def send_email(name, email, message):
     """sends email"""
     email_message = f"Subject:Message from STM webpage\n\nName: {name}\nEmail: {email}\nMessage:{message}"
     with smtplib.SMTP("smtp.gmail.com") as connection:
         connection.ehlo()
-        connection.starttls() #make connection secure (Transport Layer Security)
+        connection.starttls()  # make connection secure (Transport Layer Security)
         connection.ehlo()
         connection.login(user=SENDER_EMAIL, password=EMAIL_PW)
-        connection.sendmail(from_addr=SENDER_EMAIL, to_addrs=RECEIVER_EMAIL, msg=email_message.encode("utf-8"))
+        connection.sendmail(
+            from_addr=SENDER_EMAIL, to_addrs=RECEIVER_EMAIL, msg=email_message.encode("utf-8"))
 
-#RUN SCRAPER FROM SITE | CURRENTLY INACTIVE
+# RUN SCRAPER FROM SITE | CURRENTLY INACTIVE
 # def task():
 #     global status
 #     df_in = pd.read_csv(event_pages_data, header=0, index_col=None)
@@ -65,15 +65,18 @@ def home():
     print(request.method)
     with open('./events_database.csv', newline='', encoding="utf8") as csv_file:
         csv_data = list(DictReader(csv_file))
-        #remove items that are marked with "page not found"
-        list_of_events = [i for i in csv_data if not (i['title'] == "page not found")]
-        list_of_events = [i for i in csv_data if not (i['council_abbr'] == "out")]
+        # remove items that are marked with "page not found"
+        list_of_events = [i for i in csv_data if not (
+            i['title'] == "page not found")]
+        list_of_events = [i for i in csv_data if not (
+            i['council_abbr'] == "out")]
         update_time = list_of_events[0]['update_date']
         total_events = len(list_of_events)
     with open('./event_pages.csv', newline='', encoding="utf8") as csv_file:
         csv_data = list(DictReader(csv_file))
-        #remove duplicates based on column name
-        list_of_event_pages = {i['name']:i for i in reversed(csv_data)}.values()
+        # remove duplicates based on column name
+        list_of_event_pages = {
+            i['name']: i for i in reversed(csv_data)}.values()
     # BUTTONS:
     if request.method == "POST":
         # rerun the scraper to update results | CURRENTLY INACTIVE
@@ -87,15 +90,16 @@ def home():
             name = request.form.get('name')
             email = request.form.get('email')
             message = request.form.get('message')
-            print(f"name:{name} email:{email} message:{message} email_PW:{EMAIL_PW}")
+            print(
+                f"name:{name} email:{email} message:{message} email_PW:{EMAIL_PW}")
             send_email(name, email, message)
-            # NEED TO SEND MESSAGE TO USER ON SENT 
+            # NEED TO SEND MESSAGE TO USER ON SENT
             # flash("Message sent succesfully. Thank you.")
             return redirect(url_for('home'))
         else:
-            return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count = total_events, year = THIS_YEAR)
+            return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
 
-    return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count = total_events, year = THIS_YEAR)
+    return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
 
 # PROGRESS BAR | CURRENTLY INACTIVE
 # @app.route("/ajaxprogressbar",methods=["POST","GET"])
