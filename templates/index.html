@@ -30,7 +30,8 @@
 				</h1>
 				<!-- <span class="logo icon fa-paper-plane"></span> -->
 				<h1>Shortcut to Mushrooms</h1>
-				<h2>South Wales event finder</h2>
+				<h2>Vale of Glamorgan and beyond event finder</h2>
+				<!-- <h2>South Wales event finder</h2> -->
 				<p>Searching through <a href="#footer" class="footer-link"><u>various</u></a> event websites <br> (so you don't have to)</p>
 			</div>
 
@@ -41,7 +42,6 @@
 				<p id="update-sub">Last updated on {{ time }}</p>
 				<!-- </div>	 -->
 				<div class="filter-navbar">
-					<!-- <span>Total events: {{ event_count }}</span> -->
 					<input type="image" id="filter-panel-button-close" src="static/images/close.png" alt="" />
 					<span id="event-count">Events selected: {{ event_count }}</span>
 				<form class="filter-panel">
@@ -63,11 +63,12 @@
 					<li id="filter-location-other">&#8226;&nbsp; Other</li>
 					</ul>
 				</ul>
+				<span id="clear-filter">Clear Filter</span>
 			</form>
 		</div>
 
 			<div class="accordion">
-				<!-- <h4 id="today" class="time-line-month">What's on Today</h4> -->
+				<h4 id="today" class="time-line-month">What's On This Month</h4>
 				{% for item in events %}
 					{% if item['month'] != "" %}
 						<h4 class="time-line-month">{{ item['month'] }}</h4>		
@@ -222,12 +223,10 @@
 
 				<div class="container medium">
 					<header class="major last">
-						<h2>DROP ME A LINE!</h2>
+						<h2>Something missing? </h2>
 					</header>
 
-					<p>Do you know other websites that should be included, 
-						want to promote your own event or
-						have suggestions for the page.</p>
+					<p>Send me a message here for any other events, websites or locations you'd like included.</p>
 						 	
 					<form method="post" action="{{ url_for('home') }}" novalidat>
 						<div class="row">

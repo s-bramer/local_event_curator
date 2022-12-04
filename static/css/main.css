@@ -272,6 +272,9 @@ h4{
 .time-line{
   letter-spacing: 0.2;
 }
+.time-line-month{
+  top: 42px;
+}
 #filter-button{
   padding: 0.3em 1em;
 }
@@ -482,7 +485,8 @@ h4{
     letter-spacing: 0.1;
   }
   #filter-button{
-    padding: 0.3em 0.5em;
+    padding: 0.3em 0.3em;
+    font-size: 90%;
   }
   .table-block{
     margin: 0 0.5em 0 0.5em;
@@ -3063,7 +3067,7 @@ input[type="button"].small,
 
   /* margin-top: -260px;
   padding: calc(460px + 6em) 0 10em 0; */
-  padding: 3em 0 3em 0;
+  padding: 0 0 3em 0;
   position: relative;
   text-align: center;
 }
@@ -3071,7 +3075,7 @@ input[type="button"].small,
 #footer:before {
   background: rgba(27, 37, 48, 0.75);
   content: "";
-  height: calc(460px + 6em);
+  height: 6em;
   left: 50%;
   position: absolute;
   top: 0;
@@ -3316,7 +3320,7 @@ input[type="button"].small,
     /* background-size: 1600px 230px; */
     /* margin-top: -100px; */
     /* padding: calc(230px + 4em) 0 6em 0; */
-    padding: 3em 0 3em 0;
+    padding: 0 0 3em 0;
   }
 
   #footer:before {
@@ -3326,7 +3330,7 @@ input[type="button"].small,
   /* Main */
 
   #main {
-    padding: 2em 0 3em 0;
+    padding: 2em 0 6em 0;
   }
 }
 
@@ -3472,7 +3476,7 @@ input[type="button"].small,
     /* background-size: 1280px 184px; */
     /* margin-top: -75px; */
     /* padding: calc(184px + 2em) 0 2em 0; */
-    padding: 2em 0 2em 0;
+    padding: 0 0 2em 0;
   }
 
   #footer:before {
@@ -3486,7 +3490,7 @@ input[type="button"].small,
   /* Main */
 
   #main {
-    padding: 2em 0 2em 0;
+    padding: 2em 0 6em 0;
   }
 }
 

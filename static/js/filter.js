@@ -1,8 +1,12 @@
 //highlight counter for 2 seconds
 function highlightFor(id,color,seconds){
     var element = document.getElementById(id)
-    var origcolor = element.style.backgroundColor
+	var close_icon = document.getElementById('filter-panel-button-close')
+	// var clear_filter = document.getElementById('clear-filter')
+    var origcolor = element.style.color;
     element.style.color = color;
+	// clear_filter.style.color = 'white';
+	close_icon.src = "static/images/tick.png";
     // element.style.fontWeight = 'bold';
     var t = setTimeout(function(){
        element.style.color = origcolor;
@@ -24,6 +28,7 @@ filterButton.addEventListener("click", () => {
 let filterButtonClose = document.getElementById("filter-panel-button-close");
 filterButtonClose.addEventListener("click", () => {
 	filterButton.classList.toggle('clicked');
+	filterButtonClose.src = "static/images/close.png";
 	const filterNavBar = document.getElementsByClassName('filter-navbar');
 	for (i=0; i<filterNavBar.length;i++){
 		filterNavBar[i].classList.toggle('opened');
@@ -55,6 +60,7 @@ let filterBridgendItem = document.getElementById("filter-location-bridgend");
 let filterCardiffItem = document.getElementById("filter-location-cardiff");
 let filterRCTItem = document.getElementById("filter-location-rct");
 let filterOtherItem = document.getElementById("filter-location-other");
+let clearFilter = document.getElementById("clear-filter");
 
 
 /* all events selected */
@@ -250,5 +256,31 @@ filterOtherItem.addEventListener("click", () => {
 	for (i=0; i<oth_loc.length;i++){
 		oth_loc[i].classList.toggle('hide-loc');
 	} 
+	updateEventCount();
+})
+
+
+/* clear all filters */
+clearFilter.addEventListener("click", () => {
+	// clear_filter.style.color = 'blue';
+	filterEventItem.classList.remove('clicked');
+	filterDigiEventItem.classList.remove('clicked');
+	filterCourseItem.classList.remove('clicked');
+	filterExhibitionItem.classList.remove('clicked');
+	filterPerformanceItem.classList.remove('clicked');
+	filterVOGItem.classList.remove('clicked');
+	filterBridgendItem.classList.remove('clicked');
+	filterCardiffItem.classList.remove('clicked');
+	filterRCTItem.classList.remove('clicked');
+	filterOtherItem.classList.remove('clicked');
+	document.getElementById("filter-location").innerHTML = "Event Locations (All Selected)";
+	document.getElementById("filter-event-type").innerHTML = "Event Types (All Selected)";
+  	const event_loc = document.getElementsByClassName('whatson');
+  	for (i=0; i<event_loc.length;i++){
+		event_loc[i].classList.remove('hide-typ');
+		event_loc[i].classList.remove('hide-loc');
+	} 
+	// var clear_filter = document.getElementById('clear-filter')
+	// clear_filter.style.color = '#9ca0a3';
 	updateEventCount();
 })
