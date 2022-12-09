@@ -121,7 +121,7 @@ def sniff_sniff(address_string: str):
                    'postcode': postcode, 'council': council, 'town': town}
         df_adressess_db = df_adressess_db.append(new_row, ignore_index=True)
         df_adressess_db.to_csv("addresses_db.csv", index=False)
-        print("NEW ENTRY IN ADDRESS DATABASE!")
+        print("NEW ENTRY ADDED TO ADDRESS DATABASE!")
     try:
         council_abbr = COUNCIL_ABBR[council]
     except:
