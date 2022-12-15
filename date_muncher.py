@@ -145,7 +145,8 @@ def munch_munch(date_string, delims: str, conns: str):
         else:
             month_date = dump_date.strftime('%B')
             print_date = dump_date.strftime('%a %d %b')
-        if len(days) == 2 and days[0] != days[1]:
+        # if len(days) == 2 and days[0] != days[1]:
+        if len(days) == 2:
             if len(months) == 1:
                 months.append(months[0])
             if len(years) == 1:
@@ -157,9 +158,20 @@ def munch_munch(date_string, delims: str, conns: str):
                 second_date = dump_date.strftime('%a %d %b %Y')
             else:
                 second_date = dump_date.strftime('%a %d %b')
-            print_date = f"{print_date} {conns[0]} {second_date}"
+            #combine start and end date, check that both dates are not the same (some pages print 2 dates although they are the same)
+            if print_date != second_date:
+                print_date = f"{print_date} {conns[0]} {second_date}"
         if len(days) > 2:
             print_date = dummy
         end_date = date(year=years[-1], month=months[-1],
                         day=days[-1]).strftime('%Y-%m-%d')
         return date_string, print_date, sorting_date, month_date, end_date
+
+if __name__ == '__main__':
+    date_string = "01                         Dec                         2022                         -                         01                         Jan                         2023"
+    #date_string = "15                         Nov                         2022                         -                         08                         Jan                         2023"
+    date_string ="3 December 2022 – 8 January 2023, Daily 10am - 3pm (Museum is closed for Christmas 24-26 Dec & 1 Jan)"
+    delims = ","
+    conns = "–;-;&;+"
+    print(munch_munch(date_string, delims, conns))
+
