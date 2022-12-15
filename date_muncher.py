@@ -26,10 +26,23 @@ def is_timestamp(text: str):
         else:
             return True
 
-
 def is_day_name(text: str):
     """check if string is a day name (e.g. Monday, Mon,.."""
     return text in list(calendar.day_name[1:]) or text in list(calendar.day_abbr[1:])
+
+def is_datetime(text:str):
+    """check if string is datetime"""
+    try:
+        date_time = datetime.strptime(text, '%d/%m/%Y')
+    except ValueError:
+        try:
+            date_time = datetime.strptime(text, '%d.%m.%Y')
+        except ValueError:
+            return "not a date"
+        else:
+            return date_time
+    else:
+        return date_time
 
 
 def is_day(text: str):
@@ -42,11 +55,9 @@ def is_day(text: str):
     else:
         return 1 <= day_number <= 31
 
-
 def is_month(text: str):
     """check if string is month"""
     return text in list(calendar.month_name[1:]) or text in list(calendar.month_abbr[1:])
-
 
 def is_year(text: str):
     """check if string is year"""
@@ -58,8 +69,20 @@ def is_year(text: str):
     else:
         return 1900 <= year_number <= 3000
 
-
+def count_string(text:str, connectors:str, delimiters:str):
+    """count the strings in text"""
+    text = text.strip()
+    str_counter = 0
+    for char in text.split():
+        if is_day(char) or is_month(char) or is_year(char) or is_timestamp(char) or char in connectors or char in delimiters:
+            pass
+        else:
+            if isinstance(char,str):
+                str_counter +=1
+    return str_counter
+    
 def munch_munch(date_string, delims: str, conns: str):
+    comment_string_found = False
     if date_string == "":
         return date_string, "No date found, please see event details.", 'date not found', 'date not found', 'date not found'
     else:
@@ -72,8 +95,14 @@ def munch_munch(date_string, delims: str, conns: str):
         dummy = ""
         # walk through the items identifying each one
         for index, item in enumerate(date_list):
+            #check if this is a text string > 2 strings i.e. end date comment = remove all other items
+            if count_string(item,delimiters,connectors) > 2:
+                comment_string_found = True
+            if comment_string_found:
+                #print(f"remove: {item}")
+                date_list.pop(index)
             # check if weekday name (full or abbr) - remove it
-            if is_day_name(item):
+            elif is_day_name(item):
                 date_list.pop(index)
             elif is_timestamp(item):
                 #print(f"time found: {item}")
@@ -110,12 +139,9 @@ def munch_munch(date_string, delims: str, conns: str):
                         #print(f"deli found: {char}")
                         dummy += char + ' '
                     else:
-                        try:
+                        if is_datetime(char) != "not a date":
                             # last attempt, perhaps its already in date time format
-                            date_time = datetime.strptime(char, '%d/%m/%y')
-                        except:
-                            pass
-                        else:
+                            date_time = is_datetime(char)
                             days.append(date_time.day)
                             months.append(date_time.month)
                             years.append(date_time.year)
@@ -167,11 +193,12 @@ def munch_munch(date_string, delims: str, conns: str):
                         day=days[-1]).strftime('%Y-%m-%d')
         return date_string, print_date, sorting_date, month_date, end_date
 
-if __name__ == '__main__':
-    date_string = "01                         Dec                         2022                         -                         01                         Jan                         2023"
-    #date_string = "15                         Nov                         2022                         -                         08                         Jan                         2023"
-    date_string ="3 December 2022 – 8 January 2023, Daily 10am - 3pm (Museum is closed for Christmas 24-26 Dec & 1 Jan)"
-    delims = ","
-    conns = "–;-;&;+"
-    print(munch_munch(date_string, delims, conns))
-
+# if __name__ == '__main__':
+#     date_string = "01                         Dec                         2022                         -                         01                         Jan                         2023"
+#     #date_string = "15                         Nov                         2022                         -                         08                         Jan                         2023"
+#     date_string ="3–22 December 2022, 2pm-5pm"
+#     delims = "–;,"
+#     conns = "–;-;&;+"
+#     print(munch_munch(date_string, delims, conns))
+#     print(is_datetime("04.02.2023"))
+#     print(count_string("2 February"))
