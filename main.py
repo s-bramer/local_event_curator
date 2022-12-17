@@ -103,9 +103,9 @@ def home():
             # flash("Message sent succesfully. Thank you.")
             return redirect(url_for('home'))
         else:
-            return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR, pw=EMAIL_PW)
+            return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
 
-    return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR, pw=EMAIL_PW)
+    return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
 
 # PROGRESS BAR | CURRENTLY INACTIVE
 # @app.route("/ajaxprogressbar",methods=["POST","GET"])
