@@ -1,21 +1,18 @@
 import os
-import smtplib
-import requests
-import json
 import pandas as pd
 from threading import Thread
 from csv import DictReader
 from flask import Flask, render_template, Markup, request, url_for, redirect, flash, jsonify
-from flask_bootstrap import Bootstrap
+from flask_mail import Mail, Message
 # from flask_track_usage import TrackUsage
 # from flask_track_usage.storage.sql import SQLStrorage
 # from flask_track_usage.storage.mongo import MongoEngineStrorage
-from datetime import date, datetime
+from datetime import date
 
 THIS_YEAR = date.today().year
 
-app = Flask(__name__) 
-Bootstrap(app)
+app = Flask(__name__)
+app.secret_key = "your_secret_key"
 
 status = None
 event_pages_data = "event_pages_new.csv"
@@ -25,20 +22,15 @@ EMAIL_PW = os.getenv("GM_EMAIL_PW")
 SENDER_EMAIL = "pickled.sprout.bay@gmail.com"
 RECEIVER_EMAIL = "s.schultchen@gmx.com"
 
+# configure Flask-Mail
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 465
+app.config["MAIL_USE_TLS"] = False
+app.config["MAIL_USE_SSL"] = True
+app.config["MAIL_USERNAME"] = SENDER_EMAIL
+app.config["MAIL_PASSWORD"] = EMAIL_PW
 
-def send_email(name, email, message):
-    """sends email"""
-    email_message = f"Subject:Message from STM webpage\n\nName: {name}\nEmail: {email}\nMessage:{message}"
-    with smtplib.SMTP("smtp.gmail.com") as connection:
-        connection.ehlo()
-        connection.starttls()  # make connection secure (Transport Layer Security)
-        connection.ehlo()
-        connection.login(user=SENDER_EMAIL, password=EMAIL_PW)
-        connection.sendmail(
-        from_addr=SENDER_EMAIL, to_addrs=RECEIVER_EMAIL, msg=email_message.encode("utf-8"))
-
-
-
+mail = Mail(app)
 
 # RUN SCRAPER FROM SITE | CURRENTLY INACTIVE
 # def task():
@@ -96,11 +88,17 @@ def home():
             name = request.form.get('name')
             email = request.form.get('email')
             message = request.form.get('message')
-            print(
-                f"name:{name} email:{email} message:{message} email_PW:{EMAIL_PW}")
-            send_email(name, email, message)
-            # NEED TO SEND MESSAGE TO USER ON SENT
-            # flash("Message sent succesfully. Thank you.")
+
+            # send email
+            msg = Message(
+            "New message from website",
+            recipients=[RECEIVER_EMAIL],
+            sender=SENDER_EMAIL,
+            body=f"Name: {name}\nEmail: {email}\nMessage: {message}"
+            )
+            mail.send(msg)
+            flash("Your message has been sent!")
+
             return redirect(url_for('home'))
         else:
             return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
