@@ -14,8 +14,8 @@ THIS_YEAR = date.today().year
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
-status = None
-event_pages_data = "event_pages_new.csv"
+# status = None
+# event_pages_data = "event_pages_new.csv"
 
 # email details
 EMAIL_PW = os.getenv("GM_EMAIL_PW")
