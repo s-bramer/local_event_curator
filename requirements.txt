@@ -23,7 +23,6 @@ darkdetect=0.8.0=pypi_0
 dominate=2.7.0=pyhd8ed1ab_0
 flask=2.2.2=pyhd8ed1ab_0
 flask-bootstrap=3.3.7.1=py_0
-flask-mail=0.9.1=pypi_0
 fonttools=4.38.0=py310h8d17308_1
 freetype=2.12.1=h546665d_1
 gettext=0.21.1=h5728263_0

@@ -37,7 +37,6 @@ def send_email(name, email, message):
         connection.sendmail(
         from_addr=SENDER_EMAIL, to_addrs=RECEIVER_EMAIL, msg=email_message.encode("utf-8"))
 
-
 # RUN SCRAPER FROM SITE | CURRENTLY INACTIVE
 # def task():
 #     global status
