@@ -30,7 +30,7 @@ app.config["MAIL_USE_SSL"] = True
 app.config["MAIL_USERNAME"] = SENDER_EMAIL
 app.config["MAIL_PASSWORD"] = EMAIL_PW
 
-mail = Mail(app)
+# mail = Mail(app)
 
 # RUN SCRAPER FROM SITE | CURRENTLY INACTIVE
 # def task():
@@ -90,14 +90,14 @@ def home():
             message = request.form.get('message')
 
             # send email
-            msg = Message(
-            "New message from website",
-            recipients=[RECEIVER_EMAIL],
-            sender=SENDER_EMAIL,
-            body=f"Name: {name}\nEmail: {email}\nMessage: {message}"
-            )
-            mail.send(msg)
-
+            # msg = Message(
+            # "New message from website",
+            # recipients=[RECEIVER_EMAIL],
+            # sender=SENDER_EMAIL,
+            # body=f"Name: {name}\nEmail: {email}\nMessage: {message}"
+            # )
+            # mail.send(msg)
+            
             flash("Your message has been sent!")
 
             return redirect(url_for('home'))
