@@ -3,7 +3,7 @@ import pandas as pd
 from threading import Thread
 from csv import DictReader
 from flask import Flask, render_template, Markup, request, url_for, redirect, flash, jsonify
-from flask_mail import Mail, Message
+# from flask_mail import Mail, Message
 # from flask_track_usage import TrackUsage
 # from flask_track_usage.storage.sql import SQLStrorage
 # from flask_track_usage.storage.mongo import MongoEngineStrorage
@@ -97,6 +97,7 @@ def home():
             body=f"Name: {name}\nEmail: {email}\nMessage: {message}"
             )
             mail.send(msg)
+
             flash("Your message has been sent!")
 
             return redirect(url_for('home'))
