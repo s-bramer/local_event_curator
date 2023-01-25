@@ -98,9 +98,10 @@ def home():
             )
             mail.send(msg)
 
-            flash("Your message has been sent!")
+            flash("Thank you, your message has been sent.")
 
-            return redirect(url_for('home'))
+            # return redirect(url_for('home'))
+            return redirect("/")
         else:
             return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
 

@@ -22,7 +22,6 @@ REPLACE_ME = {
     'Lgbtq': 'LGBTQ',
 }
 
-
 def tag_visible(element):
     """checks whether text is visible"""
     if element.parent.name in ['div', 'style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -30,7 +29,6 @@ def tag_visible(element):
     if isinstance(element, Comment):
         return False
     return True
-
 
 def format_title(s: str):
     """proper casing for the event description with a few exceptions from dict REPLACE_ME"""
@@ -40,6 +38,18 @@ def format_title(s: str):
         s = s.replace(key, value)
     return s
 
+def is_special_event(event:str):
+    special_events_data = "special_events.csv"
+    df_in = pd.read_csv(special_events_data, header=0, index_col=None)
+    return event in df_in.iloc[:, 0].values
+
+def get_special_event_values(event:str):
+    special_events_data = "special_events.csv"
+    df_in = pd.read_csv(special_events_data, header=0, index_col=None)
+    for index, row in df_in.iterrows():
+        if row[0] == event:
+            return row.tolist()
+    return None
 
 def get_all_events(link: str,  container: str, container_attr: str, search: str, root: str, type="absolute", method="search"):
     """Returns all events urls from a webpage"""
@@ -78,7 +88,6 @@ def get_all_events(link: str,  container: str, container_attr: str, search: str,
             all_events = [root + event for event in all_events]
 
         return all_events
-
 
 def get_dates(soup, method: str, tag: str, attr: str, attr_name: str, date_indices: str, date_delimiter: int, date_connector: str):
     """extract the event date from event page"""
@@ -146,7 +155,6 @@ def get_content(soup, method: str, tag: str, attr: str, attr_name: str, split: i
         sys.exit()
     return content.replace('\n', ' ').replace("’", "'").strip()
 
-
 def get_category(soup, method: str, tag: str, attr: str, attr_name: str, split: int):
     """find category of event (for filter)"""
     if method == "direct":
@@ -191,7 +199,6 @@ def get_category(soup, method: str, tag: str, attr: str, attr_name: str, split: 
         category = 'event'
 
     return category
-
 
 def event_post_processing(df: pd.DataFrame):
     """sorting, removing duplicates, removing events with certain strings"""
@@ -241,7 +248,6 @@ def event_post_processing(df: pd.DataFrame):
     df['update_date'] = datetime.now().strftime('%d %b %Y %H:%M')
     return df
 
-
 def run_scraper(link, row, df_in):
     """main function, runs scraper and returns events dataframe"""
     # GATHER INFO ON ALL EVENTS AND SAVE THEM IN DATABASE (CSV)
@@ -254,66 +260,74 @@ def run_scraper(link, row, df_in):
     if not "ERROR:" in events:
         for count, event in enumerate(events):
             print(f"Processing event {count+1} of {len(events)} ({event})")
-            # get the individual event page
-            try:
-                response = requests.get(event, headers=headers, timeout=10)
-                soup = BeautifulSoup(response.content, "html5lib")
-            except:
-                title == "ERROR: event not found"
-            else:
-                # GET EVENT TITLE
-                title = get_content(soup, method=str(df_in.iloc[row]['title_method']), tag=str(df_in.iloc[row]['title_tag']), attr=str(
-                    df_in.iloc[row]['title_attr']), attr_name=str(df_in.iloc[row]['title_attr_name']), split=int(df_in.iloc[row]['title_split']))
-                title = format_title(title)
-                # GET EVENT DATE
-                dates = get_dates(soup, method=str(df_in.iloc[row]['date_method']), tag=str(df_in.iloc[row]['date_tag']), attr=str(df_in.iloc[row]['date_attr']), attr_name=str(
-                    df_in.iloc[row]['date_attr_name']), date_indices=str(df_in.iloc[row]['date_indices']), date_delimiter=str(df_in.iloc[row]['date_delimiters']), date_connector=str(df_in.iloc[row]['date_connectors']))
-                date_info = df_in.iloc[row]['date_info']
-                full_date = dates[0]
-                print_date = dates[1]
-                if not pd.isna(date_info):
-                    print_date = print_date + " *"
-                sort_date = dates[2]
-                month = dates[3]
-                end_date = dates[4]
-                # GET LOCATION/ADDRESS
-                if str(df_in.iloc[row]['address']) == 'no':
-                    location = get_content(soup, method=str(df_in.iloc[row]['address_method']), tag=str(df_in.iloc[row]['address_tag']), attr=str(
-                        df_in.iloc[row]['address_attr']), attr_name=str(df_in.iloc[row]['address_attr_name']), split=int(df_in.iloc[row]['address_split']))
-                else:
-                    location = df_in.iloc[row]['address']
-                if location == "":
-                    location = get_content(soup, method=str(df_in.iloc[row]['alt_address_method']), tag=str(df_in.iloc[row]['alt_address_tag']), attr=str(
-                        df_in.iloc[row]['alt_address_attr']), attr_name=str(df_in.iloc[row]['alt_address_attr_name']), split=int(df_in.iloc[row]['alt_address_split']))
-                if location[-1] == ':':
-                    location = location[:-1]
-                location_info = address_sniffer.sniff_sniff(location)
-                postcode = location_info[0]
-                town = location_info[1]
-                council = location_info[2]
-                council_abbr = location_info[3]
-                location_search = ' '.join(location_info[4].split(','))
-                short_location = location_info[5]
-                # GET EVENT CATEGORY
-                category = get_category(soup, method=str(df_in.iloc[row]['cat_method']), tag=str(df_in.iloc[row]['cat_tag']), attr=str(
-                    df_in.iloc[row]['cat_attr']), attr_name=str(df_in.iloc[row]['cat_attr_name']), split=int(df_in.iloc[row]['cat_split']))
-                # GET EVENT INFO
-                event_info = get_content(soup, method=str(df_in.iloc[row]['info_method']), tag=str(df_in.iloc[row]['info_tag']), attr=str(
-                    df_in.iloc[row]['info_attr']), attr_name=str(df_in.iloc[row]['info_attr_name']), split=int(df_in.iloc[row]['info_split']))
-                if len(event_info) > 500:
-                    event_info = event_info[:500] + '...'
-                remove_list = ['[', ']', ' email protected']
-                for item in remove_list:
-                    event_info = event_info.replace(item, "")
-                # GET ADDITIONAL INFO
-                name = str(df_in.iloc[row]['name'])
-                event_icon = str(df_in.iloc[row]['logo'])
-                root = str(df_in.iloc[row]['root'])
-                # WRITE ALL EVENTS TO DATAFRAME
-                df_out.loc[db_out_row] = [event, title, full_date, print_date, date_info, sort_date, end_date, month, location, town,
-                                          short_location, postcode, council, council_abbr, location_search, category, event_info, name, root, event_icon]
+            # check whether the event is stored in the special event db (e.g. special conditions, no dates, no location)
+            if is_special_event(event):
+                # write saved special event details into next row
+                event_data = get_special_event_values(event)
+                df_out.loc[db_out_row] = event_data
                 db_out_row += 1
-                #!!!!!!REPORT OMITTED EVENTS!!!!!!!!
+            else:
+                # get the individual event page
+                try:
+                    response = requests.get(event, headers=headers, timeout=10)
+                    soup = BeautifulSoup(response.content, "html5lib")
+                except:
+                    title == "ERROR: event not found"
+                else:
+                    # GET EVENT TITLE
+                    title = get_content(soup, method=str(df_in.iloc[row]['title_method']), tag=str(df_in.iloc[row]['title_tag']), attr=str(
+                        df_in.iloc[row]['title_attr']), attr_name=str(df_in.iloc[row]['title_attr_name']), split=int(df_in.iloc[row]['title_split']))
+                    title = format_title(title)
+                    # GET EVENT DATE
+                    dates = get_dates(soup, method=str(df_in.iloc[row]['date_method']), tag=str(df_in.iloc[row]['date_tag']), attr=str(df_in.iloc[row]['date_attr']), attr_name=str(
+                        df_in.iloc[row]['date_attr_name']), date_indices=str(df_in.iloc[row]['date_indices']), date_delimiter=str(df_in.iloc[row]['date_delimiters']), date_connector=str(df_in.iloc[row]['date_connectors']))
+                    date_info = df_in.iloc[row]['date_info']
+                    full_date = dates[0]
+                    print_date = dates[1]
+                    if not pd.isna(date_info):
+                        print_date = print_date + " *"
+                    sort_date = dates[2]
+                    month = dates[3]
+                    end_date = dates[4]
+                    # GET LOCATION/ADDRESS
+                    if str(df_in.iloc[row]['address']) == 'no':
+                        location = get_content(soup, method=str(df_in.iloc[row]['address_method']), tag=str(df_in.iloc[row]['address_tag']), attr=str(
+                            df_in.iloc[row]['address_attr']), attr_name=str(df_in.iloc[row]['address_attr_name']), split=int(df_in.iloc[row]['address_split']))
+                    else:
+                        location = df_in.iloc[row]['address']
+                    if location == "":
+                        # if location empty try alternative loc, second set of instructions
+                        location = get_content(soup, method=str(df_in.iloc[row]['alt_address_method']), tag=str(df_in.iloc[row]['alt_address_tag']), attr=str(
+                            df_in.iloc[row]['alt_address_attr']), attr_name=str(df_in.iloc[row]['alt_address_attr_name']), split=int(df_in.iloc[row]['alt_address_split']))
+                    if location[-1] == ':':
+                        location = location[:-1]
+                    location_info = address_sniffer.sniff_sniff(location)
+                    postcode = location_info[0]
+                    town = location_info[1]
+                    council = location_info[2]
+                    council_abbr = location_info[3]
+                    location_search = ' '.join(location_info[4].split(','))
+                    short_location = location_info[5]
+                    # GET EVENT CATEGORY
+                    category = get_category(soup, method=str(df_in.iloc[row]['cat_method']), tag=str(df_in.iloc[row]['cat_tag']), attr=str(
+                        df_in.iloc[row]['cat_attr']), attr_name=str(df_in.iloc[row]['cat_attr_name']), split=int(df_in.iloc[row]['cat_split']))
+                    # GET EVENT INFO
+                    event_info = get_content(soup, method=str(df_in.iloc[row]['info_method']), tag=str(df_in.iloc[row]['info_tag']), attr=str(
+                        df_in.iloc[row]['info_attr']), attr_name=str(df_in.iloc[row]['info_attr_name']), split=int(df_in.iloc[row]['info_split']))
+                    if len(event_info) > 500:
+                        event_info = event_info[:500] + '...'
+                    remove_list = ['[', ']', ' email protected']
+                    for item in remove_list:
+                        event_info = event_info.replace(item, "")
+                    # GET ADDITIONAL INFO
+                    name = str(df_in.iloc[row]['name'])
+                    event_icon = str(df_in.iloc[row]['logo'])
+                    root = str(df_in.iloc[row]['root'])
+                    # WRITE ALL EVENTS TO DATAFRAME
+                    df_out.loc[db_out_row] = [event, title, full_date, print_date, date_info, sort_date, end_date, month, location, town,
+                                            short_location, postcode, council, council_abbr, location_search, category, event_info, name, root, event_icon]
+                    db_out_row += 1
+                    #!!!!!!REPORT OMITTED EVENTS!!!!!!!!
     else:
         print(f"page not found: {link}")
 

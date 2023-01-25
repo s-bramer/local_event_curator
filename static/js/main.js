@@ -40,3 +40,8 @@ function scrollFunction() {
 function topFunction() {
 	document.getElementById("main").scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
   }
+
+// Make the email confirmation message disappear after 5 seconds
+$(document).ready(function() {
+	$("#flash-message").delay(5000).fadeOut();
+});

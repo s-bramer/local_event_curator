@@ -27,6 +27,11 @@
           <span class="bg-img-text">Look! Its beautiful LLANTWIT MAJOR.<br />Check out <u>Major Photography</u> for more.</span>
         </a>
       </div>
+      <div id="flash-message">
+        {% for message in get_flashed_messages() %}
+            <div class="alert-info">{{ message }}<img class="message-icon" src="static/images/carrier-pigeon.png" alt="" /></div>
+        {% endfor %}
+      </div>
       <h1>
         <img class="header-icon" src="static/images/mushroom.png" alt="" />
       </h1>
@@ -360,7 +365,7 @@
           you'd like included.
         </p>
 
-        <form method="post" action="{{ url_for('home') }}" novalidat>
+        <form id="email-form" method="post" action="{{ url_for('home') }}" novalidat>
           <div class="row">
             <div class="col-6 col-12-mobilep">
               <input type="text" name="name" class="form-control" placeholder="Name" required data-validation-required-message="Please enter your name."/>

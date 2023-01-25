@@ -192,13 +192,3 @@ def munch_munch(date_string, delims: str, conns: str):
         end_date = date(year=years[-1], month=months[-1],
                         day=days[-1]).strftime('%Y-%m-%d')
         return date_string, print_date, sorting_date, month_date, end_date
-
-# if __name__ == '__main__':
-#     date_string = "01                         Dec                         2022                         -                         01                         Jan                         2023"
-#     #date_string = "15                         Nov                         2022                         -                         08                         Jan                         2023"
-#     date_string ="3–22 December 2022, 2pm-5pm"
-#     delims = "–;,"
-#     conns = "–;-;&;+"
-#     print(munch_munch(date_string, delims, conns))
-#     print(is_datetime("04.02.2023"))
-#     print(count_string("2 February"))
