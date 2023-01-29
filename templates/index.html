@@ -29,7 +29,7 @@
       </div>
       <div id="flash-message">
         {% for message in get_flashed_messages() %}
-            <div class="alert-info">{{ message }}<img class="message-icon" src="static/images/carrier-pigeon.png" alt="" /></div>
+            <div id="alert-info">{{ message }}<img class="message-icon" src="static/images/carrier-pigeon.png" alt="" /></div>
         {% endfor %}
       </div>
       <h1>

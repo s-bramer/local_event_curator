@@ -420,9 +420,8 @@
 }
 
 
-.alert-info{
+#alert-info{
     color: #ffffff;
-    font-size: 1.5em;
     font-weight: 700;
     letter-spacing: 0.125em;
     line-height: 1.75em;

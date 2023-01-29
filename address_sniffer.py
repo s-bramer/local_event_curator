@@ -119,7 +119,8 @@ def sniff_sniff(address_string: str):
         # add new entry to the address database
         new_row = {'name': address_string, 'full_address': full_address,
                    'postcode': postcode, 'council': council, 'town': town}
-        df_adressess_db = df_adressess_db.append(new_row, ignore_index=True)
+        #df_adressess_db =df_adressess_db.append(new_row, ignore_index=True) # append method is deprecated
+        df_adressess_db = pd.concat([df_adressess_db, new_row], ignore_index=True)
         df_adressess_db.to_csv("addresses_db.csv", index=False)
         print("NEW ENTRY ADDED TO ADDRESS DATABASE!")
     try:

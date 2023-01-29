@@ -3048,6 +3048,11 @@ input[type="button"].small,
   margin: 0;
 }
 
+/* email confirmation message*/
+#alert-info{
+  font-size: 2em;
+}
+
 #header p {
   font-size: 1.5em;
   line-height: 1.5em;
@@ -3228,6 +3233,12 @@ input[type="button"].small,
     font-size: 2.25em;
   }
 
+  /* email confirmation message*/
+  #alert-info{
+    font-size: 1.5em;
+  }
+
+
   #header p {
     font-size: 1.25em;
     line-height: 1.65em;
@@ -3307,6 +3318,11 @@ input[type="button"].small,
 
   #header h1 {
     font-size: 2em;
+  }
+
+  /* email confirmation message*/
+  #alert-info{
+    font-size: 1.25em;
   }
 
   #header p {
@@ -3463,6 +3479,11 @@ input[type="button"].small,
 
   #header h1 {
     font-size: 1.25em;
+  }
+
+  /* email confirmation message*/
+  #alert-info{
+    font-size: 1em;
   }
 
   #header p {
