@@ -21,7 +21,7 @@ Barry High Street,"High St, Barry CF62 7EB",CF62 7EB,Vale of Glamorgan,Barry
 Porth Plaza Car Park,"Porth Plaza Car Park, 52 Pontypridd Rd, Porth CF39 9PN",CF39 9PN,Rhondda Cynon Taf,Porth
 "The Spiegeltent, Cardiff Castle Grounds, Castle Street, Cardiff, CF10 3RB","Cardiff Castle, The Spiegeltent, Cardiff Castle Grounds, Castle Street, Cardiff, CF10 3RB",CF10 3RB,Cardiff,Cardiff
 Harlech Castle,Harlech LL46 2YH , LL46 2YH ,Gwynedd,Harlech
-"Amelia Trust Farm, CF62 3AS","Amelia Trust Farm, Five Mile Ln, Barry CF62 3AS",CF62 3AS,Vale of Glamorgan,Llancarfan
+"Amelia Trust Farm, CF62 3AS","Amelia Trust Farm, Five Mile Ln, Barry CF62 3AS",CF62 3AS,Vale of Glamorgan,Barry
 "Insole Court, Fairwater Road, Llandaff, Cardiff CF5 2LN ","Insole Court, Fairwater Road, Llandaff, Cardiff CF5 2LN ",CF5 2LN,Cardiff,Llandaff
 Chepstow Castle,"Chepstow Castle, Bridge St, Chepstow NP16 5EY ",NP16 5EY,Monmouthshire,Chepstow
 "Vale of Glamorgan, Penllyn Estate, Llwynhelig, Cowbridge, Vale of Glamorgan, CF71 7FF","Forage Farmshop, Penllyn Estate, Llwynhelig, Cowbridge, Vale of Glamorgan, CF71 7FF",CF71 7FF,Vale of Glamorgan,Penllyn
@@ -63,7 +63,7 @@ National Waterfront Museum                         Cancelled,"National Waterfron
 "Turner House Plymouth Road, Penarth, CF64 3DH","Turner House, 12 Plymouth Rd, Penarth CF64 3DH",CF64 3DH,Vale of Glamorgan,Penarth
 "West House Community Garden, Penarth, CF64 2YG","West House Community Garden, Penarth, CF64 2YG",CF64 2YG,Vale of Glamorgan,Penarth
 Raglan Castle,"Raglan Castle, Castle Rd, Raglan NP15 2BT ",NP15 2BT,Monmouthshire,Raglan
-"Amelia Trust Farm, Five Mile Lane, Barry, CF62 3AS","Amelia Trust Farm, Five Mile Lane, Barry, CF62 3AS",CF62 3AS,Vale of Glamorgan,Llancarfan
+"Amelia Trust Farm, Five Mile Lane, Barry, CF62 3AS","Amelia Trust Farm, Five Mile Lane, Barry, CF62 3AS",CF62 3AS,Vale of Glamorgan,Barry
 Penarth Town Centre,"Penarth Town Centre, CF11 0SD",CF11 0SD,Vale of Glamorgan,Penarth
 Plas Mawr,"Plas Mawr, CF5 3JW",CF5 3JW,Cardiff,Cardiff
 Caerleon Roman Fortress and Baths,"Caerleon Roman Fortress and Baths, NP18 1AE",NP18 1AE,Newport,Caerleon
@@ -93,3 +93,7 @@ Barclodiad y Gawres Burial Chamber,"Barclodiad y Gawres Burial Chamber, LL63 5TE
 Mountain Ash Town Centre,"Mountain Ash Town Centre, CF45 3AA",CF45 3AA,Rhondda Cynon Taf,Mountain Ash
 "Fonmon Castle, Barry, Vale of Glamorgan, CF62 3ZN","Fonmon Castle, Barry, Vale of Glamorgan, CF62 3ZN",CF62 3ZN,Vale of Glamorgan,Fonmon 
 "Hangar 872, Bro Tathan North, St Athan, CF62 4QR","Hangar 872, Bro Tathan North, St Athan, CF62 4QR",CF62 4QR,Vale of Glamorgan,St Athan
+National Waterfront Museum                         Fully Booked,"National Waterfront Museum                         Fully Booked, SA1 3ST",SA1 3ST,Swansea,Swansea
+"Penarth, Willmorea 1938, The Former Golf Kiosk, Cliff Parade, Penarth, CF64 5BP","Penarth, Willmorea 1938, The Former Golf Kiosk, Cliff Parade, Penarth, CF64 5BP",CF64 5BP,Vale of Glamorgan,Cardiff
+"Vale Of Glamorgan, Amelia Trust Farm, Five Mile Lane, Barry, Vale Of Glamorgan, CF62 3AS","Vale Of Glamorgan, Amelia Trust Farm, Five Mile Lane, Barry, Vale Of Glamorgan, CF62 3AS",CF62 3AS,Vale of Glamorgan,Barry
+",",",, CF10 5ET",CF10 5ET,Cardiff,Cardiff
