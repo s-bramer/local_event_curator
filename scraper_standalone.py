@@ -20,6 +20,7 @@ REPLACE_ME = {
     'Swam': 'SWAM',
     'Uwc': 'UWC',
     'Lgbtq': 'LGBTQ',
+    'Nhs': 'NHS',
 }
 
 def tag_visible(element):
