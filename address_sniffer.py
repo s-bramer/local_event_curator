@@ -86,6 +86,8 @@ def get_town(postcode: str):
 
 def sniff_sniff(address_string: str):
     """returns postcode, town, council and council_abbr from address string"""
+    if address_string == "":
+        return 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX'
     # 1. check if address already in database
     df_adressess_db = pd.read_csv("addresses_db.csv", header=0, index_col=None)
     if address_string in df_adressess_db['name'].values:
@@ -124,9 +126,11 @@ def sniff_sniff(address_string: str):
         #df_adressess_db = pd.concat([df_adressess_db, new_row], ignore_index=True)
         df_adressess_db.to_csv("addresses_db.csv", index=False)
         print("NEW ENTRY ADDED TO ADDRESS DATABASE!")
+    
     try:
         council_abbr = COUNCIL_ABBR[council]
     except:
         council_abbr = 'out'
+    
     short_address = full_address.split(',')[0]
     return postcode, town, council, council_abbr, full_address, short_address

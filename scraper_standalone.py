@@ -15,13 +15,19 @@ headers = {
 # load event_pages CSV with links and search parameters
 CATEGORIES = ['event', 'digital_event', 'course', 'exhibition', 'performance']
 
+# text that needs to be replaced in titles (due to casing formatting)
 REPLACE_ME = {
     'Bbc': 'BBC',
     'Swam': 'SWAM',
     'Uwc': 'UWC',
     'Lgbtq': 'LGBTQ',
     'Nhs': 'NHS',
+    'Nspcc': 'NSPCC',
 }
+
+# if these are received from address method they will be dismissed i.e. alternative address method triggered
+NO_ADDRESS = ['Various Locations']
+NO_INFO = ['%']
 
 def tag_visible(element):
     """checks whether text is visible"""
@@ -38,6 +44,15 @@ def format_title(s: str):
     for key, value in REPLACE_ME.items():
         s = s.replace(key, value)
     return s
+
+def check_punctuation_space(text):
+    # Define the pattern to match punctuation followed by a non-space character
+    pattern = r'([.!?])([^ ])'
+
+    # replace matches with the matched punctuation followed by a space
+    result = re.sub(pattern, r'\1 \2', text)
+
+    return result
 
 def is_special_event(event:str):
     special_events_data = "special_events.csv"
@@ -83,8 +98,11 @@ def get_all_events(link: str,  container: str, container_attr: str, search: str,
         # remove duplicates from events
         all_events = list(dict.fromkeys(all_events))
 
+        # create absolute event urls (absolute paths are default) 
+        # if provided as relative paths to event link add event link
         if type == "relative":
             all_events = [link + event for event in all_events]
+        # if provided as relative path to root add root
         if type == "relative_root":
             all_events = [root + event for event in all_events]
 
@@ -117,35 +135,34 @@ def get_dates(soup, method: str, tag: str, attr: str, attr_name: str, date_indic
 
     return return_dates
 
-def get_content(soup, method: str, tag: str, attr: str, attr_name: str, split: int):
+def get_content(soup, method: str, container:str, tag: str, attr: str, attr_name: str, split: int):
     """universal method to retrieve content from tags, either single tag, multiple tag (use split) or meta tag"""
+    # if container passed step into it
+    if not pd.isna(container):
+        soup = soup.find("div", attrs={"class": container})
     if method == "tag_attr":
         try:
             if split != -999:
-                content = soup.find_all(tag, attrs={attr: attr_name})[
-                    int(split)].text
+                content = soup.find_all(tag, attrs={attr: attr_name})[int(split)].text
             else:
                 content = soup.find(tag, attrs={attr: attr_name}).text
         except:
             return "ERROR: content not found (tag_attr)"
     elif method == "tags_attr":
         try:
-            content = ', '.join([str(item.text).strip() for item in soup.find_all(
-                tag, attrs={attr: attr_name}) if tag_visible(item)])
+            content = ', '.join([str(item.text).strip() for item in soup.find_all(tag, attrs={attr: attr_name}) if tag_visible(item) and str(item.text).strip() != ""])
         except:
             return "ERROR: content not found (tags_attr)"
     elif method == "tag":
         try:
-            # print(soup.find(tag))
             content = soup.find(tag).string
         except:
             return "ERROR: content not found (tag)"
     elif method == "tags":
         try:
-            # print(soup.find(tag))
             content = soup.find_all(tag)[int(split)].string
         except:
-            return "ERROR: content not found (tags)"
+            return "ERROR: content not found (tags)" 
     elif method == "meta":
         try:
             content = soup.find("meta", attrs={attr: attr_name})[tag]
@@ -253,6 +270,7 @@ def run_scraper(link, row, df_in):
     """main function, runs scraper and returns events dataframe"""
     # GATHER INFO ON ALL EVENTS AND SAVE THEM IN DATABASE (CSV)
     db_out_row = 0  # row in output df
+    title = ""
     df_out = pd.DataFrame(columns=['link', 'title', 'full_date', 'print_date', 'date_info', 'sort_date', 'end_date', 'month', 'location',
                           'town', 'short_location', 'postcode', 'council', 'council_abbr', 'location_search', 'category', 'info', 'name', 'root', 'event_icon'])
     # get list of individual event pages from main site
@@ -276,7 +294,7 @@ def run_scraper(link, row, df_in):
                     title == "ERROR: event not found"
                 else:
                     # GET EVENT TITLE
-                    title = get_content(soup, method=str(df_in.iloc[row]['title_method']), tag=str(df_in.iloc[row]['title_tag']), attr=str(
+                    title = get_content(soup, method=str(df_in.iloc[row]['title_method']), container = df_in.iloc[row]['title_container'], tag=str(df_in.iloc[row]['title_tag']), attr=str(
                         df_in.iloc[row]['title_attr']), attr_name=str(df_in.iloc[row]['title_attr_name']), split=int(df_in.iloc[row]['title_split']))
                     title = format_title(title)
                     # GET EVENT DATE
@@ -291,16 +309,19 @@ def run_scraper(link, row, df_in):
                     month = dates[3]
                     end_date = dates[4]
                     # GET LOCATION/ADDRESS
+                    # has location for this webpage been provided?
                     if str(df_in.iloc[row]['address']) == 'no':
-                        location = get_content(soup, method=str(df_in.iloc[row]['address_method']), tag=str(df_in.iloc[row]['address_tag']), attr=str(
+                        location = get_content(soup, method=str(df_in.iloc[row]['address_method']), container = df_in.iloc[row]['address_container'], tag=str(df_in.iloc[row]['address_tag']), attr=str(
                             df_in.iloc[row]['address_attr']), attr_name=str(df_in.iloc[row]['address_attr_name']), split=int(df_in.iloc[row]['address_split']))
+                    # if provided, then use that address 
                     else:
                         location = df_in.iloc[row]['address']
-                    if location == "":
+                    if location == "" or location in NO_ADDRESS:
                         # if location empty try alternative loc, second set of instructions
-                        location = get_content(soup, method=str(df_in.iloc[row]['alt_address_method']), tag=str(df_in.iloc[row]['alt_address_tag']), attr=str(
+                        location = get_content(soup, method=str(df_in.iloc[row]['alt_address_method']), container = df_in.iloc[row]['alt_address_container'], tag=str(df_in.iloc[row]['alt_address_tag']), attr=str(
                             df_in.iloc[row]['alt_address_attr']), attr_name=str(df_in.iloc[row]['alt_address_attr_name']), split=int(df_in.iloc[row]['alt_address_split']))
-                    if location[-1] == ':':
+                    # remove trailing colons e.g. Digital Event:
+                    if len(location) > 0 and location[-1] == ':':
                         location = location[:-1]
                     location_info = address_sniffer.sniff_sniff(location)
                     postcode = location_info[0]
@@ -313,8 +334,12 @@ def run_scraper(link, row, df_in):
                     category = get_category(soup, method=str(df_in.iloc[row]['cat_method']), tag=str(df_in.iloc[row]['cat_tag']), attr=str(
                         df_in.iloc[row]['cat_attr']), attr_name=str(df_in.iloc[row]['cat_attr_name']), split=int(df_in.iloc[row]['cat_split']))
                     # GET EVENT INFO
-                    event_info = get_content(soup, method=str(df_in.iloc[row]['info_method']), tag=str(df_in.iloc[row]['info_tag']), attr=str(
+                    event_info = get_content(soup, method=str(df_in.iloc[row]['info_method']), container = df_in.iloc[row]['info_container'], tag=str(df_in.iloc[row]['info_tag']), attr=str(
                         df_in.iloc[row]['info_attr']), attr_name=str(df_in.iloc[row]['info_attr_name']), split=int(df_in.iloc[row]['info_split']))
+                    if event_info == "" or event_info in NO_INFO:
+                        event_info = get_content(soup, method=str(df_in.iloc[row]['alt_info_method']), container = df_in.iloc[row]['alt_info_container'], tag=str(df_in.iloc[row]['alt_info_tag']), attr=str(
+                            df_in.iloc[row]['alt_info_attr']), attr_name=str(df_in.iloc[row]['alt_info_attr_name']), split=int(df_in.iloc[row]['alt_info_split'])) 
+                    event_info = check_punctuation_space(event_info)
                     if len(event_info) > 500:
                         event_info = event_info[:500] + '...'
                     remove_list = ['[', ']', ' email protected']
