@@ -84,7 +84,7 @@
           </div>
           <div class="content">
             <p>
-              {% if item['info'][-3:] == "..." or item['info']|length < 10 %} {{
+              {% if item['info'][-3:] == ".." or item['info']|length < 10 %} {{
               item['info'] }}<i> More info on event page.</i>
               {% else %} {{ item['info'] }} {% endif %}
             </p>
