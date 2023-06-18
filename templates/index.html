@@ -72,9 +72,10 @@
 
       <div class="accordion">
         <h4 id="today" class="time-line-month">What's On This Month</h4>
-        {% for item in events %} {% if item['month'] != "" %}
-        <h4 class="time-line-month">{{ item['month'] }}</h4>
-        {% endif %}
+        {% for item in events %} 
+          {% if item['month'] != "" %}
+            <h4 class="time-line-month">{{ item['month'] }}</h4>
+          {% endif %}
 
         <div class="box container whatson {{ item ['category'] }} {{ item ['council_abbr']}}">
           <div class="event-title-box">
@@ -84,9 +85,11 @@
           </div>
           <div class="content">
             <p>
-              {% if item['info'][-2:] == ".." or item['info']|length < 10 %} {{
-              item['info'] }}<i> More info on event page.</i>
-              {% else %} {{ item['info'] }} {% endif %}
+              {% if item['info'][-2:] == ".." or item['info']|length < 10 %} 
+                {{ item['info'] }}<i> More info on event page.</i>
+              {% else %} 
+                {{ item['info'] }} 
+              {% endif %}
             </p>
             <a href="{{ item['link'] }}" target="_blank" rel="noopener noreferrer"><span class="event-footer-link">{{ item['name'] }} | event page</span></a>
             {% if item["date_info"] != "" %}
