@@ -3,7 +3,9 @@ import pandas as pd
 import time
 import calendar
 from datetime import date, datetime
+import logging
 
+logger = logging.getLogger(__name__)
 ORDINALS = ['th', 'st', 'nd', 'rd', 'TH', 'ST', 'ND', 'RD']
 THIS_YEAR = date.today().year
 
@@ -147,6 +149,7 @@ def munch_munch(date_string, delims: str, conns: str):
                             years.append(date_time.year)
         # catch meaning less datestrings (e.g. First Thursday of each month)
         if len(days) == 0 or len(months) == 0:
+            logger.error(f"WARNING: Date not recognised: {date_string}")
             return date_string, "No date found, please see event details.", 'date not found', 'date not found', 'date not found'
         # remove trailing delimiter
         dummy = dummy.rstrip()

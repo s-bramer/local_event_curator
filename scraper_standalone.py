@@ -8,10 +8,15 @@ import requests
 import pandas as pd
 import re
 import sys
+import logging
+
+# configure error logger
+logging.basicConfig(level=logging.ERROR, filename='error.log', filemode='w', format='%(asctime)s - %(name)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # standard header for http request
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'}
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'}
+
 # load event_pages CSV with links and search parameters
 CATEGORIES = ['event', 'digital_event', 'course', 'exhibition', 'performance']
 
@@ -25,7 +30,8 @@ REPLACE_ME = {
     'Nspcc': 'NSPCC',
 }
 
-# if these are received from address method they will be dismissed i.e. alternative address method triggered
+
+# if these are received from methods they will be dismissed i.e. alternative method triggered
 NO_ADDRESS = ['Various Locations']
 NO_INFO = ['%']
 
@@ -53,6 +59,16 @@ def check_punctuation_space(text):
     result = re.sub(pattern, r'\1 \2', text)
 
     return result
+
+def truncate_event_info(text:str, limit:int):
+    if len(text) <= limit:
+        return text
+    truncated_text = text[:limit]
+    # Find the last whitespace character before the limit
+    last_whitespace = truncated_text.rfind(' ')
+    if last_whitespace != -1:
+        truncated_text = truncated_text[:last_whitespace] + "..."
+    return truncated_text 
 
 def is_special_event(event:str):
     special_events_data = "special_events.csv"
@@ -219,14 +235,20 @@ def get_category(soup, method: str, tag: str, attr: str, attr_name: str, split: 
     return category
 
 def event_post_processing(df: pd.DataFrame):
+    event_count = len(df)
+    logger.error(f"INFO: Post-processing {event_count} events...")
     """sorting, removing duplicates, removing events with certain strings"""
     dicard_list_title = ['Cancelled', 'Luminatae']
     discard_list_location = ['Fully\sBooked']
     # remove rows containing discard keywords
     df = df[df["title"].str.contains('|'.join(dicard_list_title)) == False]
-    df = df[df["location"].str.contains(
-        '|'.join(discard_list_location)) == False]
+    df = df[df["location"].str.contains('|'.join(discard_list_location)) == False]
     df = df.sort_values(by='sort_date', ascending=True, ignore_index=True)
+    logger.error(f"INFO: {event_count - len(df)} event removed, containing discard keywords!")
+    # remove items that are marked with "page not found" or are "out" of the catchment area
+    df = df[df["title"] != "page not found"]
+    df = df[df["council_abbr"] != "out"]
+    logger.error(f"INFO: {event_count - len(df)} event removed, not found or outside!")
     # remove row with end_date > today (expired)
     df = df.loc[(df['end_date'] >= date.today().strftime('%Y-%m-%d'))]
     # add max_date column to get the maximum date of duplicate events (used for end date)
@@ -240,7 +262,6 @@ def event_post_processing(df: pd.DataFrame):
     # add column for relative day count (past, present,future)
     df["ppf"] = ""
     current_month = ""
-    #df.loc[0, ('month')] = "Today"
     for row in range(0, len(df)):
         # if duplicate row, use max_date as end_date (if its different to start date)
         if df.loc[row, ('dupl_count')] > 1 and df.loc[row, ('sort_date')] != df.loc[row, ('max_date')]:
@@ -290,13 +311,17 @@ def run_scraper(link, row, df_in):
                 try:
                     response = requests.get(event, headers=headers, timeout=10)
                     soup = BeautifulSoup(response.content, "html5lib")
-                except:
-                    title == "ERROR: event not found"
+                except Exception as e:
+                    logger.error("ERROR: Event page not found! %s", str(e))
                 else:
                     # GET EVENT TITLE
                     title = get_content(soup, method=str(df_in.iloc[row]['title_method']), container = df_in.iloc[row]['title_container'], tag=str(df_in.iloc[row]['title_tag']), attr=str(
                         df_in.iloc[row]['title_attr']), attr_name=str(df_in.iloc[row]['title_attr_name']), split=int(df_in.iloc[row]['title_split']))
-                    title = format_title(title)
+                    if not "ERROR:" in title:
+                        title = format_title(title)
+                    else:
+                        title = "Please check event webpage for more info."
+                        logger.error(f"ERROR: Event {count+1} of {len(events)} ({event}) - event tiltle not found!")
                     # GET EVENT DATE
                     dates = get_dates(soup, method=str(df_in.iloc[row]['date_method']), tag=str(df_in.iloc[row]['date_tag']), attr=str(df_in.iloc[row]['date_attr']), attr_name=str(
                         df_in.iloc[row]['date_attr_name']), date_indices=str(df_in.iloc[row]['date_indices']), date_delimiter=str(df_in.iloc[row]['date_delimiters']), date_connector=str(df_in.iloc[row]['date_connectors']))
@@ -323,13 +348,22 @@ def run_scraper(link, row, df_in):
                     # remove trailing colons e.g. Digital Event:
                     if len(location) > 0 and location[-1] == ':':
                         location = location[:-1]
-                    location_info = address_sniffer.sniff_sniff(location)
-                    postcode = location_info[0]
-                    town = location_info[1]
-                    council = location_info[2]
-                    council_abbr = location_info[3]
-                    location_search = ' '.join(location_info[4].split(','))
-                    short_location = location_info[5]
+                    if not "ERROR:" in location:
+                        location_info = address_sniffer.sniff_sniff(location)
+                        postcode = location_info[0]
+                        town = location_info[1]
+                        council = location_info[2]
+                        council_abbr = location_info[3]
+                        location_search = ' '.join(location_info[4].split(','))
+                        short_location = location_info[5]
+                    else:
+                        logger.error(f"ERROR: Event {count+1} of {len(events)} ({event}) - event location not found!")
+                        postcode = df_in.iloc[row]['alternative_address'].split(',')[2]
+                        town = df_in.iloc[row]['alternative_address'].split(',')[3]
+                        council = df_in.iloc[row]['alternative_address'].split(',')[0]
+                        council_abbr = df_in.iloc[row]['alternative_address'].split(',')[1]
+                        location_search = ' '.join(df_in.iloc[row]['alternative_address'].split(','))
+                        short_location = df_in.iloc[row]['alternative_address'].split(',')[0]
                     # GET EVENT CATEGORY
                     category = get_category(soup, method=str(df_in.iloc[row]['cat_method']), tag=str(df_in.iloc[row]['cat_tag']), attr=str(
                         df_in.iloc[row]['cat_attr']), attr_name=str(df_in.iloc[row]['cat_attr_name']), split=int(df_in.iloc[row]['cat_split']))
@@ -340,8 +374,8 @@ def run_scraper(link, row, df_in):
                         event_info = get_content(soup, method=str(df_in.iloc[row]['alt_info_method']), container = df_in.iloc[row]['alt_info_container'], tag=str(df_in.iloc[row]['alt_info_tag']), attr=str(
                             df_in.iloc[row]['alt_info_attr']), attr_name=str(df_in.iloc[row]['alt_info_attr_name']), split=int(df_in.iloc[row]['alt_info_split'])) 
                     event_info = check_punctuation_space(event_info)
-                    if len(event_info) > 500:
-                        event_info = event_info[:500] + '...'
+                    #truncate event info to <500 chars
+                    event_info = truncate_event_info(event_info, 400)
                     remove_list = ['[', ']', ' email protected']
                     for item in remove_list:
                         event_info = event_info.replace(item, "")
@@ -353,10 +387,8 @@ def run_scraper(link, row, df_in):
                     df_out.loc[db_out_row] = [event, title, full_date, print_date, date_info, sort_date, end_date, month, location, town,
                                             short_location, postcode, council, council_abbr, location_search, category, event_info, name, root, event_icon]
                     db_out_row += 1
-                    #!!!!!!REPORT OMITTED EVENTS!!!!!!!!
     else:
-        print(f"page not found: {link}")
-
+        logger.error(f"ERROR: Page not found: {link}!")
     return df_out
 
 
@@ -373,3 +405,4 @@ if __name__ == '__main__':
     #df_out = pd.read_csv("events_database.csv", header=0, index_col=None)
     df_out = event_post_processing(df_out)
     df_out.to_csv(df_out_path, index=False)
+    

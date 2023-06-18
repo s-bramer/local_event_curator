@@ -2,7 +2,9 @@ import pandas as pd
 import re
 from bs4 import BeautifulSoup
 import requests
+import logging
 
+logger = logging.getLogger(__name__)
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
@@ -25,28 +27,45 @@ COUNCIL_ABBR = {
     'Digital Event': 'oth',
 }
 
-
-def get_postcode(address: str):
-    """find postcode in address string or (if not) online with google"""
-    # 1. see if it is contained in the address string
-    postcodes = re.findall(
-        "[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", address)
+def get_postcode(address):
+    #1. see if postcode is contained in the address string
+    postcodes = re.findall("[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", address)
     if len(postcodes) > 0:
         # return f"{postcodes[0]} from address string (1)"
         return postcodes[0]
     else:
-        # 2. try to find postcode online
-        try:
-            r = requests.get(
-                f'https://www.google.com/search?q={address}+Wales+UK+Postcode', headers=headers, timeout=10)
-            soup = BeautifulSoup(r.content, "html5lib")
-            postcode = re.findall(
-                "[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", soup.text)[0]
-        except:
-            return "ERROR: postcode not found"
+        #2. try finding it via open streetmap API
+        base_url = "https://nominatim.openstreetmap.org/search"
+        params = {
+            "q": address,
+            "format": "json",
+            "countrycodes": "gb",
+            "addressdetails": 1
+        }
+        response = requests.get(base_url, params=params)
+        data = response.json()
+        
+        if response.status_code == 200 and data:
+            if len(data) > 0:
+                first_result = data[0]
+                if "address" in first_result and "postcode" in first_result["address"]:
+                    return first_result["address"]["postcode"]
+                else:
+                    return "ERROR: postcode not found"
+            else:
+                return "ERROR: postcode not found"
         else:
-            return postcode
-
+            #3. try to duckduckgo to find postcode (first postcode in search scrape text)
+            base_url = "https://duckduckgo.com/html/"
+            params = {"q": f"{address} Wales UK Postcode"}
+            r = requests.get(base_url, params=params, headers=headers, timeout=10)
+            soup = BeautifulSoup(r.content, "html5lib")
+            
+            if response.status_code == 200:
+                postcode = re.findall("[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", soup.text)[0]
+                return postcode
+            else:
+                return "ERROR: postcode not found"
 
 def get_council(postcode: str):
     """find council online at checkmypostcode.co.uk"""
@@ -83,7 +102,6 @@ def get_town(postcode: str):
     else:
         return town.strip()
 
-
 def sniff_sniff(address_string: str):
     """returns postcode, town, council and council_abbr from address string"""
     if address_string == "":
@@ -102,14 +120,17 @@ def sniff_sniff(address_string: str):
     else:
         postcode = get_postcode(address_string)
         if "ERROR" in postcode:
+            logger.error(f"ERROR: Postcode not found: {address_string}!")
             return 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX'
         else:
             council = get_council(postcode)
             if "ERROR" in council:
+                logger.error(f"ERROR: Council not found with postcode: {postcode}!")
                 return postcode, 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX'
             else:
                 town = get_town(postcode)
                 if "ERROR" in town:
+                    logger.error(f"ERROR: Town not found with postcode: {postcode}!")
                     return postcode, council, 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX'
                 else:
                     if town.lower() == "castle":
@@ -125,8 +146,7 @@ def sniff_sniff(address_string: str):
         df_adressess_db = pd.concat([df_adressess_db, new_row], axis=0, ignore_index=True)
         #df_adressess_db = pd.concat([df_adressess_db, new_row], ignore_index=True)
         df_adressess_db.to_csv("addresses_db.csv", index=False)
-        print("NEW ENTRY ADDED TO ADDRESS DATABASE!")
-    
+        logger.error(f" INFO: New Entry Added to address DB. {new_row.iloc[0].values.tolist()}")
     try:
         council_abbr = COUNCIL_ABBR[council]
     except:
@@ -134,3 +154,5 @@ def sniff_sniff(address_string: str):
     
     short_address = full_address.split(',')[0]
     return postcode, town, council, council_abbr, full_address, short_address
+
+# print(get_postcode(""))
