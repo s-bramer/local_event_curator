@@ -373,12 +373,16 @@ def run_scraper(link, row, df_in):
                     if event_info == "" or event_info in NO_INFO:
                         event_info = get_content(soup, method=str(df_in.iloc[row]['alt_info_method']), container = df_in.iloc[row]['alt_info_container'], tag=str(df_in.iloc[row]['alt_info_tag']), attr=str(
                             df_in.iloc[row]['alt_info_attr']), attr_name=str(df_in.iloc[row]['alt_info_attr_name']), split=int(df_in.iloc[row]['alt_info_split'])) 
-                    event_info = check_punctuation_space(event_info)
+                    if not "ERROR:" in location:
+                        event_info = check_punctuation_space(event_info)
+                        event_info = truncate_event_info(event_info, 400)
+                        remove_list = ['[', ']', ' email protected']
+                        for item in remove_list:
+                            event_info = event_info.replace(item, "")
+                    else:
+                        logger.error(f"ERROR: Event {count+1} of {len(events)} ({event}) - event location not found!")
+                        event_info = "No event information found. Please check event webpage for more details."
                     #truncate event info to <500 chars
-                    event_info = truncate_event_info(event_info, 400)
-                    remove_list = ['[', ']', ' email protected']
-                    for item in remove_list:
-                        event_info = event_info.replace(item, "")
                     # GET ADDITIONAL INFO
                     name = str(df_in.iloc[row]['name'])
                     event_icon = str(df_in.iloc[row]['logo'])
