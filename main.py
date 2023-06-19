@@ -62,14 +62,14 @@ mail = Mail(app)
 def home():
     print(request.method)
     with open('./events_database.csv', newline='', encoding="utf8") as csv_file:
-        csv_data = list(DictReader(csv_file))
-        update_time = csv_data[0]['update_date']
-        total_events = len(csv_data)
+        event_data = list(DictReader(csv_file))
+        update_time = event_data[0]['update_date']
+        total_events = len(event_data)
     with open('./event_pages.csv', newline='', encoding="utf8") as csv_file:
-        csv_data = list(DictReader(csv_file))
+        event_page_data = list(DictReader(csv_file))
         # remove duplicates based on column name
         list_of_event_pages = {
-            i['name']: i for i in reversed(csv_data)}.values()
+            i['name']: i for i in reversed(event_page_data)}.values()
     # BUTTONS:
     if request.method == "POST":
         # rerun the scraper to update results | CURRENTLY INACTIVE
@@ -98,9 +98,9 @@ def home():
             # return redirect(url_for('home'))
             return redirect("/")
         else:
-            return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
+            return render_template("index.html", events=event_data, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
 
-    return render_template("index.html", events=list_of_events, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
+    return render_template("index.html", events=event_data, pages=list_of_event_pages, time=update_time, event_count=total_events, year=THIS_YEAR)
 
 # PROGRESS BAR | CURRENTLY INACTIVE
 # @app.route("/ajaxprogressbar",methods=["POST","GET"])
