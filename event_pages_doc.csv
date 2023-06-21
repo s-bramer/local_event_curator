@@ -1,44 +1,55 @@
-Annotation for each of the fields in the event_pages table - provides site specific parameters for the web scraper,
-link,Link to web page were events are listed e.g. .../whatson/
-name,Name of the website
-logo,Link to website logo
-root,Root web page were events are listed e.g. ....com/
-address,"use ‘no’ if events have multiple addresses, otherwise provide address to be used for this webpage"
-events_container,"if events are listed in specific container, leave blank if not "
-events_container_attr,"if events container provided, enter container attribute name here"
-events_search,enter search string that will be used to identify links (hrefs) to events 
-events_mode,either ‘search’ : search for keyword in links or ‘direct’: directly targeting a specific task
-events_url_type,"events url are either listed with relative (to event link or root) or absolute paths i.e. options: relative, relative_root, absolute"
-title_method,"get title from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
-title_tag,name of tag - for title
-title_attr,type of attribute (e.g. class/id) - for title
-title_attr_name,name of attribute - for title
-title_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for title 
-date_method,get date from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim)
-date_tag,name of tag - for date
-date_attr,type of attribute (e.g. class/id) - for date
-date_attr_name,name of attribute - for date
-date_indices,comma separated list of ints to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for date
-date_delimiters,delimiters used to separate dates
-date_connectors,symbols used to connect dates
-date_info,this will always be displayed with a star to give date info (e.g. NT always has multiple dates on page)
-address_method,"if column ‘address’ is not ‘no’ then get address from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
-address_tag,name of tag - for address
-address_attr,type of attribute (e.g. class/id) - for address
-address_attr_name,name of attribute - for address
-address_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for address
-alt_address_method,same as above for alternative address if first attempt comes back empty
-alt_address_tag,same as above for alternative address if first attempt comes back empty
-alt_address_attr,same as above for alternative address if first attempt comes back empty
-alt_address_attr_name,same as above for alternative address if first attempt comes back empty
-alt_address_split,same as above for alternative address if first attempt comes back empty
-info_method,"get event info from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
-info_tag,name of tag - for info
-info_attr,type of attribute (e.g. class/id) - for info
-info_attr_name,name of attribute - for info
-info_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for info
-cat_method,"get event category from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
-cat_tag,name of tag - for category
-cat_attr,type of attribute (e.g. class/id) - for category
-cat_attr_name,name of attribute - for category
-cat_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for category
+Annotation for each of the fields in the event_pages table - provides site specific parameters for the web scraper,,
+link,link,Link to web page were events are listed e.g. .../whatson/
+name,name,Name of the website
+logo,logo,Link to website logo
+root,root,Root web page were events are listed e.g. ....com/
+address,address,"use ‘no’ if events have multiple addresses, otherwise provide address to be used for this webpage"
+alternative_address,alternative_address,alternative address if not found via address_sniffer method
+events_container,events_container,"if events are listed in specific container, leave blank if not "
+events_container_attr,events_container_attr,"if events container provided/needed, enter container attribute name here"
+events_search,events_search,enter search string that will be used to identify links (hrefs) to events 
+events_mode,events_mode,either ‘search’ : search for keyword in links or ‘direct’: directly targeting a specific task
+events_url_type,events_url_type,"events url are either listed with relative (to event link or root) or absolute paths i.e. options: relative, relative_root, absolute"
+title_method,title_method,"get title from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
+title_container,title_container,"if title container provided/needed, enter container attribute name here"
+title_tag,title_tag,name of tag - for title
+title_attr,title_attr,type of attribute (e.g. class/id) - for title
+title_attr_name,title_attr_name,name of attribute - for title
+title_split,title_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for title 
+date_method,date_method,get date from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim)
+date_tag,date_tag,name of tag - for date
+date_attr,date_attr,type of attribute (e.g. class/id) - for date
+date_attr_name,date_attr_name,name of attribute - for date
+date_indices,date_indices,comma separated list of ints to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for date
+date_delimiters,date_delimiters,delimiters used to separate dates
+date_connectors,date_connectors,symbols used to connect dates
+date_info,date_info,this will always be displayed with a star to give date info (e.g. NT always has multiple dates on page)
+address_method,address_method,"if column ‘address’ is not ‘no’ then get address from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
+address_container,address_container,"if address container provided/needed, enter container attribute name here"
+address_tag,address_tag,name of tag - for address
+address_attr,address_attr,type of attribute (e.g. class/id) - for address
+address_attr_name,address_attr_name,name of attribute - for address
+address_split,address_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for address
+alt_address_method,alt_address_method,same as above for alternative address if first attempt comes back empty
+alt_address_container,alt_address_container,same as above for alternative address if first attempt comes back empty
+alt_address_tag,alt_address_tag,same as above for alternative address if first attempt comes back empty
+alt_address_attr,alt_address_attr,same as above for alternative address if first attempt comes back empty
+alt_address_attr_name,alt_address_attr_name,same as above for alternative address if first attempt comes back empty
+alt_address_split,alt_address_split,same as above for alternative address if first attempt comes back empty
+info_method,info_method,"get event info from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
+info_container,info_container,"if info container provided/needed, enter container attribute name here"
+info_tag,info_tag,name of tag - for info
+info_attr,info_attr,type of attribute (e.g. class/id) - for info
+info_attr_name,info_attr_name,name of attribute - for info
+info_split,info_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for info
+alt_info_method,alt_info_method,same as above for alternative info if first attempt comes back empty
+alt_info_container,alt_info_container,same as above for alternative info if first attempt comes back empty
+alt_info_tag,alt_info_tag,same as above for alternative info if first attempt comes back empty
+alt_info_attr,alt_info_attr,same as above for alternative info if first attempt comes back empty
+alt_info_attr_name,alt_info_attr_name,same as above for alternative info if first attempt comes back empty
+alt_info_split,alt_info_split,same as above for alternative info if first attempt comes back empty
+cat_method,cat_method,"get event category from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
+cat_tag,cat_tag,name of tag - for category
+cat_attr,cat_attr,type of attribute (e.g. class/id) - for category
+cat_attr_name,cat_attr_name,name of attribute - for category
+cat_split,cat_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for category

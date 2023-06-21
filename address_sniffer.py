@@ -109,14 +109,10 @@ def sniff_sniff(address_string: str):
     # 1. check if address already in database
     df_adressess_db = pd.read_csv("addresses_db.csv", header=0, index_col=None)
     if address_string in df_adressess_db['name'].values:
-        postcode = (
-            df_adressess_db.loc[df_adressess_db['name'] == address_string, 'postcode'].iloc[0])
-        town = (df_adressess_db.loc[df_adressess_db['name']
-                == address_string, 'town'].iloc[0])
-        council = (
-            df_adressess_db.loc[df_adressess_db['name'] == address_string, 'council'].iloc[0])
-        full_address = (
-            df_adressess_db.loc[df_adressess_db['name'] == address_string, 'full_address'].iloc[0])
+        postcode = (df_adressess_db.loc[df_adressess_db['name'] == address_string, 'postcode'].iloc[0])
+        town = (df_adressess_db.loc[df_adressess_db['name']== address_string, 'town'].iloc[0])
+        council = (df_adressess_db.loc[df_adressess_db['name'] == address_string, 'council'].iloc[0])
+        full_address = (df_adressess_db.loc[df_adressess_db['name'] == address_string, 'full_address'].iloc[0])
     else:
         postcode = get_postcode(address_string)
         if "ERROR" in postcode:
@@ -154,5 +150,3 @@ def sniff_sniff(address_string: str):
     
     short_address = full_address.split(',')[0]
     return postcode, town, council, council_abbr, full_address, short_address
-
-# print(get_postcode(""))

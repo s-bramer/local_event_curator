@@ -68,8 +68,7 @@ def home():
     with open('./event_pages.csv', newline='', encoding="utf8") as csv_file:
         event_page_data = list(DictReader(csv_file))
         # remove duplicates based on column name
-        list_of_event_pages = {
-            i['name']: i for i in reversed(event_page_data)}.values()
+        list_of_event_pages = {i['name']: i for i in reversed(event_page_data)}.values()
     # BUTTONS:
     if request.method == "POST":
         # rerun the scraper to update results | CURRENTLY INACTIVE
