@@ -293,7 +293,7 @@ def run_scraper(link, row, df_in):
                 response = requests.get(event, headers=headers, timeout=10)
                 soup = BeautifulSoup(response.content, "html5lib")
             except Exception as e:
-                logger.error("ERROR: Event page not found! %s", str(e))
+                logger.error("ERROR: Event page not found! {event} Error: %s", str(e))
             else:
                 #------------------
                 # GET EVENT TITLE #
