@@ -22,9 +22,9 @@ CATEGORIES = ['event', 'digital_event', 'course', 'exhibition', 'performance']
 
 # text that needs to be replaced in titles (due to casing formatting)
 REPLACE_ME = {
-    'Bbc': 'BBC',
-    'Swam': 'SWAM',
-    'Uwc': 'UWC',
+    'Bbc ': 'BBC',
+    'Swam ': 'SWAM',
+    'Uwc ': 'UWC',
     'Lgbtq': 'LGBTQ',
     'Nhs': 'NHS',
     'Nspcc': 'NSPCC',
@@ -222,9 +222,9 @@ def get_category(soup, method: str, tag: str, attr: str, attr_name: str, split: 
     return category
 
 def event_post_processing(df: pd.DataFrame):
+    """event sorting, removing duplicates, removing events with certain discard strings"""
     event_count = len(df)
     logger.error(f"INFO: Post-processing {event_count} events...")
-    """sorting, removing duplicates, removing events with certain strings"""
     dicard_list_title = ['Cancelled', 'Luminatae']
     discard_list_location = ['Fully\sBooked']
     # remove rows containing discard keywords
@@ -240,12 +240,14 @@ def event_post_processing(df: pd.DataFrame):
     df = df.loc[(df['end_date'] >= date.today().strftime('%Y-%m-%d'))]
     # add max_date column to get the maximum date of duplicate events (used for end date)
     df['max_date'] = df.groupby(['title'])['sort_date'].transform(max)
+    # create mask to exclude rows containing 'date not found' in the 'sort_date' column from dupl count and dupl remove
+    mask = df['sort_date'] != 'date not found'
     # add dupl_count column to identify duplicate rows
-    df['dupl_count'] = df.groupby(['title', 'location'])[
-        'sort_date'].transform('size')
+    df['dupl_count'] = df[mask].groupby(['title', 'location'])['sort_date'].transform('size')
     # remove title duplicates and keep first date (min = start date)
-    df.drop_duplicates(subset=['title', 'location'],
-                       keep='first', inplace=True, ignore_index=True)
+    df_no_dupl = df[mask].drop_duplicates(subset=['title', 'location'],keep='first')
+    df = pd.concat([df_no_dupl, df[~mask]])
+    df.reset_index(drop=True, inplace=True)
     # add column for relative day count (past, present,future)
     df["ppf"] = ""
     current_month = ""
@@ -253,8 +255,7 @@ def event_post_processing(df: pd.DataFrame):
         # if duplicate row, use max_date as end_date (if its different to start date)
         if df.loc[row, ('dupl_count')] > 1 and df.loc[row, ('sort_date')] != df.loc[row, ('max_date')]:
             df.loc[row, ('print_date')] = df.loc[row, ('print_date')] + ' - ' + \
-                datetime.strptime(
-                    df.loc[row, ('max_date')], '%Y-%m-%d').strftime('%a %d %b')
+                datetime.strptime(df.loc[row, ('max_date')], '%Y-%m-%d').strftime('%a %d %b')
         # identify todays, future and past events (to be omitted)
         if df.loc[row, ('sort_date')] != 'date not found':
             sort_time = datetime.strptime(
@@ -293,7 +294,7 @@ def run_scraper(link, row, df_in):
                 response = requests.get(event, headers=headers, timeout=10)
                 soup = BeautifulSoup(response.content, "html5lib")
             except Exception as e:
-                logger.error("ERROR: Event page not found! {event} Error: %s", str(e))
+                logger.error(f"ERROR: Event page not found! {event} Error: %s", str(e))
             else:
                 #------------------
                 # GET EVENT TITLE #
