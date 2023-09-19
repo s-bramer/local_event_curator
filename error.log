@@ -1,10 +1,8 @@
-2023-07-05 21:09:40,449 - date_muncher - WARNING: Date not recognised: Open until 8pm
-2023-07-05 21:09:53,973 - __main__ - ERROR: Event page not found! {event} Error: HTTPSConnectionPool(host='museum.wales', port=443): Read timed out. (read timeout=10)
-2023-07-05 21:10:04,721 - __main__ - ERROR: Event page not found! {event} Error: HTTPSConnectionPool(host='museum.wales', port=443): Read timed out. (read timeout=10)
-2023-07-05 21:10:08,070 - date_muncher - WARNING: Date not recognised: Daily from 22nd July – 3rd Sept, 10.30am, 11.30am, 12.30pm, 1.30pm, 2.30pm, 3.30pm, 4.15pm
-2023-07-05 21:10:32,463 - date_muncher - WARNING: Date not recognised: Each Thursday during August, 12.30 – 3.30pm
-2023-07-05 21:10:56,109 - __main__ - WARNING: Event 6 of 6 (https://www.visitthevale.com/events/walking-festival-2023) - event location not found! Alternative Address used.
-2023-07-05 21:13:25,331 - date_muncher - WARNING: Date not recognised: When: Throughout July 2023
-2023-07-05 21:14:38,924 - __main__ - INFO: Post-processing 338 events...
-2023-07-05 21:14:38,937 - __main__ - INFO: 4 event removed, containing discard keywords!
-2023-07-05 21:14:38,938 - __main__ - INFO: 62 event removed, not found or outside!
+2023-09-19 22:11:44,577 - date_muncher - WARNING: Date not recognised: First Thursday of each month - click for all dates
+2023-09-19 22:12:00,384 - address_sniffer -  INFO: New Entry Added to address DB. ['Big Pit National Coal Museum                         Fully Booked', 'Big Pit National Coal Museum                         Fully Booked, NP4 9XP', 'NP4 9XP', 'Torfaen', '']
+2023-09-19 22:13:02,489 - address_sniffer -  INFO: New Entry Added to address DB. ['St Donats Castle, St Donats, CF61 1WF', 'St Donats Castle, St Donats, CF61 1WF', 'CF61 1WF', 'Vale of Glamorgan', "St Donat's"]
+2023-09-19 22:13:06,125 - address_sniffer -  INFO: New Entry Added to address DB. ['St Donats Castle, St Donats', 'St Donats Castle, St Donats, CF61 1WF', 'CF61 1WF', 'Vale of Glamorgan', "St Donat's"]
+2023-09-19 22:15:04,686 - date_muncher - WARNING: Date not recognised: When: 20th September. Doors open at 10am
+2023-09-19 22:16:24,329 - __main__ - INFO: Post-processing 284 events...
+2023-09-19 22:16:24,337 - __main__ - INFO: 17 event removed, containing discard keywords!
+2023-09-19 22:16:24,337 - __main__ - INFO: 41 event removed, not found or outside!
