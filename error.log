@@ -1,8 +1,6 @@
-2023-09-19 22:11:44,577 - date_muncher - WARNING: Date not recognised: First Thursday of each month - click for all dates
-2023-09-19 22:12:00,384 - address_sniffer -  INFO: New Entry Added to address DB. ['Big Pit National Coal Museum                         Fully Booked', 'Big Pit National Coal Museum                         Fully Booked, NP4 9XP', 'NP4 9XP', 'Torfaen', '']
-2023-09-19 22:13:02,489 - address_sniffer -  INFO: New Entry Added to address DB. ['St Donats Castle, St Donats, CF61 1WF', 'St Donats Castle, St Donats, CF61 1WF', 'CF61 1WF', 'Vale of Glamorgan', "St Donat's"]
-2023-09-19 22:13:06,125 - address_sniffer -  INFO: New Entry Added to address DB. ['St Donats Castle, St Donats', 'St Donats Castle, St Donats, CF61 1WF', 'CF61 1WF', 'Vale of Glamorgan', "St Donat's"]
-2023-09-19 22:15:04,686 - date_muncher - WARNING: Date not recognised: When: 20th September. Doors open at 10am
-2023-09-19 22:16:24,329 - __main__ - INFO: Post-processing 284 events...
-2023-09-19 22:16:24,337 - __main__ - INFO: 17 event removed, containing discard keywords!
-2023-09-19 22:16:24,337 - __main__ - INFO: 41 event removed, not found or outside!
+2023-09-24 08:36:13,551 - date_muncher - WARNING: Date not recognised: First Thursday of each month - click for all dates
+2023-09-24 08:37:59,901 - address_sniffer -  INFO: New Entry Added to address DB. ['Vale of Glamorgan, Cowbridge Town Hall, High Street, Cowbridge, Vale of Glamorgan, CF71 7DD', 'Vale of Glamorgan, Cowbridge Town Hall, High Street, Cowbridge, Vale of Glamorgan, CF71 7DD', 'CF71 7DD', 'Vale of Glamorgan', 'Cowbridge']
+2023-09-24 08:39:48,706 - date_muncher - WARNING: Date not recognised: When: 20th September. Doors open at 10am
+2023-09-24 08:41:33,695 - __main__ - INFO: Post-processing 284 events...
+2023-09-24 08:41:33,700 - __main__ - INFO: 12 event removed, containing discard keywords!
+2023-09-24 08:41:33,703 - __main__ - INFO: 34 event removed, not found or outside!
