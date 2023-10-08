@@ -76,7 +76,7 @@ def get_all_events(link: str,  container: str, container_attr: str, search: str,
         return "ERROR: page not found (get_all_events: none)"
     all_events = []
     try:
-        response = requests.get(link, headers=headers, timeout=10)
+        response = requests.get(link, headers=headers, timeout=100)
         soup = BeautifulSoup(response.content, "html5lib")
     except:
         return "ERROR: page not found (get_all_events)"
@@ -291,7 +291,7 @@ def run_scraper(link, row, df_in):
             print(f"Processing event {count+1} of {len(events)} ({event})")
             # get the individual event page
             try:
-                response = requests.get(event, headers=headers, timeout=10)
+                response = requests.get(event, headers=headers, timeout=100)
                 soup = BeautifulSoup(response.content, "html5lib")
             except Exception as e:
                 logger.error(f"ERROR: Event page not found! {event} Error: %s", str(e))

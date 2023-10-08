@@ -1,6 +1,5 @@
-2023-09-24 08:36:13,551 - date_muncher - WARNING: Date not recognised: First Thursday of each month - click for all dates
-2023-09-24 08:37:59,901 - address_sniffer -  INFO: New Entry Added to address DB. ['Vale of Glamorgan, Cowbridge Town Hall, High Street, Cowbridge, Vale of Glamorgan, CF71 7DD', 'Vale of Glamorgan, Cowbridge Town Hall, High Street, Cowbridge, Vale of Glamorgan, CF71 7DD', 'CF71 7DD', 'Vale of Glamorgan', 'Cowbridge']
-2023-09-24 08:39:48,706 - date_muncher - WARNING: Date not recognised: When: 20th September. Doors open at 10am
-2023-09-24 08:41:33,695 - __main__ - INFO: Post-processing 284 events...
-2023-09-24 08:41:33,700 - __main__ - INFO: 12 event removed, containing discard keywords!
-2023-09-24 08:41:33,703 - __main__ - INFO: 34 event removed, not found or outside!
+2023-10-08 11:49:36,017 - date_muncher - WARNING: Date not recognised: First Thursday of each month - click for all dates
+2023-10-08 11:52:39,841 - date_muncher - WARNING: Date not recognised: When: Sunday 5th November: 11am, 12pm & 1pm
+2023-10-08 11:53:51,313 - __main__ - INFO: Post-processing 291 events...
+2023-10-08 11:53:51,329 - __main__ - INFO: 13 event removed, containing discard keywords!
+2023-10-08 11:53:51,331 - __main__ - INFO: 43 event removed, not found or outside!
