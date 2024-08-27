@@ -30,24 +30,24 @@ address_tag,address_tag,name of tag - for address
 address_attr,address_attr,type of attribute (e.g. class/id) - for address
 address_attr_name,address_attr_name,name of attribute - for address
 address_split,address_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for address
-alt_address_method,alt_address_method,same as above for alternative address if first attempt comes back empty
-alt_address_container,alt_address_container,same as above for alternative address if first attempt comes back empty
-alt_address_tag,alt_address_tag,same as above for alternative address if first attempt comes back empty
-alt_address_attr,alt_address_attr,same as above for alternative address if first attempt comes back empty
-alt_address_attr_name,alt_address_attr_name,same as above for alternative address if first attempt comes back empty
-alt_address_split,alt_address_split,same as above for alternative address if first attempt comes back empty
+alt_address_method,alt_address_method,"same as above for alternative address if first attempt comes back empty, original used again if no alternative loc known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_address_container,alt_address_container,"same as above for alternative address if first attempt comes back empty, original used again if no alternative loc known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_address_tag,alt_address_tag,"same as above for alternative address if first attempt comes back empty, original used again if no alternative loc known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_address_attr,alt_address_attr,"same as above for alternative address if first attempt comes back empty, original used again if no alternative loc known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_address_attr_name,alt_address_attr_name,"same as above for alternative address if first attempt comes back empty, original used again if no alternative loc known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_address_split,alt_address_split,"same as above for alternative address if first attempt comes back empty, original used again if no alternative loc known, needed to cover if nothing found on first attempt and alt is triggered"
 info_method,info_method,"get event info from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
 info_container,info_container,"if info container provided/needed, enter container attribute name here"
 info_tag,info_tag,name of tag - for info
 info_attr,info_attr,type of attribute (e.g. class/id) - for info
 info_attr_name,info_attr_name,name of attribute - for info
 info_split,info_split,int to select the item of split list (zero indexed) if multiple items (use -999 if no split) - for info
-alt_info_method,alt_info_method,same as above for alternative info if first attempt comes back empty
-alt_info_container,alt_info_container,same as above for alternative info if first attempt comes back empty
-alt_info_tag,alt_info_tag,same as above for alternative info if first attempt comes back empty
-alt_info_attr,alt_info_attr,same as above for alternative info if first attempt comes back empty
-alt_info_attr_name,alt_info_attr_name,same as above for alternative info if first attempt comes back empty
-alt_info_split,alt_info_split,same as above for alternative info if first attempt comes back empty
+alt_info_method,alt_info_method,"same as above for alternative info if first attempt comes back empty, original used again if no alternative info known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_info_container,alt_info_container,"same as above for alternative info if first attempt comes back empty, original used again if no alternative info known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_info_tag,alt_info_tag,"same as above for alternative info if first attempt comes back empty, original used again if no alternative info known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_info_attr,alt_info_attr,"same as above for alternative info if first attempt comes back empty, original used again if no alternative info known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_info_attr_name,alt_info_attr_name,"same as above for alternative info if first attempt comes back empty, original used again if no alternative info known, needed to cover if nothing found on first attempt and alt is triggered"
+alt_info_split,alt_info_split,"same as above for alternative info if first attempt comes back empty, original used again if no alternative info known, needed to cover if nothing found on first attempt and alt is triggered"
 cat_method,cat_method,"get event category from specific single ‘tag’, from multiple ‘tags’, from ‘tag_attr’ tag/attribute combination or ‘tags_attr’ multiple tags/attribute (provide split delim) or ‘meta’ tag"
 cat_tag,cat_tag,name of tag - for category
 cat_attr,cat_attr,type of attribute (e.g. class/id) - for category

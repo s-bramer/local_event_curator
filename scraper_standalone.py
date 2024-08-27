@@ -32,7 +32,7 @@ REPLACE_ME = {
 
 
 # if these are received from methods they will be dismissed i.e. alternative method triggered
-NO_ADDRESS = ['Various Locations']
+NO_ADDRESS = ['Various Locations', 'Various locationsa']
 NO_INFO = ['%']
 
 def tag_visible(element):
@@ -336,8 +336,11 @@ def run_scraper(link, row, df_in):
                 # remove trailing colons e.g. Digital Event:
                 if len(location) > 0 and location[-1] == ':':
                     location = location[:-1]
+                # run location sniffer (get postcode etc.) if valid location received
                 if not "ERROR:" in location and location != "":
                     location_info = address_sniffer.sniff_sniff(location)
+                # fill location parameters, use alternative loc if no valid loc found or error returned from sniffer    
+                if not "ERROR:" in location and location != "" and not set(location_info) == {'XXXXXX'}:    
                     postcode = location_info[0]
                     if str(df_in.iloc[row]['address']) == 'no': 
                         town = location_info[1]

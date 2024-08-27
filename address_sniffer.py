@@ -104,8 +104,6 @@ def get_town(postcode: str):
 
 def sniff_sniff(address_string: str):
     """returns postcode, town, council and council_abbr from address string"""
-    if address_string == "":
-        return 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX'
     # 1. check if address already in database
     df_adressess_db = pd.read_csv("addresses_db.csv", header=0, index_col=None)
     if address_string in df_adressess_db['name'].values:
@@ -114,7 +112,11 @@ def sniff_sniff(address_string: str):
         council = (df_adressess_db.loc[df_adressess_db['name'] == address_string, 'council'].iloc[0])
         full_address = (df_adressess_db.loc[df_adressess_db['name'] == address_string, 'full_address'].iloc[0])
     else:
-        postcode = get_postcode(address_string)
+        try:
+            postcode = get_postcode(address_string)
+        except:
+            logger.error(f"ERROR: Postcode not found: >{address_string}<!")
+            return 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX'
         if "ERROR" in postcode:
             logger.error(f"ERROR: Postcode not found: {address_string}!")
             return 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX', 'XXXXXX'

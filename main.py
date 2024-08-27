@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from threading import Thread
 from csv import DictReader
-from flask import Flask, render_template, Markup, request, url_for, redirect, flash, jsonify
+from flask import Flask, render_template, request, url_for, redirect, flash, jsonify
 from flask_mail import Mail, Message
 # from flask_track_usage import TrackUsage
 # from flask_track_usage.storage.sql import SQLStrorage
@@ -118,4 +118,4 @@ def home():
 #     return json.dumps(statusList)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
