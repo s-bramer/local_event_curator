@@ -1,3 +1,4 @@
+from email.mime import base
 import date_muncher
 import address_sniffer
 from bs4 import BeautifulSoup
@@ -9,6 +10,9 @@ import pandas as pd
 import re
 import sys
 import logging
+import html
+from urllib.parse import urljoin
+from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error
 
 # configure error logger
 logging.basicConfig(level=logging.ERROR, filename='error.log', filemode='w', format='%(asctime)s - %(name)s - %(message)s')
@@ -45,7 +49,7 @@ def tag_visible(element):
 
 def format_title(s: str):
     """proper casing for the event description with a few exceptions from dict REPLACE_ME"""
-    s = re.sub(r"[A-Za-z]+('[A-Za-z]+)?",
+    s = re.sub(r"\b(?!\d+(st|nd|rd|th)\b)[A-Za-z]+('[A-Za-z]+)?",
                lambda word: word.group(0).capitalize(), s)
     for key, value in REPLACE_ME.items():
         s = s.replace(key, value)
@@ -70,22 +74,88 @@ def truncate_event_info(text:str, limit:int):
         truncated_text = truncated_text[:last_whitespace] + "..."
     return truncated_text 
 
+def render_soup(url: str, wait_selector: str | None = None, timeout_ms: int = 15000, headless: bool = True) -> BeautifulSoup:
+    """Render a webpage using Playwright and return a BeautifulSoup object of the rendered HTML."""
+    with sync_playwright() as p:
+        try:
+            browser = p.chromium.launch(headless=headless)
+        except Error:
+            browser = p.chromium.launch(channel="chrome", headless=headless)
+
+        ctx = browser.new_context(
+            user_agent=("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"),
+            locale="en-GB",
+            timezone_id="Europe/London",
+            ignore_https_errors=True,
+            extra_http_headers={"Accept-Language": "en-GB,en;q=0.9"},
+        )
+
+        # (Optional) trim noise so loads settle faster
+        ctx.route("**/*", lambda route: route.abort() if route.request.resource_type in {"media","font","image"} else route.continue_())
+
+        # stealth-y bit
+        ctx.add_init_script("Object.defineProperty(navigator,'webdriver',{get:()=>undefined});")
+
+        page = ctx.new_page()
+        page.set_default_navigation_timeout(timeout_ms)
+
+        # 1) Try fast load states first; avoid 'networkidle'
+        try:
+            page.goto(url, wait_until="domcontentloaded")
+            # let JS run a tick
+            page.wait_for_load_state("load", timeout=5000)
+        except PlaywrightTimeout:
+            # as a last resort, just navigate without waiting
+            page.goto(url, wait_until="commit")
+
+        # 2) Dismiss common cookie banners (best-effort, ignore failures)
+        for sel in ["button:has-text('Accept')",
+                    "button:has-text('I agree')",
+                    "button:has-text('Agree')",
+                    "[aria-label='accept cookies']",
+                    "button[mode='primary']:has-text('Accept')"]:
+            try:
+                page.locator(sel).first.click(timeout=1500)
+                break
+            except Exception:
+                pass
+
+        # 3) If caller provided something to wait for, wait for it to be attached (not visible)
+        if wait_selector:
+            try:
+                page.wait_for_selector(wait_selector, state="attached", timeout=8000)
+            except PlaywrightTimeout:
+                pass
+
+        html = page.content()
+        ctx.close()
+        browser.close()
+
+    return BeautifulSoup(html, "lxml")
+
 def get_all_events(link: str,  container: str, container_attr: str, search: str, root: str, type="absolute", method="search"):
     """Returns all events urls from a webpage"""
+    all_events = [] 
+    if method == "JSRender":
+        soup = render_soup(link)
+    else:
+        try:
+            response = requests.get(link, headers=headers, timeout=100)
+            soup = BeautifulSoup(response.content, "html5lib")
+        except Exception as e:
+            logger.error(f"Error occurred: {e}")
+            return "ERROR: page not found (get_all_events)"
+        
     if method == 'none':
         return "ERROR: page not found (get_all_events: none)"
-    all_events = []
-    try:
-        response = requests.get(link, headers=headers, timeout=100)
-        soup = BeautifulSoup(response.content, "html5lib")
-    except:
-        return "ERROR: page not found (get_all_events)"
     else:
         # if container passed step into it
         if not pd.isna(container):
             soup = soup.find("div", attrs={container_attr: container})
         # searching for a specific string in the href
-        if method == "search":
+        if method == "search" or method == "JSRender":
+            # print(f"Searching for: {search}")
             try:
                 for tag in soup.find_all(href=re.compile(search)):
                     all_events.append(tag.get('href'))
@@ -95,6 +165,16 @@ def get_all_events(link: str,  container: str, container_attr: str, search: str,
         elif method == "direct":
             for tag in soup.find_all('a', attrs={"class": search}):
                 all_events.append(tag.get('href'))
+        elif method == "API":
+            response = requests.get(search, headers=headers)
+            data = response.json()
+            # Explore the structure
+            all_events = set()
+
+            for item in data:
+                event_url = item.get("event_url")
+                if event_url:
+                    all_events.add(event_url)
         else:
             print("get_all_events, no valid method selected.")
             sys.exit()
@@ -225,17 +305,17 @@ def event_post_processing(df: pd.DataFrame):
     """event sorting, removing duplicates, removing events with certain discard strings"""
     event_count = len(df)
     logger.error(f"INFO: Post-processing {event_count} events...")
-    dicard_list_title = ['Cancelled', 'Luminatae']
-    discard_list_location = ['Fully\sBooked']
+    dicard_list_title = ['Cancelled', 'Luminatae'] #discard keywords in title
+    discard_list_location = ['Fully\sBooked', 'Cancelled'] # discard keywords in location
     # remove rows containing discard keywords
     df = df[df["title"].str.contains('|'.join(dicard_list_title)) == False]
     df = df[df["location"].str.contains('|'.join(discard_list_location)) == False]
     df = df.sort_values(by='sort_date', ascending=True, ignore_index=True)
-    logger.error(f"INFO: {event_count - len(df)} event removed, containing discard keywords!")
+    logger.error(f"INFO: {event_count - len(df)} event(s) removed, containing discard keywords!")
     # remove items that are marked with "page not found" or are "out" of the catchment area
     df = df[df["title"] != "page not found"]
     df = df[df["council_abbr"] != "out"]
-    logger.error(f"INFO: {event_count - len(df)} event removed, not found or outside!")
+    logger.error(f"INFO: {event_count - len(df)} event(s) removed, not found or outside!")
     # remove row with end_date > today (expired)
     df = df.loc[(df['end_date'] >= date.today().strftime('%Y-%m-%d'))]
     # add max_date column to get the maximum date of duplicate events (used for end date)
@@ -280,19 +360,23 @@ def run_scraper(link, row, df_in):
     # GATHER INFO ON ALL EVENTS AND SAVE THEM IN DATABASE (CSV)
     db_out_row = 0  # row in output df
     title = ""
+    method=str(df_in.iloc[row]['events_mode'])
     df_out = pd.DataFrame(columns=['link', 'title', 'full_date', 'print_date', 'date_info', 'sort_date', 'end_date', 'month', 'location',
                           'town', 'short_location', 'postcode', 'council', 'council_abbr', 'location_search', 'category', 'info', 'name', 'root', 'event_icon'])
     # get list of individual event pages from main site
     events = get_all_events(link, container=df_in.iloc[row]['events_container'], container_attr=df_in.iloc[row]['events_container_attr'], search=str(
-        df_in.iloc[row]['events_search']), root=str(df_in.iloc[row]['root']), type=str(df_in.iloc[row]['events_url_type']), method=str(df_in.iloc[row]['events_mode']))
+        df_in.iloc[row]['events_search']), root=str(df_in.iloc[row]['root']), type=str(df_in.iloc[row]['events_url_type']), method=method)
     if not "ERROR:" in events:
         #iterate through all events and extract information 
         for count, event in enumerate(events):
             print(f"Processing event {count+1} of {len(events)} ({event})")
             # get the individual event page
             try:
-                response = requests.get(event, headers=headers, timeout=100)
-                soup = BeautifulSoup(response.content, "html5lib")
+                if method == "JSRender":
+                    soup = render_soup(link)
+                else:
+                    response = requests.get(event, headers=headers, timeout=100)
+                    soup = BeautifulSoup(response.content, "html5lib")
             except Exception as e:
                 logger.error(f"ERROR: Event page not found! {event} Error: %s", str(e))
             else:
@@ -379,6 +463,7 @@ def run_scraper(link, row, df_in):
                     remove_list = ['[', ']', ' email protected']
                     for item in remove_list:
                         event_info = event_info.replace(item, "")
+                    event_info = html.unescape(event_info)
                 else:
                     logger.error(f"ERROR: Event {count+1} of {len(events)} ({event}) - event info not found!")
                     event_info = "No event information found. Please check event webpage for more details."
@@ -404,6 +489,8 @@ if __name__ == '__main__':
     df_out = pd.DataFrame()
     for i, row in enumerate(range(0, len(df_in))):
         link = str(df_in.iloc[row]['link'])
+        # print(f"link: {link}")
+        # run scraper for each event page
         df_out = pd.concat(objs=[df_out, run_scraper(link, row, df_in)])
 
     # Post-process and save dataframe
