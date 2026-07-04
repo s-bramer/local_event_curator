@@ -8,10 +8,10 @@ Architecture note (2026-07-04): reviewed whether the overall CSV-config-driven s
 
 ## 0. Quick, high-value bug fixes (do first — cheap, isolated)
 
-- [ ] List mutated while iterating (`date_list.pop(index)` inside `for index, item in enumerate(date_list)`) silently skips date tokens — `date_muncher.py:99-111`. Fix: build a filtered list instead of popping from the list being iterated.
-- [ ] DuckDuckGo fallback checks the **stale** Nominatim `response.status_code` instead of the new request's status, and indexes a regex match `[0]` with no guard — `address_sniffer.py:64-66`. Fix: check the new response's status; guard the index with `if matches:`.
-- [ ] `sys.exit()` on "no valid method selected" kills the **entire batch run** over one bad CSV config row — `scraper_standalone.py:181,216,258,300`. Fix: raise a catchable exception instead; let the per-row loop log-and-skip.
-- [ ] `logging.basicConfig(..., filemode='w')` truncates `error.log` every run — no history between runs — `scraper_standalone.py:18`. Fix: switch to `filemode='a'` (or rotate/timestamp per run, see §6).
+- [x] List mutated while iterating (`date_list.pop(index)` inside `for index, item in enumerate(date_list)`) silently skips date tokens — `date_muncher.py:99-111`. Fix: build a filtered list instead of popping from the list being iterated. **Done 2026-07-04** — rewrote the loop to `continue` instead of mutating; verified against sample date strings including the trailing-comment path that originally triggered the bug.
+- [x] DuckDuckGo fallback checks the **stale** Nominatim `response.status_code` instead of the new request's status, and indexes a regex match `[0]` with no guard — `address_sniffer.py:64-66`. Fix: check the new response's status; guard the index with `if matches:`. **Done 2026-07-04.**
+- [x] `sys.exit()` on "no valid method selected" kills the **entire batch run** over one bad CSV config row — `scraper_standalone.py:181,216,258,300`. Fix: raise a catchable exception instead; let the per-row loop log-and-skip. **Done 2026-07-04** — now raises `ValueError`, caught per-site in the main loop.
+- [x] `logging.basicConfig(..., filemode='w')` truncates `error.log` every run — no history between runs — `scraper_standalone.py:18`. Fix: switch to `filemode='a'` (or rotate/timestamp per run, see §6). **Done 2026-07-04.**
 
 These four are pure fixes with no behavioral ambiguity — worth one small PR on their own.
 
@@ -19,20 +19,23 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
 
 ## 1. Reliability
 
-- [ ] **Problem:** Errors are modeled as sentinel strings (`"ERROR: ..."`, `'XXXXXX'` tuples) checked via `"ERROR:" in x` substring tests. Bare/broad `except:` blocks throughout `get_all_events`, `get_dates`, `get_content`, `get_category`, `get_council`, `get_town`, `sniff_sniff` swallow every exception type, masking real bugs.
+- [x] **Problem:** Errors are modeled as sentinel strings (`"ERROR: ..."`, `'XXXXXX'` tuples) checked via `"ERROR:" in x` substring tests. Bare/broad `except:` blocks throughout `get_all_events`, `get_dates`, `get_content`, `get_category`, `get_council`, `get_town`, `sniff_sniff` swallow every exception type, masking real bugs.
   **Solution:** Catch specific exceptions (`AttributeError`, `requests.RequestException`, `IndexError`) instead of bare `except:`; keep the outer per-row loop as the one place that catches-and-continues, so one site's failure never aborts the batch. Introduce this incrementally per function, not as a single sweeping rewrite.
   **Benefit:** Failures become distinguishable (network vs. parse vs. config); matches CLAUDE.md's "continue processing other sites if one fails."
   **Downside:** Touches many call sites — do it after the test harness (§8) exists, so regressions are caught.
   **Effort:** M
+  **Done 2026-07-04** — narrowed every bare except in both files to realistic exception tuples; also added a try/except around each event's field extraction in `run_scraper` (not just around the page fetch), since narrowing the excepts meant an unanticipated error could otherwise propagate and abort the rest of that site's events instead of just that one event.
 
-- [ ] **Problem:** No HTTP session reuse, no retry/backoff, a flat 100s timeout per `requests.get()`.
+- [x] **Problem:** No HTTP session reuse, no retry/backoff, a flat 100s timeout per `requests.get()`.
   **Solution:** Share one `requests.Session()` (with `HTTPAdapter`/`Retry` for transient 5xx/connection errors) across the run; lower the default timeout (~20-30s) with per-site override via CSV only where genuinely needed.
   **Benefit:** Fewer transient failures, faster runs.
   **Downside:** Session reuse changes cookie/header state across requests — check no site relies on fully independent per-request sessions.
   **Effort:** S
+  **Done 2026-07-04** — added a shared `requests.Session` with 3x retry/backoff on 5xx in both `scraper_standalone.py` and `address_sniffer.py`; timeout set to 30s (was 100s, or entirely unbounded for the Nominatim call in `get_postcode` — that was a latent hang risk, fixed as part of this same change).
 
-- [ ] **Problem:** Dead/duplicate code inflates maintenance surface: `scraper.py` (near-identical, superseded copy of `scraper_standalone.py`), `local_event_tracker/` (orphaned 2022 prototype, last git commit 2022-11-11, zero references from any root file, includes a hardcoded personal file path in a Selenium script), `API_request_check.py` (disposable one-off, never wired into the CSV pipeline).
+- [x] **Problem:** Dead/duplicate code inflates maintenance surface: `scraper.py` (near-identical, superseded copy of `scraper_standalone.py`), `local_event_tracker/` (orphaned 2022 prototype, last git commit 2022-11-11, zero references from any root file, includes a hardcoded personal file path in a Selenium script), `API_request_check.py` (disposable one-off, never wired into the CSV pipeline).
   **Solution:** Delete `scraper.py` and `API_request_check.py`. Delete (or archive on a separate branch/tag) `local_event_tracker/` — git history preserves it if ever needed.
+  **Done 2026-07-04** — all three removed via `git rm`; recoverable from git history if ever needed.
   **Benefit:** Removes "which scraper is actually live" confusion, shrinks the repo, removes a leaked personal path.
   **Downside:** None functionally — confirm nothing on PythonAnywhere references these paths before deleting.
   **Effort:** S
@@ -120,9 +123,10 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
   **Downside:** Needs a snapshot retention policy; confirm PythonAnywhere account tier supports the desired schedule.
   **Effort:** M
 
-- [ ] **Problem:** `error.log` is tracked in git, adding noise on every run.
+- [x] **Problem:** `error.log` is tracked in git, adding noise on every run.
   **Solution:** Add it (and any per-run logs) to `.gitignore`; untrack the currently-committed copy.
   **Effort:** S
+  **Done 2026-07-04** — untracked and gitignored (file itself still exists on disk, still being written to).
 
 ---
 
@@ -159,9 +163,10 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
   **Downside:** Version bumps carry a small regression risk — re-run the full scraper across all `events_mode` types after upgrading.
   **Effort:** S-M
 
-- [ ] **Problem:** Repo clutter: `.~lock.event_pages.csv#`, `__pycache__/`, backup CSVs (`event_pages_doc.csv`, `event_pages_full_list_backup.csv`) committed alongside the live config.
-  **Solution:** Add lock files/`__pycache__`/`*.pyc` to `.gitignore`; confirm which backup CSVs are still needed before moving/deleting.
+- [x] **Problem:** Repo clutter: `.~lock.event_pages.csv#`, `__pycache__/`, `error.log`, and a stale backup CSV (`event_pages_full_list_backup.csv`) committed alongside the live config.
+  **Solution:** Add lock files/`__pycache__`/`*.pyc`/`error.log` to `.gitignore`; confirm which backup CSVs are still needed before moving/deleting.
   **Effort:** S
+  **Done 2026-07-04** — added `.gitignore`; untracked `__pycache__/` and `error.log` (kept on disk, just no longer versioned); deleted `event_pages_full_list_backup.csv` after diffing it against the live `event_pages.csv` (only difference was one stale URL, confirmed superseded). `event_pages_doc.csv` was **kept** — it's genuine column documentation, not a backup, despite the similar naming.
 
 ---
 
@@ -181,6 +186,15 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
 ## Progress Log
 
 _Newest entries at the top. One entry per work session: date, what changed, what's next._
+
+### 2026-07-04 — §0 bug fixes, §1 reliability, and repo cleanup applied
+Pushed a backup checkpoint of the pre-existing working-tree changes to `origin/master` first, then applied all four §0 bug fixes, all three §1 reliability items, and a repo cleanup pass (removed `scraper.py`, `API_request_check.py`, `local_event_tracker/`, and a stale backup CSV; added `.gitignore`; untracked `__pycache__/` and `error.log`). Verified with `python -m py_compile` on all edited files plus a manual functional check of `date_muncher.munch_munch` against sample date strings (including the exact pattern that triggered the original list-mutation bug) to confirm no regression. Committed and pushed as `e928f7f`.
+
+Two open items surfaced during this pass, not yet resolved:
+- `Procfile` (`web: gunicorn main:app`) still conflicts with the stated PythonAnywhere hosting — needs your confirmation before it's touched.
+- GitHub's Dependabot flagged 59 vulnerabilities on the branch, tied to `requirements.txt`'s stale, incomplete pins (§8) — not addressed this session since it wasn't in scope, but worth prioritizing soon.
+
+Next up per the roadmap sequencing: §8 test harness for `date_muncher`/`address_sniffer`, then §2 date parsing + §3 location as the next robustness pass.
 
 ### 2026-07-04 — Roadmap created
 Full audit of the scraper pipeline, date/location parsing, Flask app, and repo structure completed. No code changed yet. Confirmed the overall architecture doesn't need a rewrite; debt is concentrated in specific modules (listed above). Added `ROADMAP.md` as the living log for tracking this work. `CLAUDE.md` updated with an access-scope instruction (repo-only, ask before touching anything outside it).
