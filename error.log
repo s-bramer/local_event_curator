@@ -1,21 +1,107 @@
-2024-08-07 20:35:32,584 - date_muncher - WARNING: Date not recognised: Wednesdays- fortnightly                         ,                             12pm
-2024-08-07 20:35:42,721 - date_muncher - WARNING: Date not recognised: Every weekend and during the summer holidays                         ,                             10.15am, 11.30am, 12.45pm, 3pm, 4.15pm
-2024-08-07 20:35:45,647 - date_muncher - WARNING: Date not recognised: During local school holidays and weekends.
-2024-08-07 20:35:53,595 - date_muncher - WARNING: Date not recognised: Mondays and Wednesdays throughout the summer holidays                         ,                             11.30am and 2pm
-2024-08-07 20:36:10,826 - address_sniffer -  INFO: New Entry Added to address DB. ['St Fagans National Museum of History                                         Fully Booked', 'St Fagans National Museum of History                                         Fully Booked, CF5 6XB', 'CF5 6XB', 'Cardiff', '']
-2024-08-07 20:36:24,306 - address_sniffer -  INFO: New Entry Added to address DB. ['St Fagans National Museum of History                                         Postponed', 'St Fagans National Museum of History                                         Postponed, CF5 6XB', 'CF5 6XB', 'Cardiff', '']
-2024-08-07 20:36:51,462 - address_sniffer -  INFO: New Entry Added to address DB. ['National Wool Museum                                         Cancelled', 'National Wool Museum                                         Cancelled, SA44 5UP', 'SA44 5UP', 'Carmarthenshire', 'Waungilwen']
-2024-08-07 20:37:06,011 - address_sniffer -  INFO: New Entry Added to address DB. ['National Waterfront Museum                                         Fully Booked', 'National Waterfront Museum                                         Fully Booked, SA1 3RD', 'SA1 3RD', 'Swansea', 'Swansea']
-2024-08-07 20:37:27,863 - address_sniffer -  INFO: New Entry Added to address DB. ['National Roman Legion Museum                                         Fully Booked', 'National Roman Legion Museum                                         Fully Booked, NP18 1AE', 'NP18 1AE', 'Newport', 'Caerleon']
-2024-08-07 20:37:55,347 - date_muncher - WARNING: Date not recognised: 6th to the 8th of September 2024
-2024-08-07 20:38:48,573 - address_sniffer - ERROR: Postcode not found: >Various locations<!
-2024-08-07 20:38:48,573 - __main__ - WARNING: Event 5 of 11 (https://www.visitthevale.com/events/vale-of-glamorgan-walking-festival) - event location not found! Alternative Address used.
-2024-08-07 20:39:23,073 - address_sniffer - ERROR: Postcode not found: >Barclodiad y Gawres Chambered Tomb<!
-2024-08-07 20:39:23,073 - __main__ - WARNING: Event 18 of 55 (https://cadw.gov.wales/barclodiad-y-gawres-guided-tours) - event location not found! Alternative Address used.
-2024-08-07 20:40:07,566 - __main__ - WARNING: Event 3 of 6 (https://www.eventbrite.co.uk/e/paddingtons-picnic-summer-school-holidays-at-st-donats-tickets-952695226067?aff=oddtdtcreator&fbclid=IwZXh0bgNhZW0CMTAAAR19xfXb5RC1Ez4v2HxrjrxS10k-YWmzpaR3gjRC0Bkfd4MpSFDcWTf3bCQ_aem_b5DXmyNJ72AF_8uHinMyhQ) - event location not found! Alternative Address used.
-2024-08-07 20:40:45,483 - __main__ - ERROR: Event 7 of 10 (http://www.margamcountrypark.co.uk//2128?event_id=45989) - event info not found!
-2024-08-07 20:40:48,581 - __main__ - ERROR: Event 3 of 10 (http://www.margamcountrypark.co.uk//2128?event_id=45995) - event info not found!
-2024-08-07 20:41:08,640 - __main__ - ERROR: Page not found: https://www.insolecourt.org/whats-on/events-and-exhibitions!
-2024-08-07 20:42:05,104 - __main__ - INFO: Post-processing 267 events...
-2024-08-07 20:42:05,116 - __main__ - INFO: 6 event removed, containing discard keywords!
-2024-08-07 20:42:05,116 - __main__ - INFO: 59 event removed, not found or outside!
+2026-07-03 09:03:42,017 - date_muncher - WARNING: Date not recognised: Wednesdays- fortnightly,                     12pm
+2026-07-03 09:03:44,824 - date_muncher - WARNING: Date not recognised: The second Friday of every month,                     10.30am-12pm
+2026-07-03 09:03:46,115 - date_muncher - WARNING: Date not recognised: Available Wednesday to Friday, please contact us in advance to arrange a booking
+2026-07-03 09:03:52,336 - date_muncher - WARNING: Date not recognised: Every Thursday (Term time only) (LEGO Club cancelled on 25.6.26),                     3.30pm-5pm
+2026-07-03 09:03:54,190 - date_muncher - WARNING: Date not recognised: The second Friday of each month (excluding August),                     10.30am-12.30pm
+2026-07-03 09:04:02,302 - date_muncher - WARNING: Date not recognised: Last Friday of each month,                     13:00 - 14:00
+2026-07-03 09:04:04,055 - date_muncher - WARNING: Date not recognised: Multiple dates available
+2026-07-03 09:04:49,119 - address_sniffer - ERROR: Postcode not found: >National Wool Museum                                                                          Fully Booked<!
+2026-07-03 09:04:49,119 - __main__ - WARNING: Event 36 of 101 (https://museum.wales//wool/whatson/12799/Introduction-to-Spinning-From-Fleece-to-Fabric-/) - event location not found! Alternative Address used.
+2026-07-03 09:08:51,095 - __main__ - WARNING: Event 8 of 9 (https://www.visitthevale.com/events/glamorgan-history-walks) - event location not found! Alternative Address used.
+2026-07-03 09:08:52,554 - __main__ - ERROR: Event page not found! https://www.visitthevale.comhttps://cy.visitthevale.com/events/ Error: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.visitthevale.comhttps//cy.visitthevale.com/events/
+Call log:
+  - navigating to "https://www.visitthevale.comhttps//cy.visitthevale.com/events/", waiting until "domcontentloaded"
+
+2026-07-03 09:08:59,437 - address_sniffer - ERROR: Postcode not found: >Barclodiad y Gawres Chambered Tomb<!
+2026-07-03 09:08:59,439 - __main__ - WARNING: Event 5 of 93 (https://cadw.gov.wales/barclodiad-y-gawres-guided-tours-0) - event location not found! Alternative Address used.
+2026-07-03 09:09:02,417 - address_sniffer - ERROR: Postcode not found: >Strata Florida Abbey<!
+2026-07-03 09:09:02,417 - __main__ - WARNING: Event 7 of 93 (https://cadw.gov.wales/community-archaeology-open-day) - event location not found! Alternative Address used.
+2026-07-03 09:09:06,726 - address_sniffer - ERROR: Postcode not found: >Caerleon Roman Amphitheatre<!
+2026-07-03 09:09:06,726 - __main__ - WARNING: Event 10 of 93 (https://cadw.gov.wales/national-roman-legion-museum-walking-romans) - event location not found! Alternative Address used.
+2026-07-03 09:09:13,560 - address_sniffer - ERROR: Postcode not found: >Bryn Celli Ddu Chambered Tomb<!
+2026-07-03 09:09:13,560 - __main__ - WARNING: Event 17 of 93 (https://cadw.gov.wales/bryn-celli-ddu-guided-tours) - event location not found! Alternative Address used.
+2026-07-03 09:09:17,190 - address_sniffer - ERROR: Postcode not found: >Strata Florida Abbey<!
+2026-07-03 09:09:17,192 - __main__ - WARNING: Event 19 of 93 (https://cadw.gov.wales/strata-florida-guided-tours) - event location not found! Alternative Address used.
+2026-07-03 09:09:31,539 - address_sniffer - ERROR: Postcode not found: >Castell Cilgerran<!
+2026-07-03 09:09:31,540 - __main__ - WARNING: Event 34 of 93 (https://cadw.gov.wales/castell-cilgerran-guided-tours) - event location not found! Alternative Address used.
+2026-07-03 09:09:36,735 - address_sniffer - ERROR: Postcode not found: >Caer-went Roman Town<!
+2026-07-03 09:09:36,735 - __main__ - WARNING: Event 39 of 93 (https://cadw.gov.wales/family-crafts-and-activities-day) - event location not found! Alternative Address used.
+2026-07-03 09:09:53,598 - address_sniffer - ERROR: Postcode not found: >Strata Florida Abbey<!
+2026-07-03 09:09:53,600 - __main__ - WARNING: Event 59 of 93 (https://cadw.gov.wales/childrens-activity-days) - event location not found! Alternative Address used.
+2026-07-03 09:09:58,759 - address_sniffer - ERROR: Postcode not found: >Hafoty Medieval House<!
+2026-07-03 09:09:58,760 - __main__ - WARNING: Event 64 of 93 (https://cadw.gov.wales/hafoty-medieval-house-guided-tours) - event location not found! Alternative Address used.
+2026-07-03 09:10:05,668 - address_sniffer - ERROR: Postcode not found: >Llanthony Priory<!
+2026-07-03 09:10:05,669 - __main__ - WARNING: Event 71 of 93 (https://cadw.gov.wales/monk-minstrel-and-wise-women) - event location not found! Alternative Address used.
+2026-07-03 09:10:15,851 - __main__ - ERROR: Event 82 of 93 (https://cadw.gov.wales/open-doors-yr-ysgwrn) - event tiltle not found!
+2026-07-03 09:10:15,865 - __main__ - WARNING: Event 82 of 93 (https://cadw.gov.wales/open-doors-yr-ysgwrn) - event location not found! Alternative Address used.
+2026-07-03 09:10:15,876 - __main__ - ERROR: Event 82 of 93 (https://cadw.gov.wales/open-doors-yr-ysgwrn) - event info not found!
+2026-07-03 09:10:22,987 - address_sniffer - ERROR: Postcode not found: >Strata Florida Abbey<!
+2026-07-03 09:10:22,988 - __main__ - WARNING: Event 89 of 93 (https://cadw.gov.wales/strata-florida-pilgrim-walking-festival) - event location not found! Alternative Address used.
+2026-07-03 09:10:26,282 - address_sniffer - ERROR: Postcode not found: >Strata Florida Abbey<!
+2026-07-03 09:10:26,283 - __main__ - WARNING: Event 91 of 93 (https://cadw.gov.wales/mining-ceredigion) - event location not found! Alternative Address used.
+2026-07-03 09:10:47,164 - __main__ - ERROR: Event 1 of 6 (https://www.eventbrite.co.uk/e/1976739155025?aff=oddtdtcreator) - event tiltle not found!
+2026-07-03 09:10:47,169 - __main__ - WARNING: Event 1 of 6 (https://www.eventbrite.co.uk/e/1976739155025?aff=oddtdtcreator) - event location not found! Alternative Address used.
+2026-07-03 09:10:47,174 - __main__ - ERROR: Event 1 of 6 (https://www.eventbrite.co.uk/e/1976739155025?aff=oddtdtcreator) - event info not found!
+2026-07-03 09:10:48,702 - __main__ - ERROR: Event 2 of 6 (https://www.eventbrite.co.uk/e/1989982171243?aff=oddtdtcreator) - event tiltle not found!
+2026-07-03 09:10:48,708 - __main__ - WARNING: Event 2 of 6 (https://www.eventbrite.co.uk/e/1989982171243?aff=oddtdtcreator) - event location not found! Alternative Address used.
+2026-07-03 09:10:48,714 - __main__ - ERROR: Event 2 of 6 (https://www.eventbrite.co.uk/e/1989982171243?aff=oddtdtcreator) - event info not found!
+2026-07-03 09:10:49,396 - __main__ - ERROR: Event 3 of 6 (https://www.eventbrite.co.uk/e/1989985456068?aff=oddtdtcreator) - event tiltle not found!
+2026-07-03 09:10:49,404 - __main__ - WARNING: Event 3 of 6 (https://www.eventbrite.co.uk/e/1989985456068?aff=oddtdtcreator) - event location not found! Alternative Address used.
+2026-07-03 09:10:49,412 - __main__ - ERROR: Event 3 of 6 (https://www.eventbrite.co.uk/e/1989985456068?aff=oddtdtcreator) - event info not found!
+2026-07-03 09:10:50,969 - __main__ - ERROR: Event 4 of 6 (https://www.eventbrite.co.uk/e/1989985964589?aff=oddtdtcreator) - event tiltle not found!
+2026-07-03 09:10:50,975 - __main__ - WARNING: Event 4 of 6 (https://www.eventbrite.co.uk/e/1989985964589?aff=oddtdtcreator) - event location not found! Alternative Address used.
+2026-07-03 09:10:50,978 - __main__ - ERROR: Event 4 of 6 (https://www.eventbrite.co.uk/e/1989985964589?aff=oddtdtcreator) - event info not found!
+2026-07-03 09:10:52,801 - __main__ - ERROR: Event 5 of 6 (https://www.eventbrite.co.uk/e/1989986876316?aff=oddtdtcreator) - event tiltle not found!
+2026-07-03 09:10:52,806 - __main__ - WARNING: Event 5 of 6 (https://www.eventbrite.co.uk/e/1989986876316?aff=oddtdtcreator) - event location not found! Alternative Address used.
+2026-07-03 09:10:52,813 - __main__ - ERROR: Event 5 of 6 (https://www.eventbrite.co.uk/e/1989986876316?aff=oddtdtcreator) - event info not found!
+2026-07-03 09:10:54,357 - __main__ - ERROR: Event 6 of 6 (https://www.eventbrite.co.uk/e/1989987467083?aff=oddtdtcreator) - event tiltle not found!
+2026-07-03 09:10:54,364 - __main__ - WARNING: Event 6 of 6 (https://www.eventbrite.co.uk/e/1989987467083?aff=oddtdtcreator) - event location not found! Alternative Address used.
+2026-07-03 09:10:54,374 - __main__ - ERROR: Event 6 of 6 (https://www.eventbrite.co.uk/e/1989987467083?aff=oddtdtcreator) - event info not found!
+2026-07-03 09:11:04,089 - __main__ - ERROR: Page not found: https://www.insolecourt.org/whats-on/events-and-exhibitions!
+2026-07-03 09:11:09,384 - address_sniffer - ERROR: Postcode not found: >Pontypridd<!
+2026-07-03 09:11:09,384 - __main__ - WARNING: Event 2 of 8 (https://www.rctcbc.gov.uk//EN/Events/Archive/2026/August/BigWelshBite.aspx) - event location not found! Alternative Address used.
+2026-07-03 09:11:12,260 - __main__ - WARNING: Event 4 of 8 (https://www.rctcbc.gov.uk//EN/Events/Archive/2026/October/HalloweenSpooktacular.aspx) - event location not found! Alternative Address used.
+2026-07-03 09:11:15,527 - address_sniffer - ERROR: Postcode not found: >Pontypridd<!
+2026-07-03 09:11:15,527 - __main__ - WARNING: Event 5 of 8 (https://www.rctcbc.gov.uk//EN/Events/Archive/2026/November/FestivalofRemembranceConcert.aspx) - event location not found! Alternative Address used.
+2026-07-03 09:11:18,061 - __main__ - WARNING: Event 7 of 8 (https://www.rctcbc.gov.uk//EN/Events/Archive/2026/November/Santa'sToyMine.aspx) - event location not found! Alternative Address used.
+2026-07-03 09:11:19,274 - __main__ - WARNING: Event 8 of 8 (https://www.rctcbc.gov.uk//EN/Events/Archive/2026/November/ChristmasTownCentreEvents.aspx) - event location not found! Alternative Address used.
+2026-07-03 09:11:21,173 - __main__ - ERROR: Event 1 of 4 (https://www.nationaltrust.org.uk/visit/wales/dyffryn-gardens/events/7572fbaa-b587-430c-a951-965171c5f305) - event tiltle not found!
+2026-07-03 09:11:21,181 - __main__ - ERROR: Event 1 of 4 (https://www.nationaltrust.org.uk/visit/wales/dyffryn-gardens/events/7572fbaa-b587-430c-a951-965171c5f305) - event info not found!
+2026-07-03 09:11:21,654 - __main__ - ERROR: Event 2 of 4 (https://www.nationaltrust.org.uk/visit/wales/dyffryn-gardens/events/4abd6627-f909-47e7-a5e1-c89f0d0d942f) - event tiltle not found!
+2026-07-03 09:11:21,664 - __main__ - ERROR: Event 2 of 4 (https://www.nationaltrust.org.uk/visit/wales/dyffryn-gardens/events/4abd6627-f909-47e7-a5e1-c89f0d0d942f) - event info not found!
+2026-07-03 09:11:22,197 - __main__ - ERROR: Event 3 of 4 (https://www.nationaltrust.org.uk/visit/wales/dyffryn-gardens/events/2878c3f2-b409-462c-af9d-a9698f3470b4) - event tiltle not found!
+2026-07-03 09:11:22,212 - __main__ - ERROR: Event 3 of 4 (https://www.nationaltrust.org.uk/visit/wales/dyffryn-gardens/events/2878c3f2-b409-462c-af9d-a9698f3470b4) - event info not found!
+2026-07-03 09:11:22,718 - __main__ - ERROR: Event 4 of 4 (https://www.nationaltrust.org.uk/visit/wales/dyffryn-gardens/events/9e29bf74-98b2-4fbe-8691-0c3857e5954d) - event tiltle not found!
+2026-07-03 09:11:22,724 - __main__ - ERROR: Event 4 of 4 (https://www.nationaltrust.org.uk/visit/wales/dyffryn-gardens/events/9e29bf74-98b2-4fbe-8691-0c3857e5954d) - event info not found!
+2026-07-03 09:11:43,322 - date_muncher - WARNING: Date not recognised: Tours run weekly
+2026-07-03 09:13:17,742 - date_muncher - WARNING: Date not recognised: Tours run monthly - see listings for details
+2026-07-03 09:14:53,104 - __main__ - ERROR: Event 65 of 125 (https://www.wmc.org.uk/en/whats-on/2027/pretty-woman) - event tiltle not found!
+2026-07-03 09:14:53,119 - __main__ - ERROR: Event 65 of 125 (https://www.wmc.org.uk/en/whats-on/2027/pretty-woman) - event info not found!
+2026-07-03 09:14:53,867 - __main__ - ERROR: Event 66 of 125 (https://www.wmc.org.uk/en/whats-on/2026/an-evening-with-sir-david-jason) - event tiltle not found!
+2026-07-03 09:14:53,875 - __main__ - ERROR: Event 66 of 125 (https://www.wmc.org.uk/en/whats-on/2026/an-evening-with-sir-david-jason) - event info not found!
+2026-07-03 09:15:04,092 - __main__ - ERROR: Event 70 of 125 (https://www.wmc.org.uk/en/whats-on/2026/leroy-brito) - event tiltle not found!
+2026-07-03 09:15:04,111 - __main__ - ERROR: Event 70 of 125 (https://www.wmc.org.uk/en/whats-on/2026/leroy-brito) - event info not found!
+2026-07-03 09:15:19,650 - __main__ - ERROR: Event 75 of 125 (https://www.wmc.org.uk/en/whats-on/2027/classical-wind-down-live-with-niall-breslin) - event tiltle not found!
+2026-07-03 09:15:19,662 - __main__ - ERROR: Event 75 of 125 (https://www.wmc.org.uk/en/whats-on/2027/classical-wind-down-live-with-niall-breslin) - event info not found!
+2026-07-03 09:15:23,209 - __main__ - ERROR: Event 77 of 125 (https://www.wmc.org.uk/en/whats-on/2027/west-side-story) - event tiltle not found!
+2026-07-03 09:15:23,222 - __main__ - ERROR: Event 77 of 125 (https://www.wmc.org.uk/en/whats-on/2027/west-side-story) - event info not found!
+2026-07-03 09:15:42,666 - __main__ - ERROR: Event 85 of 125 (https://www.wmc.org.uk/en/whats-on/2026/explore-platfform) - event tiltle not found!
+2026-07-03 09:15:42,678 - __main__ - ERROR: Event 85 of 125 (https://www.wmc.org.uk/en/whats-on/2026/explore-platfform) - event info not found!
+2026-07-03 09:15:43,336 - __main__ - ERROR: Event 86 of 125 (https://www.wmc.org.uk/en/whats-on/2026/the-pearl-revue) - event tiltle not found!
+2026-07-03 09:15:43,354 - __main__ - ERROR: Event 86 of 125 (https://www.wmc.org.uk/en/whats-on/2026/the-pearl-revue) - event info not found!
+2026-07-03 09:15:56,804 - date_muncher - WARNING: Date not recognised: Tours run weekly - see listings for details
+2026-07-03 09:16:11,655 - __main__ - ERROR: Event 96 of 125 (https://www.wmc.org.uk/en/whats-on/2026/miscast-cabaret) - event tiltle not found!
+2026-07-03 09:16:11,704 - __main__ - ERROR: Event 96 of 125 (https://www.wmc.org.uk/en/whats-on/2026/miscast-cabaret) - event info not found!
+2026-07-03 09:16:12,270 - __main__ - ERROR: Event 97 of 125 (https://www.wmc.org.uk/en/whats-on/2027/kemah-bob-love-child) - event tiltle not found!
+2026-07-03 09:16:12,307 - __main__ - ERROR: Event 97 of 125 (https://www.wmc.org.uk/en/whats-on/2027/kemah-bob-love-child) - event info not found!
+2026-07-03 09:16:23,873 - __main__ - ERROR: Event 102 of 125 (https://www.wmc.org.uk/en/whats-on/2026/essential-cher) - event tiltle not found!
+2026-07-03 09:16:23,903 - __main__ - ERROR: Event 102 of 125 (https://www.wmc.org.uk/en/whats-on/2026/essential-cher) - event info not found!
+2026-07-03 09:16:34,461 - __main__ - ERROR: Event 107 of 125 (https://www.wmc.org.uk/en/whats-on/2027/in-times-of-war) - event tiltle not found!
+2026-07-03 09:16:34,470 - __main__ - ERROR: Event 107 of 125 (https://www.wmc.org.uk/en/whats-on/2027/in-times-of-war) - event info not found!
+2026-07-03 09:16:34,898 - __main__ - ERROR: Event 108 of 125 (https://www.wmc.org.uk/en/whats-on/2026/dirty-dancing) - event tiltle not found!
+2026-07-03 09:16:34,906 - __main__ - ERROR: Event 108 of 125 (https://www.wmc.org.uk/en/whats-on/2026/dirty-dancing) - event info not found!
+2026-07-03 09:17:30,474 - __main__ - ERROR: Event 125 of 125 (https://www.wmc.org.uk/en/whats-on/2026/dog-man-the-musical) - event tiltle not found!
+2026-07-03 09:17:30,482 - __main__ - ERROR: Event 125 of 125 (https://www.wmc.org.uk/en/whats-on/2026/dog-man-the-musical) - event info not found!
+2026-07-03 09:17:30,486 - __main__ - INFO: Post-processing 357 events...
+2026-07-03 09:17:30,493 - __main__ - INFO: 1 event(s) removed, containing discard keywords!
+2026-07-03 09:17:30,494 - __main__ - INFO: 67 event(s) removed, not found or outside!

@@ -139,6 +139,7 @@ def get_all_events(link: str,  container: str, container_attr: str, search: str,
     all_events = [] 
     if method == "JSRender":
         soup = render_soup(link)
+        # print(soup)
     else:
         try:
             response = requests.get(link, headers=headers, timeout=100)
@@ -189,6 +190,7 @@ def get_all_events(link: str,  container: str, container_attr: str, search: str,
         if type == "relative_root":
             all_events = [root + event for event in all_events]
 
+        print(f"Found {len(all_events)} events.")
         return all_events
 
 def get_dates(soup, method: str, tag: str, attr: str, attr_name: str, date_indices: str, date_delimiter: int, date_connector: str):
@@ -371,9 +373,9 @@ def run_scraper(link, row, df_in):
         for count, event in enumerate(events):
             print(f"Processing event {count+1} of {len(events)} ({event})")
             # get the individual event page
-            try:
+            try:    
                 if method == "JSRender":
-                    soup = render_soup(link)
+                    soup = render_soup(event)
                 else:
                     response = requests.get(event, headers=headers, timeout=100)
                     soup = BeautifulSoup(response.content, "html5lib")
@@ -403,6 +405,7 @@ def run_scraper(link, row, df_in):
                 sort_date = dates[2]
                 month = dates[3]
                 end_date = dates[4]
+                # print(full_date)  
                 #-----------------------
                 # GET LOCATION/ADDRESS #
                 #-----------------------
