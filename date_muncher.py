@@ -96,19 +96,19 @@ def munch_munch(date_string, delims: str, conns: str):
         days, months, years, conns = [], [], [], []
         dummy = ""
         # walk through the items identifying each one
-        for index, item in enumerate(date_list):
+        for item in date_list:
             #check if this is a text string > 2 strings i.e. end date comment = remove all other items
             if count_string(item,delimiters,connectors) > 2:
                 comment_string_found = True
             if comment_string_found:
                 #print(f"remove: {item}")
-                date_list.pop(index)
+                continue
             # check if weekday name (full or abbr) - remove it
             elif is_day_name(item):
-                date_list.pop(index)
+                continue
             elif is_timestamp(item):
                 #print(f"time found: {item}")
-                date_list.pop(index)
+                continue
             else:
                 for char in item.split():
                     char = char.strip()

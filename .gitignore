@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# Editor
+.vscode/
+
+# Office lock files (LibreOffice/OpenOffice)
+.~lock.*#
+
+# Runtime logs (regenerated each run; see ROADMAP.md §6 for rotation plans)
+error.log
+*.log
