@@ -122,6 +122,7 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
   **Benefit:** Directly implements the CLAUDE.md-mandated safe-publish workflow.
   **Downside:** Needs a snapshot retention policy; confirm PythonAnywhere account tier supports the desired schedule.
   **Effort:** M
+  **Note (2026-07-05):** PythonAnywhere confirmed as the sole deployment target (Heroku Procfile removed — see §7). One caveat for this item: only 1 of 20 sites (`Visit the Vale`) uses `JSRender` (Playwright). PythonAnywhere has no root/sudo access, and headless Chromium needs system libraries that require it — Playwright is a known pain point there even on paid plans. Thanks to §1's per-site error isolation, a Playwright failure on PythonAnywhere would just log that one site and continue with the other 19 (graceful degradation), but it likely won't update automatically until this is tested or worked around. Worth a dedicated spike before relying on it.
 
 - [x] **Problem:** `error.log` is tracked in git, adding noise on every run.
   **Solution:** Add it (and any per-run logs) to `.gitignore`; untrack the currently-committed copy.
@@ -145,9 +146,10 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
   **Solution:** Delete it now that §6 provides a proper unattended mechanism.
   **Effort:** S
 
-- [ ] **Problem:** `Procfile` (`web: gunicorn main:app`) is a Heroku-style artifact that conflicts with CLAUDE.md's stated PythonAnywhere hosting.
-  **Solution:** Confirm whether a Heroku deployment still exists; if not, delete it. **Open question — needs your input.**
-  **Effort:** S (pending confirmation)
+- [x] **Problem:** `Procfile` (`web: gunicorn main:app`) is a Heroku-style artifact that conflicts with CLAUDE.md's stated PythonAnywhere hosting.
+  **Solution:** Confirm whether a Heroku deployment still exists; if not, delete it.
+  **Effort:** S
+  **Done 2026-07-05** — confirmed PythonAnywhere is the sole target; `Procfile` and its `gunicorn` dependency removed.
 
 ---
 
@@ -158,10 +160,11 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
   **Benefit:** Locks in current (fixed) behavior before refactoring.
   **Effort:** M initial, S ongoing
 
-- [ ] **Problem:** `requirements.txt` pins 2022-era versions and is **missing `playwright`, `lxml`, `html5lib` entirely** — a clean install fails today.
+- [x] **Problem:** `requirements.txt` pins 2022-era versions and is **missing `playwright`, `lxml`, `html5lib` entirely** — a clean install fails today.
   **Solution:** Regenerate from the actual working environment (`pip freeze`), add the three missing packages, bump versions to current stable minors (checked against PythonAnywhere's supported Python version). Drop Windows-only entries (`win-inet-pton`, `PySocks`).
   **Downside:** Version bumps carry a small regression risk — re-run the full scraper across all `events_mode` types after upgrading.
   **Effort:** S-M
+  **Done 2026-07-05** — rewrote to list only direct dependencies (pip resolves the rest) at current stable versions (checked live against PyPI, not guessed): Flask 3.1.3, Flask-Mail 0.10.0, beautifulsoup4 4.15.0, lxml 6.1.1, html5lib 1.1, requests 2.34.2, urllib3 2.7.0, pandas 2.3.3, python-dateutil 2.9.0.post0. `playwright` pinned to 1.55.0 (the version already verified working locally) rather than the latest, since browser binaries are version-locked. Dropped `gunicorn` (Heroku-only, see §7), `Flask-Bootstrap` and `python-dotenv` (both unused — confirmed via grep), and Windows-only packages. Verified by creating a fresh `.venv`, installing from the new file, importing every project module, and launching Playwright's Chromium in a smoke test — full scraper run across all `events_mode` types (the noted downside) not yet done, still worth doing before the next production scrape.
 
 - [x] **Problem:** Repo clutter: `.~lock.event_pages.csv#`, `__pycache__/`, `error.log`, and a stale backup CSV (`event_pages_full_list_backup.csv`) committed alongside the live config.
   **Solution:** Add lock files/`__pycache__`/`*.pyc`/`error.log` to `.gitignore`; confirm which backup CSVs are still needed before moving/deleting.
@@ -186,6 +189,13 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
 ## Progress Log
 
 _Newest entries at the top. One entry per work session: date, what changed, what's next._
+
+### 2026-07-05 — PythonAnywhere confirmed; requirements.txt refreshed
+Confirmed PythonAnywhere as the sole deployment target, so deleted the Heroku `Procfile` (§7, done). Rewrote `requirements.txt` (§8, done) to list only genuine direct dependencies at current stable versions instead of a stale 2022 `pip freeze` dump missing `playwright`/`lxml`/`html5lib`. Verified by creating a fresh `.venv`, doing a clean `pip install -r requirements.txt`, importing every project module (`date_muncher`, `address_sniffer`, `scraper_standalone`, `main`), and smoke-testing a Playwright/Chromium launch — all passed.
+
+Flagged one real risk while confirming PythonAnywhere: only 1 of 20 configured sites (`Visit the Vale`) uses Playwright (`JSRender` mode), and PythonAnywhere's lack of root access makes headless Chromium unreliable there even on paid plans (see the note under §6). Not fixed this session — needs a dedicated spike (test on an actual PythonAnywhere account, or consider running just that one site's scrape elsewhere) before the automated daily run (§6) can be trusted end-to-end.
+
+Not yet done: an actual full scraper run against the refreshed dependencies (only imports/Chromium launch were smoke-tested, not a real scrape across all 20 sites) — worth doing before the next production run.
 
 ### 2026-07-04 — §0 bug fixes, §1 reliability, and repo cleanup applied
 Pushed a backup checkpoint of the pre-existing working-tree changes to `origin/master` first, then applied all four §0 bug fixes, all three §1 reliability items, and a repo cleanup pass (removed `scraper.py`, `API_request_check.py`, `local_event_tracker/`, and a stale backup CSV; added `.gitignore`; untracked `__pycache__/` and `error.log`). Verified with `python -m py_compile` on all edited files plus a manual functional check of `date_muncher.munch_munch` against sample date strings (including the exact pattern that triggered the original list-mutation bug) to confirm no regression. Committed and pushed as `e928f7f`.
