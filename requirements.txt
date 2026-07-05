@@ -1,37 +1,28 @@
-beautifulsoup4==4.11.1
-brotlipy==0.7.0
-certifi==2022.9.24
-cffi==1.15.1
-charset-normalizer==2.1.1
-click==8.1.3
-colorama==0.4.6
-cryptography==38.0.4
-dominate==2.7.0
-Flask==2.2.2
-Flask-Bootstrap==3.3.7.1
-flask-mail==0.9.1
-gunicorn==20.1.0
-idna==3.4
-importlib-metadata==5.1.0
-itsdangerous==2.1.2
-Jinja2==3.1.2
-MarkupSafe==2.1.1
-numpy==1.23.5
-pandas==1.5.2
-pip==22.3.1
-pycparser==2.21
-pyOpenSSL==22.1.0
-PySocks==1.7.1
-python-dateutil==2.8.2
-python-dotenv==0.21.0
-pytz==2022.6
-requests==2.28.1
-setuptools==65.5.1
-six==1.16.0
-soupsieve==2.3.2.post1
-urllib3==1.26.13
-visitor==0.1.3
-Werkzeug==2.2.2
-wheel==0.38.4
-win-inet-pton==1.1.0
-zipp==3.11.0
+# Direct dependencies only — pip resolves the rest (Werkzeug, Jinja2,
+# numpy, pytz, soupsieve, urllib3's own transitive deps, etc.).
+# Refreshed 2026-07-05; previous file was pinned to 2022-era versions and
+# was missing playwright/lxml/html5lib despite both being imported.
+# Targets PythonAnywhere (Linux) — Windows-only packages (pywin32,
+# win-inet-pton, PySocks, brotlipy) intentionally excluded.
+
+# Web app
+Flask==3.1.3
+Flask-Mail==0.10.0
+
+# Scraping
+beautifulsoup4==4.15.0
+lxml==6.1.1
+html5lib==1.1
+requests==2.34.2
+urllib3==2.7.0
+
+# playwright is pinned to the version already verified working locally,
+# not the latest, since browser binaries are tied to this exact version —
+# run `playwright install chromium` after any bump.
+playwright==1.55.0
+
+# Data handling
+pandas==2.3.3
+
+# Date parsing — not yet used in code; staged for ROADMAP.md §2
+python-dateutil==2.9.0.post0
