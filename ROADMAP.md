@@ -44,41 +44,47 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
 
 ## 2. Date Parsing
 
-- [ ] **Problem:** `date_muncher.munch_munch()` is a hand-rolled ~110-line tokenizer built on `calendar` + regex splitting. It cannot handle any of the CLAUDE.md-named patterns ("second Friday of every month," "Wednesdays - fortnightly," "tours run weekly/monthly," "term time only") — when it finds no day+month tokens it just logs a warning and returns a placeholder. `error.log` confirms this failing today for "Tours run weekly" / "Tours run monthly." `python-dateutil` is already a listed dependency but unused for parsing.
+- [x] **Problem:** `date_muncher.munch_munch()` is a hand-rolled ~110-line tokenizer built on `calendar` + regex splitting. It cannot handle any of the CLAUDE.md-named patterns ("second Friday of every month," "Wednesdays - fortnightly," "tours run weekly/monthly," "term time only") — when it finds no day+month tokens it just logs a warning and returns a placeholder. `error.log` confirms this failing today for "Tours run weekly" / "Tours run monthly." `python-dateutil` is already a listed dependency but unused for parsing.
   **Solution:** Layer, don't rewrite: (1) keep `munch_munch` as the fast path for its already-working explicit-date cases; (2) when it returns "no date found," pass the raw string through `dateutil.parser.parse(fuzzy=True)` as a second-pass fallback; (3) for genuinely recurring/relative phrases with no fixed date, explicitly classify them (see next item) rather than forcing a parse. Only reach for `dateparser` if `dateutil` proves insufficient in practice.
   **Benefit:** Fixes real, currently-failing cases; avoids silently mislabeling recurring events as "date not found."
   **Downside:** `fuzzy=True` parsing can misfire on ambiguous text — needs a sanity-range check on the result (ties into §5 validation).
   **Effort:** M
+  **Done 2026-07-05** — added `dateutil_fallback()` (guarded with a plausible-year sanity check, `dayfirst=True` for UK conventions) as a second pass when the tokenizer finds no day/month tokens. Verified it recovers oddly-formatted real dates (`15/03/2026`, `March 15 2026`) while genuine garbage strings still correctly fall through to "No date found."
 
-- [ ] **Problem:** Recurring-event phrases are indistinguishable from "parsing failed" today.
+- [x] **Problem:** Recurring-event phrases are indistinguishable from "parsing failed" today.
   **Solution:** Add a small keyword/regex classifier (weekly/monthly/fortnightly/term time/"every <weekday>") that runs before the tokenizer; on match, short-circuit to a `recurring` status that preserves the original phrase for display and is tracked as its own bucket in the run summary.
   **Benefit:** Turns unactionable failures into correctly labeled data; feeds the run-summary metrics CLAUDE.md's scheduling section asks for.
   **Downside:** Regex-based classification will always be incomplete; expect iteration as new phrasings surface.
   **Effort:** S-M
+  **Done 2026-07-05** — added `is_recurring_phrase()`, checked before the tokenizer runs. Verified against all 8 CLAUDE.md-listed patterns, including "Available Wednesday to Friday" (weekday-range-with-no-digits, to avoid misfiring on real dated ranges like "Monday 15 to Friday 19 March"). `sort_date`/`end_date` use a `'recurring'` sentinel (parallels the existing `'date not found'`); `month` uses the human-readable `'Recurring'` so the site gets one clean grouped section instead of a raw sentinel string as a heading. Updated `scraper_standalone.event_post_processing`'s dedup mask and duplicate-date-range logic to treat `'recurring'` the same as `'date not found'` — this also surfaced and fixed a latent crash: `datetime.strptime()` on a non-date sentinel value would have raised if it was ever picked up as a group's "max date" (pre-existing risk with `'date not found'` too, now guarded for both).
 
 ---
 
 ## 3. Location Recognition
 
-- [ ] **Problem:** `address_sniffer.sniff_sniff()` does an exact-string match against `addresses_db.csv`, reloading the whole CSV from disk on every call. Whitespace/case/punctuation differences cause avoidable misses that trigger live network calls.
+- [x] **Problem:** `address_sniffer.sniff_sniff()` does an exact-string match against `addresses_db.csv`, reloading the whole CSV from disk on every call. Whitespace/case/punctuation differences cause avoidable misses that trigger live network calls.
   **Solution:** Load the CSV once per run into memory; normalize keys (strip/lower/collapse whitespace) before lookup; add `rapidfuzz` as a fuzzy-match fallback before falling through to network lookups.
   **Benefit:** Fewer unnecessary network calls, fewer near-duplicate DB rows.
   **Downside:** Fuzzy match needs a conservative similarity threshold to avoid merging two distinct venues with similar names.
   **Effort:** M
+  **Done 2026-07-05** — `addresses_db.csv` now loads once per run into a module-level cache with a normalized lookup key, plus a `rapidfuzz.process.extractOne` fallback (`WRatio`, cutoff 93). Verified exact/case/whitespace matches all hit the cache with no network call, and that the fuzzy path catches realistic longer-name typos (e.g. "musuem"→"museum", score ~96) while correctly declining short 2-3 letter differences (e.g. "MTE" vs "MET", score ~86, below the cutoff) — the safer failure mode, since short-string fuzzy matching is more prone to accidentally merging distinct venues.
 
-- [ ] **Problem:** Nominatim is called with no rate limiting and no compliant identifying `User-Agent` (violates its usage policy — IP-ban risk). The DuckDuckGo HTML-scrape fallback is fragile and likely already broken.
+- [x] **Problem:** Nominatim is called with no rate limiting and no compliant identifying `User-Agent` (violates its usage policy — IP-ban risk). The DuckDuckGo HTML-scrape fallback is fragile and likely already broken.
   **Solution:** Add a descriptive `User-Agent` + a ~1 req/sec throttle for Nominatim. Drop the DuckDuckGo fallback entirely; on geocoding failure, just log "location unresolved."
   **Benefit:** Removes IP-ban risk and a likely-dead code path; simplifies the failure model.
   **Downside:** Slightly lower address-resolution rate for edge cases.
   **Effort:** S
+  **Done 2026-07-05** — User-Agent set to `local-event-curator/1.0 (+https://github.com/s-bramer/local_event_curator)` (used the GitHub URL rather than a personal email, to identify the project per Nominatim's policy without putting a personal address in source control — flag if you'd prefer something else). Added a simple `time.monotonic()`-based 1 req/sec throttle before every Nominatim call. DuckDuckGo fallback removed entirely; `get_postcode` now just logs "location unresolved" and returns the existing error sentinel.
 
-- [ ] **Problem:** `checkmypostcode.uk` scraping for council/town uses brittle CSS-class matching, caught only by a bare `except:`.
+- [x] **Problem:** `checkmypostcode.uk` scraping for council/town uses brittle CSS-class matching, caught only by a bare `except:`.
   **Solution:** Leave the approach as-is but narrow the exception handling and log distinctly when the expected selector is simply missing (site changed) vs. a network failure.
   **Effort:** S
+  **Done 2026-07-04** — actually completed as part of the §1 reliability pass (the except-narrowing work touched `get_council`/`get_town` directly); not cross-referenced here until now.
 
-- [ ] **Problem:** New address lookups are appended to `addresses_db.csv` via plain `to_csv` on every miss, with no locking — a latent corruption risk.
+- [x] **Problem:** New address lookups are appended to `addresses_db.csv` via plain `to_csv` on every miss, with no locking — a latent corruption risk.
   **Solution:** Write via temp-file-then-atomic-rename, reusing the same pattern being built for the scheduled-run safe publish (§6).
   **Effort:** S
+  **Done 2026-07-05** — new entries write to `addresses_db.csv.tmp` then `os.replace()` into place; in-memory cache is refreshed at the same time. Verified in an isolated temp copy: row count increases correctly, the entry is immediately findable, no `.tmp` file is left behind, and the write survives a fresh reload from disk.
 
 ---
 
@@ -189,6 +195,15 @@ These four are pure fixes with no behavioral ambiguity — worth one small PR on
 ## Progress Log
 
 _Newest entries at the top. One entry per work session: date, what changed, what's next._
+
+### 2026-07-05 — §2 date parsing and §3 location recognition fixed
+Implemented every actionable item in both sections. Date parsing: `date_muncher` now classifies recurring/relative phrases (weekly, fortnightly, "second Friday of...", weekday ranges with no digits, etc.) before attempting a fixed-date parse, and falls back to `dateutil.parser(fuzzy=True)` (year-sanity-checked) for genuinely oddly-formatted real dates the hand-rolled tokenizer can't handle. Location: `address_sniffer` now caches `addresses_db.csv` in memory with normalized-key + `rapidfuzz` matching instead of re-reading the CSV and doing an exact string match on every single lookup; Nominatim calls are throttled to 1/sec with a policy-compliant User-Agent; the DuckDuckGo scrape fallback (already suspected broken) is gone; new address entries write atomically.
+
+Added `rapidfuzz` to `requirements.txt` (installed and verified in `.venv`). Along the way, fixed a `pandas` `FutureWarning` (`transform(max)` → `transform('max')`) and a latent crash risk in `event_post_processing` where a non-date sentinel value picked up as a group's "max date" would blow up `datetime.strptime` — pre-existing for `'date not found'`, now guarded for both sentinels since introducing `'recurring'` doubled the exposure.
+
+Verified with: the exact 8 date patterns named in CLAUDE.md, dateutil-fallback recovery on numeric/reordered dates, confirmation genuine garbage still falls through correctly, a synthetic `event_post_processing` run mixing real/recurring/not-found rows (no crash), and an isolated-temp-copy test of the atomic address-DB write (row count, findability, no leftover `.tmp`, survives a fresh reload).
+
+Not yet done: a real end-to-end scrape against live sites exercising these paths (all verification so far is via direct unit-level calls, not a full `scraper_standalone.py` run) — still recommended before the next production update, same outstanding item as noted in the entry below.
 
 ### 2026-07-05 — PythonAnywhere confirmed; requirements.txt refreshed
 Confirmed PythonAnywhere as the sole deployment target, so deleted the Heroku `Procfile` (§7, done). Rewrote `requirements.txt` (§8, done) to list only genuine direct dependencies at current stable versions instead of a stale 2022 `pip freeze` dump missing `playwright`/`lxml`/`html5lib`. Verified by creating a fresh `.venv`, doing a clean `pip install -r requirements.txt`, importing every project module (`date_muncher`, `address_sniffer`, `scraper_standalone`, `main`), and smoke-testing a Playwright/Chromium launch — all passed.

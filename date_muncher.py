@@ -3,11 +3,51 @@ import pandas as pd
 import time
 import calendar
 from datetime import date, datetime
+from dateutil import parser as dateutil_parser
 import logging
 
 logger = logging.getLogger(__name__)
 ORDINALS = ['th', 'st', 'nd', 'rd', 'TH', 'ST', 'ND', 'RD']
 THIS_YEAR = date.today().year
+
+# phrases with no single fixed date - classified separately rather than
+# forced through the tokenizer or the dateutil fallback below
+RECURRING_KEYWORDS = [
+    'weekly', 'fortnightly', 'bi-weekly', 'biweekly', 'monthly', 'daily',
+    'term time', 'term-time', 'multiple dates', 'various dates',
+]
+_WEEKDAY_ALT = r'monday|tuesday|wednesday|thursday|friday|saturday|sunday'
+ORDINAL_WEEKDAY_RE = re.compile(
+    rf'\b(first|second|third|fourth|fifth|last)\s+({_WEEKDAY_ALT})\b', re.IGNORECASE)
+EVERY_WEEKDAY_RE = re.compile(rf'\bevery\s+({_WEEKDAY_ALT})\b', re.IGNORECASE)
+WEEKDAY_RANGE_RE = re.compile(
+    rf'\b({_WEEKDAY_ALT})\b.{{0,10}}\b(to|-|–)\b.{{0,10}}\b({_WEEKDAY_ALT})\b', re.IGNORECASE)
+
+def is_recurring_phrase(text: str) -> bool:
+    """detects recurring/relative date phrases that have no single fixed date,
+    e.g. 'Tours run weekly', 'Second Friday of every month', 'Term time only'"""
+    lowered = text.lower()
+    if any(keyword in lowered for keyword in RECURRING_KEYWORDS):
+        return True
+    if ORDINAL_WEEKDAY_RE.search(text) or EVERY_WEEKDAY_RE.search(text):
+        return True
+    # a weekday-to-weekday range with no day-of-month digits is a recurring
+    # weekly window (e.g. "Available Wednesday to Friday"), not a dated range
+    if WEEKDAY_RANGE_RE.search(text) and not re.search(r'\d', text):
+        return True
+    return False
+
+def dateutil_fallback(date_string: str):
+    """second-pass fallback for real but oddly-formatted dates the tokenizer
+    below can't handle (e.g. numeric '15/03/2026'). Returns a date or None."""
+    try:
+        parsed = dateutil_parser.parse(date_string, fuzzy=True, dayfirst=True)
+    except (ValueError, OverflowError, TypeError):
+        return None
+    # reject implausible years - fuzzy parsing can misfire on ordinary text
+    if not (THIS_YEAR - 1 <= parsed.year <= THIS_YEAR + 5):
+        return None
+    return parsed.date()
 
 
 def is_timestamp(text: str):
@@ -87,6 +127,11 @@ def munch_munch(date_string, delims: str, conns: str):
     comment_string_found = False
     if date_string == "":
         return date_string, "No date found, please see event details.", 'date not found', 'date not found', 'date not found'
+    elif is_recurring_phrase(date_string):
+        logger.info(f"Recurring/relative date phrase detected: {date_string!r}")
+        # 'recurring' is an internal sort_date/end_date sentinel (parallels 'date not found');
+        # 'Recurring' is the human-readable month/section heading shown on the site
+        return date_string, date_string.strip(), 'recurring', 'Recurring', 'recurring'
     else:
         delimiters = '|'.join(delims.split(';'))
         connectors = conns.split(';')
@@ -149,6 +194,17 @@ def munch_munch(date_string, delims: str, conns: str):
                             years.append(date_time.year)
         # catch meaning less datestrings (e.g. First Thursday of each month)
         if len(days) == 0 or len(months) == 0:
+            fallback = dateutil_fallback(date_string)
+            if fallback is not None:
+                sorting_date = fallback.strftime('%Y-%m-%d')
+                if THIS_YEAR != fallback.year:
+                    fallback_print_date = fallback.strftime('%a %d %b %Y')
+                    fallback_month = fallback.strftime('%B %Y')
+                else:
+                    fallback_print_date = fallback.strftime('%a %d %b')
+                    fallback_month = fallback.strftime('%B')
+                logger.info(f"Date recovered via dateutil fallback: {date_string!r} -> {sorting_date}")
+                return date_string, fallback_print_date, sorting_date, fallback_month, sorting_date
             logger.error(f"WARNING: Date not recognised: {date_string}")
             return date_string, "No date found, please see event details.", 'date not found', 'date not found', 'date not found'
         # remove trailing delimiter

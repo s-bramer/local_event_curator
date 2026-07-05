@@ -333,9 +333,10 @@ def event_post_processing(df: pd.DataFrame):
     # remove row with end_date > today (expired)
     df = df.loc[(df['end_date'] >= date.today().strftime('%Y-%m-%d'))]
     # add max_date column to get the maximum date of duplicate events (used for end date)
-    df['max_date'] = df.groupby(['title'])['sort_date'].transform(max)
-    # create mask to exclude rows containing 'date not found' in the 'sort_date' column from dupl count and dupl remove
-    mask = df['sort_date'] != 'date not found'
+    df['max_date'] = df.groupby(['title'])['sort_date'].transform('max')
+    # create mask to exclude rows with no single fixed date ('date not found'/'recurring') from dupl count and dupl remove
+    NO_FIXED_DATE = ('date not found', 'recurring')
+    mask = ~df['sort_date'].isin(NO_FIXED_DATE)
     # add dupl_count column to identify duplicate rows
     df['dupl_count'] = df[mask].groupby(['title', 'location'])['sort_date'].transform('size')
     # remove title duplicates and keep first date (min = start date)
@@ -347,11 +348,12 @@ def event_post_processing(df: pd.DataFrame):
     current_month = ""
     for row in range(0, len(df)):
         # if duplicate row, use max_date as end_date (if its different to start date)
-        if df.loc[row, ('dupl_count')] > 1 and df.loc[row, ('sort_date')] != df.loc[row, ('max_date')]:
+        if (df.loc[row, ('dupl_count')] > 1 and df.loc[row, ('sort_date')] != df.loc[row, ('max_date')]
+                and df.loc[row, ('max_date')] not in NO_FIXED_DATE):
             df.loc[row, ('print_date')] = df.loc[row, ('print_date')] + ' - ' + \
                 datetime.strptime(df.loc[row, ('max_date')], '%Y-%m-%d').strftime('%a %d %b')
         # identify todays, future and past events (to be omitted)
-        if df.loc[row, ('sort_date')] != 'date not found':
+        if df.loc[row, ('sort_date')] not in NO_FIXED_DATE:
             sort_time = datetime.strptime(
                 df.loc[row, ('sort_date')], '%Y-%m-%d')
             df.loc[row, ('ppf')] = (date(sort_time.year, sort_time.month, sort_time.day) -

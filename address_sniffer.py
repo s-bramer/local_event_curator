@@ -1,15 +1,19 @@
-import pandas as pd
+import os
 import re
+import time
+import logging
+import pandas as pd
 from bs4 import BeautifulSoup
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-import logging
+from rapidfuzz import process, fuzz
 
 logger = logging.getLogger(__name__)
 
+# identifies this project per Nominatim's usage policy (https://operations.osmfoundation.org/policies/nominatim/)
 headers = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
+    'User-Agent': 'local-event-curator/1.0 (+https://github.com/s-bramer/local_event_curator)'
 }
 
 # reasonable timeout + shared session with retry/backoff for transient network errors
@@ -25,6 +29,62 @@ def _build_session() -> requests.Session:
     return session
 
 SESSION = _build_session()
+
+# Nominatim's usage policy caps requests at 1/sec
+_NOMINATIM_MIN_INTERVAL = 1.0
+_last_nominatim_request_time = 0.0
+
+def _throttle_nominatim():
+    global _last_nominatim_request_time
+    elapsed = time.monotonic() - _last_nominatim_request_time
+    if elapsed < _NOMINATIM_MIN_INTERVAL:
+        time.sleep(_NOMINATIM_MIN_INTERVAL - elapsed)
+    _last_nominatim_request_time = time.monotonic()
+
+ADDRESS_DB_PATH = "addresses_db.csv"
+FUZZY_MATCH_THRESHOLD = 93  # conservative - avoids merging two distinct venues
+_address_db_cache = None  # lazy-loaded, held in memory for the life of the run
+
+def _normalize_key(text: str) -> str:
+    return re.sub(r'\s+', ' ', str(text).strip().lower())
+
+def _load_address_db() -> pd.DataFrame:
+    """load addresses_db.csv once per run instead of on every lookup"""
+    global _address_db_cache
+    if _address_db_cache is None:
+        df = pd.read_csv(ADDRESS_DB_PATH, header=0, index_col=None)
+        df['_normalized_name'] = df['name'].map(_normalize_key)
+        _address_db_cache = df
+    return _address_db_cache
+
+def _find_cached_address(address_string: str):
+    """exact (normalized) or fuzzy match against the in-memory address cache; returns a row or None"""
+    df = _load_address_db()
+    if df.empty:
+        return None
+    normalized = _normalize_key(address_string)
+    exact = df[df['_normalized_name'] == normalized]
+    if not exact.empty:
+        return exact.iloc[0]
+    match = process.extractOne(
+        normalized, df['_normalized_name'], scorer=fuzz.WRatio, score_cutoff=FUZZY_MATCH_THRESHOLD)
+    if match is not None:
+        _, score, idx = match
+        row = df.iloc[idx]
+        logger.info(f"Fuzzy-matched address {address_string!r} to {row['name']!r} (score={score:.1f})")
+        return row
+    return None
+
+def _add_cached_address(new_row: dict):
+    """append a new lookup result to addresses_db.csv atomically and refresh the in-memory cache"""
+    global _address_db_cache
+    df = _load_address_db().drop(columns=['_normalized_name'])
+    updated = pd.concat([df, pd.DataFrame([new_row])], axis=0, ignore_index=True)
+    tmp_path = ADDRESS_DB_PATH + ".tmp"
+    updated.to_csv(tmp_path, index=False)
+    os.replace(tmp_path, ADDRESS_DB_PATH)
+    updated['_normalized_name'] = updated['name'].map(_normalize_key)
+    _address_db_cache = updated
 
 COUNCIL_ABBR = {
     'Cardiff': 'cff',
@@ -47,54 +107,31 @@ def get_postcode(address):
     #1. see if postcode is contained in the address string
     postcodes = re.findall("[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", address)
     if len(postcodes) > 0:
-        # return f"{postcodes[0]} from address string (1)"
         return postcodes[0]
-    else:
-        #2. try finding it via open streetmap API
-        base_url = "https://nominatim.openstreetmap.org/search"
-        params = {
-            "q": address,
-            "format": "json",
-            "countrycodes": "gb",
-            "addressdetails": 1
-        }
-        try:
-            response = SESSION.get(base_url, params=params, timeout=DEFAULT_TIMEOUT)
-            data = response.json()
-            nominatim_ok = response.status_code == 200 and data
-        except (requests.RequestException, ValueError) as e:
-            logger.warning(f"Nominatim lookup failed for {address!r}: {e}")
-            data = None
-            nominatim_ok = False
 
-        if nominatim_ok:
-            if len(data) > 0:
-                first_result = data[0]
-                if "address" in first_result and "postcode" in first_result["address"]:
-                    return first_result["address"]["postcode"]
-                else:
-                    return "ERROR: postcode not found"
-            else:
-                return "ERROR: postcode not found"
-        else:
-            #3. try to duckduckgo to find postcode (first postcode in search scrape text)
-            base_url = "https://duckduckgo.com/html/"
-            params = {"q": f"{address} Wales UK Postcode"}
-            try:
-                r = SESSION.get(base_url, params=params, timeout=DEFAULT_TIMEOUT)
-                soup = BeautifulSoup(r.content, "html5lib")
-            except requests.RequestException as e:
-                logger.warning(f"DuckDuckGo postcode fallback failed for {address!r}: {e}")
-                return "ERROR: postcode not found"
+    #2. try finding it via the OpenStreetMap Nominatim API (rate-limited per its usage policy)
+    base_url = "https://nominatim.openstreetmap.org/search"
+    params = {
+        "q": address,
+        "format": "json",
+        "countrycodes": "gb",
+        "addressdetails": 1
+    }
+    _throttle_nominatim()
+    try:
+        response = SESSION.get(base_url, params=params, timeout=DEFAULT_TIMEOUT)
+        data = response.json()
+    except (requests.RequestException, ValueError) as e:
+        logger.warning(f"Nominatim lookup failed for {address!r}: {e}")
+        return "ERROR: postcode not found"
 
-            if r.status_code == 200:
-                matches = re.findall("[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][ABD-HJLNP-UW-Z]{2}", soup.text)
-                if matches:
-                    return matches[0]
-                else:
-                    return "ERROR: postcode not found"
-            else:
-                return "ERROR: postcode not found"
+    if response.status_code == 200 and data:
+        first_result = data[0]
+        if "address" in first_result and "postcode" in first_result["address"]:
+            return first_result["address"]["postcode"]
+
+    logger.info(f"Location unresolved via Nominatim for {address!r}")
+    return "ERROR: postcode not found"
 
 def get_council(postcode: str):
     """find council online at checkmypostcode.co.uk"""
@@ -141,13 +178,13 @@ def get_town(postcode: str):
 
 def sniff_sniff(address_string: str):
     """returns postcode, town, council and council_abbr from address string"""
-    # 1. check if address already in database
-    df_adressess_db = pd.read_csv("addresses_db.csv", header=0, index_col=None)
-    if address_string in df_adressess_db['name'].values:
-        postcode = (df_adressess_db.loc[df_adressess_db['name'] == address_string, 'postcode'].iloc[0])
-        town = (df_adressess_db.loc[df_adressess_db['name']== address_string, 'town'].iloc[0])
-        council = (df_adressess_db.loc[df_adressess_db['name'] == address_string, 'council'].iloc[0])
-        full_address = (df_adressess_db.loc[df_adressess_db['name'] == address_string, 'full_address'].iloc[0])
+    # 1. check if address already in the (in-memory, exact-or-fuzzy matched) database cache
+    cached = _find_cached_address(address_string)
+    if cached is not None:
+        postcode = cached['postcode']
+        town = cached['town']
+        council = cached['council']
+        full_address = cached['full_address']
     else:
         try:
             postcode = get_postcode(address_string)
@@ -174,14 +211,11 @@ def sniff_sniff(address_string: str):
             full_address = address_string
         else:
             full_address = address_string + ", " + postcode
-        # add new entry to the address database
-        new_row = pd.DataFrame([{'name': address_string, 'full_address': full_address,
-                   'postcode': postcode, 'council': council, 'town': town}])
-        #df_adressess_db = df_adressess_db.append(new_row, ignore_index=True) # append method is deprecated
-        df_adressess_db = pd.concat([df_adressess_db, new_row], axis=0, ignore_index=True)
-        #df_adressess_db = pd.concat([df_adressess_db, new_row], ignore_index=True)
-        df_adressess_db.to_csv("addresses_db.csv", index=False)
-        logger.error(f" INFO: New Entry Added to address DB. {new_row.iloc[0].values.tolist()}")
+        # add new entry to the address database (atomic write + refresh the in-memory cache)
+        new_row = {'name': address_string, 'full_address': full_address,
+                   'postcode': postcode, 'council': council, 'town': town}
+        _add_cached_address(new_row)
+        logger.info(f"New entry added to address DB: {list(new_row.values())}")
     try:
         council_abbr = COUNCIL_ABBR[council]
     except KeyError:

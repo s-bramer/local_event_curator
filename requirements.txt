@@ -24,5 +24,8 @@ playwright==1.55.0
 # Data handling
 pandas==2.3.3
 
-# Date parsing — not yet used in code; staged for ROADMAP.md §2
+# Date parsing (ROADMAP.md §2)
 python-dateutil==2.9.0.post0
+
+# Fuzzy address matching (ROADMAP.md §3)
+rapidfuzz==3.14.5
